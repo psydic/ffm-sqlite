@@ -31,6 +31,18 @@ public final class OrderRepository {
     public long checkout(Connection c, UUID cartId, long customerId, Instant now) throws SQLException {
         record Item(long productId, String name, int quantity, long priceCents) {
         }
+        try (PreparedStatement ps = c.prepareStatement("SELECT customer_id FROM cart WHERE id = ?")) {
+            ps.setObject(1, cartId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    throw ShopException.notFound("cart", cartId);
+                }
+                long owner = rs.getLong(1);
+                if (!rs.wasNull() && owner != customerId) {   // a guest cart (NULL owner) may be checked out by anyone
+                    throw ShopException.conflict("cart " + cartId + " belongs to another customer");
+                }
+            }
+        }
         List<Item> items = new ArrayList<>();
         try (PreparedStatement ps = c.prepareStatement("""
                 SELECT ci.product_id, p.name, ci.quantity, p.price_cents
@@ -100,10 +112,15 @@ public final class OrderRepository {
     }
 
     /**
-     * Lesson 8: state transitions without lost updates. The {@code WHERE status = ?} makes the change conditional on
-     * the state the caller saw (optimistic concurrency); cancelling puts the stock back with {@code UPDATE ... FROM}.
+     * Lesson 8: state transitions without lost updates. Only moves the life cycle allows ({@link Order.Status#canBecome})
+     * are accepted, and the {@code WHERE status = ?} makes the change conditional on the state the caller saw
+     * (optimistic concurrency): of two concurrent requests, only one wins. Cancelling puts the stock back with
+     * {@code UPDATE ... FROM}, exactly once, since a cancelled order can never change again.
      */
     public void changeStatus(Connection c, long orderId, Order.Status from, Order.Status to) throws SQLException {
+        if (!from.canBecome(to)) {
+            throw ShopException.conflict("an order cannot go from " + from + " to " + to);
+        }
         try (PreparedStatement ps = c.prepareStatement("UPDATE orders SET status = ? WHERE id = ? AND status = ?")) {
             ps.setString(1, to.name());
             ps.setLong(2, orderId);

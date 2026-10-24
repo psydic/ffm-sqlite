@@ -69,8 +69,20 @@ class HttpApiTest {
 
         String orderId = field(order.body(), "id");
         assertEquals("PAID", field(call("POST", "/orders/" + orderId + "/pay", null).body(), "status"));
+        assertEquals(409, call("POST", "/orders/" + orderId + "/pay", null).statusCode());
         assertTrue(call("GET", "/customers/" + customerId + "/orders", null).body().contains("\"PAID\""));
         assertTrue(call("GET", "/reports/top-products?per=1", null).body().contains("Pour-Over Coffee Kit"));
+    }
+
+    @Test
+    void cancelTakesTheStateFromTheDatabaseNotTheRequest() throws Exception {
+        String cartId = field(call("POST", "/carts", "{\"customerId\":1}").body(), "id");
+        call("PUT", "/carts/" + cartId + "/items/13", "{\"quantity\":2}");
+        String orderId = field(call("POST", "/carts/" + cartId + "/checkout", "{\"customerId\":1}").body(), "id");
+        assertEquals(200, call("POST", "/orders/" + orderId + "/cancel", null).statusCode());
+        // the old API let the client claim the order was CANCELLED, restocking it again on every call
+        assertEquals(409, call("POST", "/orders/" + orderId + "/cancel", "{\"from\":\"CANCELLED\"}").statusCode());
+        assertEquals("70", field(call("GET", "/products/13", null).body(), "stock"));
     }
 
     @Test

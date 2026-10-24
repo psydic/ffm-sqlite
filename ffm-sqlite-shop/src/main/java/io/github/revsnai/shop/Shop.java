@@ -87,6 +87,15 @@ public final class Shop {
         return db.read(c -> orders.history(c, customerId, beforeId, Math.clamp(limit, 1, 100)));
     }
 
+    /** Cancels a PLACED or PAID order (reading its current state in the same transaction) and restocks it. */
+    public Order cancel(long orderId) throws SQLException {
+        return db.write(c -> {
+            Order order = orders.find(c, orderId).orElseThrow(() -> ShopException.notFound("order", orderId));
+            orders.changeStatus(c, orderId, order.status(), Order.Status.CANCELLED);
+            return orders.find(c, orderId).orElseThrow();
+        });
+    }
+
     public Order changeStatus(long orderId, Order.Status from, Order.Status to) throws SQLException {
         return db.write(c -> {
             orders.changeStatus(c, orderId, from, to);

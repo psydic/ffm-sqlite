@@ -41,6 +41,9 @@ final class JdbcResultSet extends AbstractResultSet {
         return !closed && !after && row > 0;
     }
 
+    /** Set when {@link #isBeforeFirst()} had to step to find out whether there is a first row. */
+    private Boolean peeked;
+
     @Override
     public boolean next() throws SQLException {
         synchronized (conn) {
@@ -49,6 +52,16 @@ final class JdbcResultSet extends AbstractResultSet {
                 return false;
             }
             if (maxRows > 0 && row >= maxRows) {
+                after = true;
+                return false;
+            }
+            if (peeked != null) {
+                boolean hasRow = peeked;
+                peeked = null;
+                if (hasRow) {
+                    row++;
+                    return true;
+                }
                 after = true;
                 return false;
             }
@@ -233,9 +246,23 @@ final class JdbcResultSet extends AbstractResultSet {
     }
 
     @Override
+    /** JDBC: false when there are no rows, so an empty result is told apart without consuming a row. */
     public boolean isBeforeFirst() throws SQLException {
-        checkOpen();
-        return !after && row == 0;
+        synchronized (conn) {
+            checkOpen();
+            if (after || row != 0) {
+                return false;
+            }
+            if (peeked == null) {
+                try {
+                    peeked = rs.next();
+                } catch (SQLiteException e) {
+                    after = true;
+                    throw Errors.of(e);
+                }
+            }
+            return peeked;
+        }
     }
 
     @Override

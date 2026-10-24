@@ -38,7 +38,7 @@ public final class FunctionArgs {
     }
 
     public int getInt(int index) throws SQLiteException {
-        return Native.value_int(value(index));
+        return (int) Conversions.checkRange(Native.value_int64(value(index)), Integer.MIN_VALUE, Integer.MAX_VALUE, "int");
     }
 
     public long getLong(int index) throws SQLiteException {

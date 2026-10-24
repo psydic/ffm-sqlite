@@ -50,8 +50,10 @@ public final class Database implements AutoCloseable {
 
     /**
      * Lesson 2: transactions. Runs {@code work} in one write transaction on the writer connection: commit on
-     * success, rollback on any exception. A transient failure ({@link SQLTransientException}: ffm-sqlite-jdbc
-     * maps SQLITE_BUSY and SQLITE_LOCKED to it, SQLState 40001) is retried, since the whole unit is rerun.
+     * success, rollback on any exception. A lock conflict (SQLITE_BUSY or SQLITE_LOCKED, which ffm-sqlite-jdbc
+     * reports as {@link SQLTransientException} with SQLState 40001) is retried, since the whole unit is rerun.
+     * Other transient errors are not: a query timeout (also a SQLTransientException) or a pool timeout would just
+     * repeat, multiplying the wait.
      */
     public <T> T write(SqlWork<T> work) throws SQLException {
         for (int attempt = 1; ; attempt++) {
@@ -66,7 +68,7 @@ public final class Database implements AutoCloseable {
                     throw e;
                 }
             } catch (SQLTransientException e) {
-                if (attempt == 3) {
+                if (attempt == 3 || !"40001".equals(e.getSQLState())) {
                     throw e;
                 }
             }

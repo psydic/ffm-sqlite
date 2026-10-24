@@ -29,7 +29,7 @@ class JdbcStatement implements Statement {
     private boolean closeOnCompletion;
     private boolean poolable;
     private final List<String> batch = new ArrayList<>();
-    private boolean hasGeneratedKey;
+    boolean hasGeneratedKey;
     private long generatedKey;
 
     JdbcStatement(JdbcConnection conn, io.github.revsnai.ffmsqlite.db.Statement st) {
@@ -74,12 +74,25 @@ class JdbcStatement implements Statement {
                 || (head.startsWith("WITH") && s.toUpperCase(Locale.ROOT).contains("INSERT"));
     }
 
-    /** Records last_insert_rowid() after an INSERT, for getGeneratedKeys(). */
-    void captureKey(String sql, long changes, boolean requested) throws SQLException {
+    /** last_insert_rowid() before a statement runs, for {@link #captureKey}. */
+    long rowidBefore() throws SQLiteException {
+        return conn.db.getLastInsertRowId();
+    }
+
+    /**
+     * Records last_insert_rowid() after an INSERT, for getGeneratedKeys(). An upsert that took its DO UPDATE path
+     * changed a row without inserting one, leaving last_insert_rowid() at some earlier insert (maybe into another
+     * table): an unchanged rowid after an ON CONFLICT statement therefore means no key.
+     */
+    void captureKey(String sql, long changes, boolean requested, long rowidBefore) throws SQLException {
         hasGeneratedKey = false;
         if ((requested || conn.config.generatedKeys) && changes > 0 && isInsert(sql)) {
             try {
-                generatedKey = conn.db.getLastInsertRowId();
+                long rowid = conn.db.getLastInsertRowId();
+                if (rowid == rowidBefore && sql.toUpperCase(Locale.ROOT).contains("ON CONFLICT")) {
+                    return;
+                }
+                generatedKey = rowid;
                 hasGeneratedKey = true;
             } catch (SQLiteException e) {
                 throw Errors.of(e);
@@ -151,8 +164,9 @@ class JdbcStatement implements Statement {
             closeCurrent();
             try {
                 applyTimeout();
+                long before = rowidBefore();
                 long n = st.executeLargeUpdate(sql);
-                captureKey(sql, n, keys);
+                captureKey(sql, n, keys, before);
                 updateCount = n;
                 return n;
             } catch (SQLiteException e) {
@@ -187,13 +201,14 @@ class JdbcStatement implements Statement {
             closeCurrent();
             try {
                 applyTimeout();
+                long before = rowidBefore();
                 if (st.execute(sql)) {
                     current = new JdbcResultSet(this, conn, st.getResultSet(), maxRows);
                     updateCount = -1;
                     return true;
                 }
                 updateCount = st.getUpdateCount();
-                captureKey(sql, updateCount, keys);
+                captureKey(sql, updateCount, keys, before);
                 return false;
             } catch (SQLiteException e) {
                 throw Errors.of(e);

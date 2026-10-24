@@ -86,8 +86,9 @@ final class JdbcPreparedStatement extends JdbcStatement implements PreparedState
             closeCurrent();
             try {
                 applyTimeout();
+                long before = rowidBefore();
                 long n = ps.executeLargeUpdate();
-                captureKey(sql, n, keysRequested);
+                captureKey(sql, n, keysRequested, before);
                 updateCount = n;
                 return n;
             } catch (SQLiteException e) {
@@ -103,13 +104,14 @@ final class JdbcPreparedStatement extends JdbcStatement implements PreparedState
             closeCurrent();
             try {
                 applyTimeout();
+                long before = rowidBefore();
                 if (ps.execute()) {
                     current = new JdbcResultSet(this, conn, ps.getResultSet(), maxRows);
                     updateCount = -1;
                     return true;
                 }
                 updateCount = ps.getUpdateCount();
-                captureKey(sql, updateCount, keysRequested);
+                captureKey(sql, updateCount, keysRequested, before);
                 return false;
             } catch (SQLiteException e) {
                 throw Errors.of(e);
@@ -146,6 +148,7 @@ final class JdbcPreparedStatement extends JdbcStatement implements PreparedState
         synchronized (conn) {
             checkOpen();
             closeCurrent();
+            hasGeneratedKey = false;   // not the key of an earlier executeUpdate
             try {
                 applyTimeout();
                 return ps.executeBatch();

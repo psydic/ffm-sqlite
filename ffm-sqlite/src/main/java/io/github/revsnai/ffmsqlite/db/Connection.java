@@ -57,6 +57,15 @@ public final class Connection implements AutoCloseable {
     private Throwable callbackFailure;
     private String callbackFailureMessage;
     private boolean autoCommit = true;
+    /**
+     * Manual-commit mode only: SQLite rolled back the whole transaction when a statement failed. Until
+     * {@link #rollback()}, statements and {@link #commit()} fail instead of silently auto-committing.
+     */
+    private SQLiteException transactionRolledBackBy;
+    /** The busy timeout set by the config or {@link #setBusyTimeout}; a query timeout may shorten it per statement. */
+    private int busyTimeoutMillis;
+    /** Whether the running statement's busy timeout was shortened to its query timeout's deadline. */
+    private boolean busyCapped;
     /** Volatile and set under {@link #interruptLock}: {@link #interrupt()} runs on other threads. */
     private volatile boolean closed;
     /** Orders {@link #interrupt()} against {@link #close()}, so sqlite3_interrupt never sees a freed handle. */
@@ -96,6 +105,7 @@ public final class Connection implements AutoCloseable {
             Native.busy_timeout(db, config.busyTimeoutMillis());
         }
         Connection conn = new Connection(db, config.statementCacheSize());
+        conn.busyTimeoutMillis = config.busyTimeoutMillis();
         for (Map.Entry<String, String> pragma : inApplyOrder(config.pragmas())) {
             String sql = "PRAGMA " + pragma.getKey() + " = " + pragma.getValue();
             try {
@@ -138,9 +148,11 @@ public final class Connection implements AutoCloseable {
             return;
         }
         if (autoCommit) {
+            failIfRolledBack();
             endTransactionOrRestart("COMMIT", false);
         } else {
             run("BEGIN");
+            transactionRolledBackBy = null;
         }
         this.autoCommit = autoCommit;
     }
@@ -152,12 +164,58 @@ public final class Connection implements AutoCloseable {
      */
     public void commit() throws SQLiteException {
         checkManualCommit("commit");
+        failIfRolledBack();
         endTransactionOrRestart("COMMIT", true);
     }
 
+    /** Rolls back and starts the next transaction; also the way out after {@link SQLiteTransactionRolledBackException}. */
     public void rollback() throws SQLiteException {
         checkManualCommit("rollback");
+        transactionRolledBackBy = null;
         endTransactionOrRestart("ROLLBACK", true);
+    }
+
+    /**
+     * If SQLite rolled the transaction back on an earlier failure: starts a new transaction (the state after a failed
+     * commit) and throws, so the lost work is reported instead of the COMMIT silently doing nothing.
+     */
+    private void failIfRolledBack() throws SQLiteException {
+        if (transactionRolledBackBy != null) {
+            SQLiteException e = rolledBack();
+            transactionRolledBackBy = null;
+            restartTransaction();
+            throw e;
+        }
+    }
+
+    private SQLiteTransactionRolledBackException rolledBack() {
+        SQLiteTransactionRolledBackException e = new SQLiteTransactionRolledBackException(
+                "the transaction was rolled back by SQLite when a statement failed (" + transactionRolledBackBy.getMessage()
+                        + "); its earlier changes are lost: call rollback() to start a new transaction");
+        e.initCause(transactionRolledBackBy);
+        return e;
+    }
+
+    /**
+     * Before a statement runs. In manual-commit mode SQLite must have a transaction open: if a failure rolled it
+     * back, fail (see {@link SQLiteTransactionRolledBackException}); if SQL text ended it (COMMIT/ROLLBACK sent as a
+     * statement), start the next one, as {@link #commit()} would.
+     */
+    void beforeStatement() throws SQLiteException {
+        if (autoCommit || !Native.get_autocommit(db)) {
+            return;
+        }
+        if (transactionRolledBackBy != null) {
+            throw rolledBack();
+        }
+        run("BEGIN");
+    }
+
+    /** After a statement failed: records whether SQLite rolled back the manual-commit transaction with it. */
+    void afterStatementFailure(SQLiteException failure) {
+        if (!autoCommit && !closed && transactionRolledBackBy == null && Native.get_autocommit(db)) {
+            transactionRolledBackBy = failure;
+        }
     }
 
     /**
@@ -184,6 +242,7 @@ public final class Connection implements AutoCloseable {
     private void restartTransaction() throws SQLiteException {
         if (!closed && !autoCommit && Native.get_autocommit(db)) {
             run("BEGIN");
+            transactionRolledBackBy = null;
         }
     }
 
@@ -312,7 +371,7 @@ public final class Connection implements AutoCloseable {
             }
             throw e;
         }
-        String key = name.toLowerCase(Locale.ROOT) + "/" + nArgs;
+        String key = sqliteFold(name) + "/" + nArgs;
         if (udf == null) {
             functions.remove(key);
         } else {
@@ -324,6 +383,21 @@ public final class Connection implements AutoCloseable {
         if (previous != null) {
             previous.close();
         }
+    }
+
+    /**
+     * The key SQLite matches function and collation names by: case-insensitive for ASCII letters only. (Java's
+     * toLowerCase also folds other letters, so "Äf" and "äf", two functions to SQLite, would share a key and replacing
+     * one would free the other's upcall stubs while SQLite still calls them.)
+     */
+    static String sqliteFold(String name) {
+        char[] c = name.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i] >= 'A' && c[i] <= 'Z') {
+                c[i] += 'a' - 'A';
+            }
+        }
+        return new String(c);
     }
 
     private static MemorySegment stub(MethodHandle target, java.lang.foreign.FunctionDescriptor descriptor, Arena arena) {
@@ -366,7 +440,7 @@ public final class Connection implements AutoCloseable {
             stubs.close();
             throw e;
         }
-        String key = name.toLowerCase(Locale.ROOT);
+        String key = sqliteFold(name);
         collations.put(key, callback);
         Arena previous = collationStubs.put(key, stubs);   // no longer called: see register()
         if (previous != null) {
@@ -378,8 +452,8 @@ public final class Connection implements AutoCloseable {
     public void removeCollation(String name) throws SQLiteException {
         checkOpen();
         registerCollation(name, MemorySegment.NULL, "remove");
-        collations.remove(name.toLowerCase(Locale.ROOT));
-        Arena previous = collationStubs.remove(name.toLowerCase(Locale.ROOT));
+        collations.remove(sqliteFold(name));
+        Arena previous = collationStubs.remove(sqliteFold(name));
         if (previous != null) {
             previous.close();
         }
@@ -613,6 +687,7 @@ public final class Connection implements AutoCloseable {
             throw new IllegalArgumentException("millis must be >= 0");
         }
         hooks.busyHandler = null;
+        busyTimeoutMillis = millis;
         Native.busy_timeout(db, millis);
     }
 
@@ -633,6 +708,17 @@ public final class Connection implements AutoCloseable {
         hooks.syncProgress();
     }
 
+    /**
+     * A query timeout in milliseconds, saturated at Integer.MAX_VALUE (about 24.8 days, i.e. no practical limit):
+     * frameworks pass huge values such as {@code Integer.MAX_VALUE} seconds to mean "unlimited".
+     */
+    static int timeoutMillis(java.time.Duration timeout) {
+        if (timeout.isNegative()) {
+            throw new IllegalArgumentException("timeout must be >= 0");
+        }
+        return timeout.compareTo(java.time.Duration.ofMillis(Integer.MAX_VALUE)) >= 0 ? Integer.MAX_VALUE : (int) timeout.toMillis();
+    }
+
     /** Starts a query-timeout window; returns the previous deadline for {@link #popDeadline}. */
     long pushDeadline(int millis) {
         if (!hooks.timeoutsUsed) {
@@ -643,6 +729,7 @@ public final class Connection implements AutoCloseable {
         long deadline = System.nanoTime() + millis * 1_000_000L;
         hooks.deadline = deadline == 0 ? 1 : deadline;
         hooks.deadlineMillis = millis;
+        limitBusyWait();
         return previous;
     }
 
@@ -653,10 +740,52 @@ public final class Connection implements AutoCloseable {
     void popDeadline(long previous, int previousMillis) {
         hooks.deadline = previous;
         hooks.deadlineMillis = previousMillis;
+        limitBusyWait();
     }
 
-    /** Thread-safe: aborts whatever statement is running on this connection (for Statement.cancel()). */
-    void interrupt() {
+    /**
+     * Query timeouts are checked in the progress callback, which does not run while SQLite waits for a lock. So
+     * while a deadline is set, the busy timeout is shortened to it (a custom {@link BusyHandler} checks the deadline
+     * in {@code Hooks.xBusy} instead), and a lock wait cut short this way fails as a timeout.
+     */
+    private void limitBusyWait() {
+        if (hooks.busyHandler != null) {
+            return;
+        }
+        int wait = busyTimeoutMillis;
+        busyCapped = false;
+        if (hooks.deadline != 0) {
+            long remaining = Math.max(1, (hooks.deadline - System.nanoTime()) / 1_000_000);
+            if (remaining < wait) {
+                wait = (int) remaining;
+                busyCapped = true;
+            }
+        }
+        Native.busy_timeout(db, wait);
+    }
+
+    boolean busyCapped() {
+        return busyCapped;
+    }
+
+    /**
+     * The exception for a failed step: the callback's failure as cause, and SQLITE_BUSY after a lock wait that was
+     * shortened to the query timeout reported as {@link SQLiteTimeoutException}.
+     */
+    SQLiteException stepFailure(int rc, String context, boolean capped) {
+        SQLiteException e = withCallbackCause(SQLiteException.of(db, rc, context));
+        if (capped && (rc & 0xff) == Native.SQLITE_BUSY && !(e instanceof SQLiteTimeoutException)) {
+            return new SQLiteTimeoutException(e.getMessage() + ": query timeout of " + hooks.deadlineMillis
+                    + " ms exceeded while waiting for a lock", e.getErrorCode(), e.getExtendedErrorCode());
+        }
+        return e;
+    }
+
+    /**
+     * Thread-safe (may be called from any thread, also while another thread uses the connection): aborts whatever
+     * statement is running on this connection, which fails with SQLITE_INTERRUPT. A no-op once closed.
+     */
+    public void interrupt() {
         synchronized (interruptLock) {
             if (!closed) {
                 Native.interrupt(db);
@@ -803,7 +932,7 @@ public final class Connection implements AutoCloseable {
     private void run(String sql) throws SQLiteException {
         Stmt s = acquire(sql);
         try {
-            stepToEnd(s, sql); // attaches listener failures, e.g. a commit vetoed by a CommitListener
+            stepToEndUntimed(s, sql); // attaches listener failures, e.g. a commit vetoed by a CommitListener
         } finally {
             release(s);
         }
@@ -828,7 +957,7 @@ public final class Connection implements AutoCloseable {
 
     private Stmt prepareSingle(String sql) throws SQLiteException {
         try (Arena arena = Arena.ofConfined()) {
-            MemorySegment text = arena.allocateFrom(sql);
+            MemorySegment text = arena.allocateFrom(withoutNul(sql));
             MemorySegment ppStmt = arena.allocate(ADDRESS);
             MemorySegment pzTail = arena.allocate(ADDRESS);
             clearCallbackFailure();
@@ -856,7 +985,7 @@ public final class Connection implements AutoCloseable {
 
     ScriptResult runScript(String script, boolean keepFinalQuery, int timeoutMillis) throws SQLiteException {
         try (Arena arena = Arena.ofConfined()) {
-            MemorySegment text = arena.allocateFrom(script);
+            MemorySegment text = arena.allocateFrom(withoutNul(script));
             long end = text.byteSize() - 1;
             MemorySegment ppStmt = arena.allocate(ADDRESS);
             MemorySegment pzTail = arena.allocate(ADDRESS);
@@ -901,15 +1030,21 @@ public final class Connection implements AutoCloseable {
 
     /** As {@link #stepToEnd(Stmt, String)}, interrupting the statement after {@code timeoutMillis} (0 = none). */
     long stepToEnd(Stmt s, String context, int timeoutMillis) throws SQLiteException {
-        if (timeoutMillis <= 0) {
-            return stepToEndUntimed(s, context);
-        }
-        int previousMillis = deadlineMillis();
-        long previous = pushDeadline(timeoutMillis);
+        beforeStatement();
         try {
-            return stepToEndUntimed(s, context);
-        } finally {
-            popDeadline(previous, previousMillis);
+            if (timeoutMillis <= 0) {
+                return stepToEndUntimed(s, context);
+            }
+            int previousMillis = deadlineMillis();
+            long previous = pushDeadline(timeoutMillis);
+            try {
+                return stepToEndUntimed(s, context);
+            } finally {
+                popDeadline(previous, previousMillis);
+            }
+        } catch (SQLiteException e) {
+            afterStatementFailure(e);
+            throw e;
         }
     }
 
@@ -923,11 +1058,30 @@ public final class Connection implements AutoCloseable {
         if (rc != Native.SQLITE_DONE || callbackFailure != null) {
             SQLiteException e = rc == Native.SQLITE_ROW || rc == Native.SQLITE_DONE
                     ? callbackError(context)
-                    : withCallbackCause(SQLiteException.of(db, rc, context));
+                    : stepFailure(rc, context, busyCapped);
             Native.reset(s.ptr);
             throw e;
         }
         return Native.total_changes(db) == totalBefore ? 0 : Native.changes(db);
+    }
+
+    /**
+     * SQLite reads SQL text up to the first NUL byte, so a NUL inside a string would make it see a different
+     * statement, and the script loop could never move past it. NUL padding at the end (with whitespace) is dropped;
+     * a NUL followed by more SQL is rejected.
+     */
+    static String withoutNul(String sql) throws SQLiteException {
+        int nul = sql.indexOf('\0');
+        if (nul < 0) {
+            return sql;
+        }
+        for (int i = nul; i < sql.length(); i++) {
+            char ch = sql.charAt(i);
+            if (ch != '\0' && !Character.isWhitespace(ch)) {
+                throw new SQLiteException("SQL contains a NUL character (at index " + nul + "), which would end it early: " + sql.substring(0, nul));
+            }
+        }
+        return sql.substring(0, nul);
     }
 
     /**

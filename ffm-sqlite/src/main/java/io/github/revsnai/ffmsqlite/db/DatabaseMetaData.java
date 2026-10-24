@@ -85,7 +85,7 @@ public final class DatabaseMetaData {
             return out; // the sqlite_schema join below needs an existing schema
         }
         String sql = "SELECT t.name, t.type, t.ncol, t.wr, t.strict, s.sql FROM pragma_table_list t "
-                + "LEFT JOIN " + quoteIdentifier(schema) + ".sqlite_schema s ON s.name = t.name "
+                + "LEFT JOIN " + quoteIdentifier(schema) + ".sqlite_schema s ON s.name = t.name AND s.type IN ('table', 'view') "
                 + "WHERE t.schema = ? AND t.name NOT LIKE 'sqlite\\_%' ESCAPE '\\' ORDER BY t.name";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, schema);

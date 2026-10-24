@@ -273,7 +273,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
     /** As {@link #setQueryTimeout(int)}, with millisecond resolution. */
     public void setQueryTimeout(java.time.Duration timeout) throws SQLiteException {
         checkOpen();
-        queryTimeoutMillis = Math.toIntExact(timeout.toMillis());
+        queryTimeoutMillis = Connection.timeoutMillis(timeout);
     }
 
     /** The timeout in whole seconds, as JDBC (rounded up; 0 = none). */

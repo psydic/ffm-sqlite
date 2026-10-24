@@ -77,12 +77,20 @@ abstract class AbstractResultSet implements ResultSet {
 
     @Override
     public byte getByte(int columnIndex) throws SQLException {
-        return (byte) getInt(columnIndex);
+        return (byte) inRange(getLong(columnIndex), Byte.MIN_VALUE, Byte.MAX_VALUE, "byte");
     }
 
     @Override
     public short getShort(int columnIndex) throws SQLException {
-        return (short) getInt(columnIndex);
+        return (short) inRange(getLong(columnIndex), Short.MIN_VALUE, Short.MAX_VALUE, "short");
+    }
+
+    /** Out-of-range values fail (SQLState 22003) instead of silently wrapping. */
+    static long inRange(long v, long min, long max, String type) throws SQLException {
+        if (v < min || v > max) {
+            throw new java.sql.SQLDataException("value " + v + " is out of range for " + type, "22003");
+        }
+        return v;
     }
 
     @Override

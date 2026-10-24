@@ -42,6 +42,10 @@ final class JdbcConnection implements Connection {
     final String url;
     private final Properties clientInfo = new Properties();
     private Map<String, Class<?>> typeMap = new HashMap<>();
+    /** Set by {@link #abort}: the connection counts as closed at once, before the queued close() runs. */
+    private volatile boolean aborted;
+    /** Opened read-only, or with {@code query_only} on in the URL/properties: read-only whatever setReadOnly says. */
+    private final boolean configuredReadOnly;
     private boolean readOnly;
     private int isolation = TRANSACTION_SERIALIZABLE;
     private int holdability = ResultSet.CLOSE_CURSORS_AT_COMMIT;
@@ -56,11 +60,14 @@ final class JdbcConnection implements Connection {
         } catch (SQLiteException e) {
             throw Errors.of(e);
         }
-        this.readOnly = config.sqlite.readOnly();
+        String queryOnly = config.sqlite.pragmas().get("query_only");
+        this.configuredReadOnly = config.sqlite.readOnly()
+                || (queryOnly != null && (queryOnly.equalsIgnoreCase("ON") || queryOnly.equals("1")));
+        this.readOnly = configuredReadOnly;
     }
 
     void checkOpen() throws SQLException {
-        if (db.isClosed()) {
+        if (aborted || db.isClosed()) {
             throw Errors.closed("Connection");
         }
     }
@@ -272,7 +279,7 @@ final class JdbcConnection implements Connection {
 
     @Override
     public boolean isClosed() {
-        return db.isClosed();
+        return aborted || db.isClosed();
     }
 
     @Override
@@ -281,15 +288,20 @@ final class JdbcConnection implements Connection {
         return new JdbcDatabaseMetaData(this);
     }
 
-    /** {@code PRAGMA query_only}: rejects writes on this connection. */
+    /**
+     * {@code PRAGMA query_only}: rejects writes on this connection. A connection configured read-only (the
+     * {@code readonly} open flag, or {@code query_only=true} in the URL/properties) stays read-only:
+     * {@code setReadOnly(false)} is then ignored, as JDBC allows for this hint. Frameworks call it after every
+     * read-only transaction (Spring does so unconditionally), which must not make a reader pool writable.
+     */
     @Override
     public synchronized void setReadOnly(boolean readOnly) throws SQLException {
         checkOpen();
-        if (config.sqlite.readOnly() && !readOnly) {
-            throw new SQLException("the connection was opened read-only", "25006");
+        boolean effective = readOnly || configuredReadOnly;
+        if (effective != this.readOnly && !config.sqlite.readOnly()) {
+            run("PRAGMA query_only = " + (effective ? 1 : 0));
         }
-        run("PRAGMA query_only = " + (readOnly ? 1 : 0));
-        this.readOnly = readOnly;
+        this.readOnly = effective;
     }
 
     @Override
@@ -404,6 +416,11 @@ final class JdbcConnection implements Connection {
         if (executor == null) {
             throw new SQLException("executor must not be null", "HY009");
         }
+        if (aborted || db.isClosed()) {
+            return;
+        }
+        aborted = true;     // closed from the caller's point of view from now on
+        db.interrupt();     // lock-free: stops a running statement, so the close below can take the lock
         executor.execute(this::close);
     }
 

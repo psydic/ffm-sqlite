@@ -16,7 +16,7 @@
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ffm-sqlite.version>0.2.0</ffm-sqlite.version>
+        <ffm-sqlite.version>0.2.1</ffm-sqlite.version>
         <jackson.version>2.19.2</jackson.version>
         <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so (empty = the system library). -->
         <ffmsqlite.lib></ffmsqlite.lib>

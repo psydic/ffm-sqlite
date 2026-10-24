@@ -40,7 +40,7 @@ curl -X POST $B/carts/<uuid>/checkout -d '{"customerId":4}'                   # 
 
 curl $B/orders/<id>
 curl -X POST $B/orders/<id>/pay                                               # PLACED → PAID, again → 409
-curl -X POST $B/orders/<id>/cancel -d '{"from":"PAID"}'                       # puts the stock back
+curl -X POST $B/orders/<id>/cancel                                             # PLACED/PAID only; restocks once
 curl "$B/customers/4/orders"
 
 curl "$B/reports/top-products?per=3"           # window functions: rank() per category

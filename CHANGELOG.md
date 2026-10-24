@@ -1,5 +1,57 @@
 # Changelog
 
+## 0.2.1
+
+Fixes from a second, deeper code review. Upgrading is recommended: #1 can lose data silently and #3 can crash the
+JVM.
+
+### ffm-sqlite
+
+1. **A transaction that SQLite rolled back on its own was not reported.** When a statement fails in a way that
+   makes SQLite roll back the whole transaction (a query timeout or interrupt, SQLITE_FULL, an I/O error), later
+   statements were each auto-committed and `commit()` returned normally, losing the earlier work silently. Now every
+   statement and `commit()` fail with the new `SQLiteTransactionRolledBackException` until `rollback()`;
+   `setAutoCommit(true)` fails the same way. A COMMIT or ROLLBACK sent as SQL text in manual-commit mode now starts
+   the next transaction, as `commit()`/`rollback()` do.
+2. **Cached statements returned the wrong columns after a schema change.** After `ALTER TABLE`, a migration from
+   another connection, `restore()` or `deserialize()`, a re-prepared `SELECT *` kept its old column list, so
+   `getString("c")` could return another column's value. Column information is now reloaded when SQLite re-prepares
+   the statement.
+3. **Two functions (or collations) whose names differ only in non-ASCII case crashed the JVM** (a regression of the
+   0.1.1 stub cleanup): names are now matched the way SQLite matches them, ASCII case only.
+4. A NUL character in SQL made `Statement.execute` loop forever. NUL padding at the end is now ignored; a NUL followed by
+   more SQL is an error.
+5. `DatabaseMetaData.getTables()` listed a table twice when a trigger had the same name.
+6. A query timeout now also bounds the time spent waiting for a lock (busy timeout or a custom `BusyHandler`), failing
+   with `SQLiteTimeoutException`.
+7. Query timeouts above about 24.8 days (e.g. `Integer.MAX_VALUE` seconds, "no limit" for some frameworks) threw
+   `ArithmeticException` on execute; they are now treated as no practical limit.
+8. `getInt()`, `getObject(i, Integer/Short/Byte.class)` and `FunctionArgs.getInt()` silently wrapped values out of
+   range (3000000000 read as -1294967296); they now fail with SQLITE_MISMATCH.
+9. `Connection.interrupt()` is now public (thread-safe; used by the JDBC driver's `abort`).
+
+### ffm-sqlite-jdbc
+
+- Picks up all of the above: auto-rollbacks surface as `SQLTransactionRollbackException` (SQLState 40000),
+  out-of-range reads as `SQLDataException` (22003), lock-wait timeouts as `SQLTimeoutException`.
+- `getGeneratedKeys()` after an upsert that updated instead of inserting returned an unrelated rowid (from an earlier
+  insert, possibly into another table); it is now empty. After `executeBatch` it no longer returns the key of an
+  earlier `executeUpdate`.
+- `isBeforeFirst()` returned true for an empty result set; it is now false, as JDBC requires.
+- `abort()` now interrupts the running statement and marks the connection closed at once, instead of waiting for
+  the statement to finish.
+- A connection configured with `query_only=true` (URL or properties) stays read-only: `setReadOnly(false)`, which
+  Spring calls after every read-only transaction, no longer makes it writable. `getShort`/`getByte` fail on
+  out-of-range values instead of wrapping.
+
+### ffm-sqlite-shop (sample)
+
+- Cancelling an already cancelled (or shipped) order restocked it again on every call: orders now follow their life
+  cycle (PLACED → PAID → SHIPPED, PLACED/PAID → CANCELLED), and cancel reads the current state from the database
+  instead of the request.
+- Checkout now refuses a cart that belongs to another customer (guest carts can still be checked out by anyone).
+- `Database.write` retries only lock conflicts (SQLState 40001), not query or pool timeouts.
+
 ## 0.2.0
 
 The project moved to the **revsnai** GitHub organization: https://github.com/revsnai/ffm-sqlite.

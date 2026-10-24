@@ -192,6 +192,11 @@ final class Hooks {
     int xBusy(MemorySegment arg, int attempts) {
         depth++;
         try {
+            if (deadline != 0 && System.nanoTime() - deadline > 0) {   // a query timeout also bounds lock waits
+                conn.recordCallbackFailure(new java.util.concurrent.TimeoutException(
+                        "query timeout of " + deadlineMillis + " ms exceeded"), "query timeout of " + deadlineMillis + " ms exceeded");
+                return 0;
+            }
             BusyHandler h = busyHandler;
             return h != null && h.retry(attempts) ? 1 : 0;
         } catch (Throwable t) {

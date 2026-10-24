@@ -108,6 +108,9 @@ final class Native {
     private static final MethodHandle BIND_BLOB = downcall("sqlite3_bind_blob", FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, JAVA_INT, ADDRESS), CRITICAL_HEAP);
 
     private static final MethodHandle COLUMN_COUNT = downcall("sqlite3_column_count", FunctionDescriptor.of(JAVA_INT, ADDRESS), CRITICAL);
+    private static final MethodHandle STMT_STATUS = downcall("sqlite3_stmt_status", FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, JAVA_INT), CRITICAL);
+    /** sqlite3_stmt_status counter: how many times SQLite re-prepared the statement (e.g. after a schema change). */
+    static final int SQLITE_STMTSTATUS_REPREPARE = 5;
     private static final MethodHandle COLUMN_NAME = downcall("sqlite3_column_name", FunctionDescriptor.of(ADDRESS, ADDRESS, JAVA_INT), CRITICAL);
     private static final MethodHandle COLUMN_DECLTYPE = downcall("sqlite3_column_decltype", FunctionDescriptor.of(ADDRESS, ADDRESS, JAVA_INT), CRITICAL);
     // Need SQLITE_ENABLE_COLUMN_METADATA; null when the library was built without it.
@@ -140,6 +143,8 @@ final class Native {
             FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_INT, JAVA_INT, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS, ADDRESS));
     /** {@code int xCompare(void *pArg, int len1, const void *s1, int len2, const void *s2)}: UTF-8, not NUL-terminated. */
     static final FunctionDescriptor X_COMPARE = FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, JAVA_INT, ADDRESS);
+    static final int SQLITE_BUSY = 5;
+    static final int SQLITE_MISMATCH = 20;
     static final int SQLITE_INTERRUPT = 9;
 
     private static final MethodHandle CREATE_COLLATION_V2 = downcall("sqlite3_create_collation_v2",
@@ -714,6 +719,14 @@ final class Native {
     static int bind_blob(MemorySegment stmt, int index, byte[] bytes) {
         try {
             return (int) BIND_BLOB.invokeExact(stmt, index, MemorySegment.ofArray(bytes), bytes.length, SQLITE_TRANSIENT);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    static int stmt_status(MemorySegment stmt, int op) {
+        try {
+            return (int) STMT_STATUS.invokeExact(stmt, op, 0);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }

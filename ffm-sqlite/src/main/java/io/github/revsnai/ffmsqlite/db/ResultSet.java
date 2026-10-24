@@ -36,18 +36,27 @@ public final class ResultSet implements AutoCloseable {
     public boolean next() throws SQLiteException {
         if (state == ON_ROW || state == BEFORE_FIRST) {
             conn.checkOpen();
+            boolean first = state == BEFORE_FIRST;
+            if (first) {
+                conn.beforeStatement();
+            }
             conn.clearCallbackFailure();
             int rc;
+            boolean capped = false;
             if (timeoutMillis > 0) {
                 int previousMillis = conn.deadlineMillis();
                 long previous = conn.pushDeadline(timeoutMillis);
                 try {
                     rc = Native.step(stmt.ptr);
+                    capped = conn.busyCapped();
                 } finally {
                     conn.popDeadline(previous, previousMillis);
                 }
             } else {
                 rc = Native.step(stmt.ptr);
+            }
+            if (first) {
+                stmt.refreshIfReprepared();
             }
             boolean ok = rc == Native.SQLITE_ROW || rc == Native.SQLITE_DONE;
             if (ok && !conn.hasCallbackFailure()) {
@@ -56,10 +65,11 @@ public final class ResultSet implements AutoCloseable {
             }
             state = AFTER_LAST;
             String context = "next: " + stmt.sql;
-            SQLiteException e = ok ? conn.callbackError(context) : conn.withCallbackCause(SQLiteException.of(conn.db, rc, context));
+            SQLiteException e = ok ? conn.callbackError(context) : conn.stepFailure(rc, context, capped);
             // Stop the statement now: a pending sqlite3_interrupt (from a failed collation) stays in
             // effect, failing other statements too, until no statement is running.
             Native.reset(stmt.ptr);
+            conn.afterStatementFailure(e);
             throw e;
         }
         if (state == CLOSED) {
@@ -72,7 +82,7 @@ public final class ResultSet implements AutoCloseable {
 
     /** 0 for NULL, as in JDBC; check {@link #wasNull()}. */
     public int getInt(int columnIndex) throws SQLiteException {
-        return Native.column_int(stmt.ptr, col(columnIndex));
+        return (int) Conversions.checkRange(Native.column_int64(stmt.ptr, col(columnIndex)), Integer.MIN_VALUE, Integer.MAX_VALUE, "int");
     }
 
     public long getLong(int columnIndex) throws SQLiteException {

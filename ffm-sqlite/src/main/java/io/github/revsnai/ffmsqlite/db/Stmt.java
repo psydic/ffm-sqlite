@@ -10,15 +10,33 @@ final class Stmt {
     final String sql;
     final MemorySegment ptr;
     final int paramCount;
-    final int columnCount;
+    /** The result columns; may change when SQLite re-prepares the statement (see {@link #refreshIfReprepared}). */
+    int columnCount;
     private String[] names;
     private Map<String, Integer> indexByLabel;
+    private int reprepares;
 
     Stmt(String sql, MemorySegment ptr) {
         this.sql = sql;
         this.ptr = ptr;
         this.paramCount = Native.bind_parameter_count(ptr);
         this.columnCount = Native.column_count(ptr);
+        this.reprepares = Native.stmt_status(ptr, Native.SQLITE_STMTSTATUS_REPREPARE);
+    }
+
+    /**
+     * Call after the first step of an execution. A schema change (here or in another connection), restore() or
+     * deserialize() makes SQLite re-prepare the statement on that step, and {@code SELECT *} may then return other
+     * columns: reload the column information so names and indexes match the rows.
+     */
+    void refreshIfReprepared() {
+        int n = Native.stmt_status(ptr, Native.SQLITE_STMTSTATUS_REPREPARE);
+        if (n != reprepares) {
+            reprepares = n;
+            columnCount = Native.column_count(ptr);
+            names = null;
+            indexByLabel = null;
+        }
     }
 
     String[] names() {

@@ -91,7 +91,7 @@ public final class HttpApi {
         return switch (action) {
             case "pay" -> shop.changeStatus(id, Order.Status.PLACED, Order.Status.PAID);
             case "ship" -> shop.changeStatus(id, Order.Status.PAID, Order.Status.SHIPPED);
-            default -> shop.changeStatus(id, Order.Status.valueOf(text(body, "from")), Order.Status.CANCELLED);
+            default -> shop.cancel(id);   // the current state comes from the database, never from the client
         };
     }
 

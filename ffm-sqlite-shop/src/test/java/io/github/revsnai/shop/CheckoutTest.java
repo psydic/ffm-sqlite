@@ -105,6 +105,45 @@ class CheckoutTest {
     }
 
     @Test
+    void cancellingRestocksExactlyOnceAndOnlyFromPlacedOrPaid(@TempDir Path dir) throws Exception {
+        try (TestShop t = new TestShop(dir)) {
+            Cart cart = t.shop.createCart(1L);
+            t.shop.setCartItem(cart.id(), 3, 5);
+            Order order = t.shop.checkout(cart.id(), 1);
+            assertEquals(55, t.shop.product(3).stock());
+            assertEquals(Order.Status.CANCELLED, t.shop.cancel(order.id()).status());
+            assertEquals(60, t.shop.product(3).stock());
+            assertEquals(409, assertThrows(ShopException.class, () -> t.shop.cancel(order.id())).status());
+            assertEquals(409, assertThrows(ShopException.class,
+                    () -> t.shop.changeStatus(order.id(), Order.Status.CANCELLED, Order.Status.CANCELLED)).status());
+            assertEquals(60, t.shop.product(3).stock(), "no second restock");
+
+            Cart second = t.shop.createCart(1L);
+            t.shop.setCartItem(second.id(), 3, 2);
+            Order shipped = t.shop.checkout(second.id(), 1);
+            t.shop.changeStatus(shipped.id(), Order.Status.PLACED, Order.Status.PAID);
+            t.shop.changeStatus(shipped.id(), Order.Status.PAID, Order.Status.SHIPPED);
+            assertEquals(409, assertThrows(ShopException.class, () -> t.shop.cancel(shipped.id())).status());
+            assertEquals(58, t.shop.product(3).stock(), "shipped goods are not restocked");
+        }
+    }
+
+    @Test
+    void anotherCustomersCartCannotBeCheckedOut(@TempDir Path dir) throws Exception {
+        try (TestShop t = new TestShop(dir)) {
+            Cart owned = t.shop.createCart(1L);
+            t.shop.setCartItem(owned.id(), 5, 1);
+            assertEquals(409, assertThrows(ShopException.class, () -> t.shop.checkout(owned.id(), 2)).status());
+            assertEquals(1, t.shop.cart(owned.id()).lines().size(), "the owner's cart is untouched");
+            assertEquals(150, t.shop.product(5).stock());
+
+            Cart guest = t.shop.createCart(null);
+            t.shop.setCartItem(guest.id(), 5, 1);
+            assertEquals(2, t.shop.checkout(guest.id(), 2).customerId(), "a guest cart can be checked out by whoever logs in");
+        }
+    }
+
+    @Test
     void duplicateEmailIsAConflict(@TempDir Path dir) throws Exception {
         try (TestShop t = new TestShop(dir)) {
             t.shop.register("new@example.com", "New");

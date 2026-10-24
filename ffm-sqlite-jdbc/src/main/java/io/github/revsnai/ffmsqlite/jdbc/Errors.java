@@ -27,6 +27,12 @@ final class Errors {
         if (e instanceof SQLiteTimeoutException) {
             return new SQLTimeoutException(msg, "HYT00", code, e);
         }
+        if (e instanceof io.github.revsnai.ffmsqlite.db.SQLiteTransactionRolledBackException) {
+            return new java.sql.SQLTransactionRollbackException(msg, "40000", code, e);
+        }
+        if (code == 20 && msg.contains(" is out of range for ")) {                                    // getInt etc.
+            return new SQLDataException(msg, "22003", code, e);
+        }
         return switch (code) {
             case 19 -> new SQLIntegrityConstraintViolationException(msg, constraintState(e.getExtendedErrorCode()), code, e);
             case 5, 6 -> new SQLTransientException(msg, "40001", code, e);                            // BUSY, LOCKED

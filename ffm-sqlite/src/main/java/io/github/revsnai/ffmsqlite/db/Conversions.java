@@ -215,8 +215,15 @@ final class Conversions {
         return c == VALUE ? Native.value_type(p) : Native.column_type(p, c);
     }
 
-    private static int int32(MemorySegment p, int c) {
-        return c == VALUE ? Native.value_int(p) : Native.column_int(p, c);
+    /**
+     * The value narrowed to {@code type}'s range, or an error: sqlite3_column_int keeps only the low 32 bits, so
+     * 3000000000 would silently read as -1294967296.
+     */
+    static long checkRange(long v, long min, long max, String type) throws SQLiteException {
+        if (v < min || v > max) {
+            throw new SQLiteException("value " + v + " is out of range for " + type, Native.SQLITE_MISMATCH, Native.SQLITE_MISMATCH);
+        }
+        return v;
     }
 
     private static long int64(MemorySegment p, int c) {
@@ -251,11 +258,11 @@ final class Conversions {
         } else if (type == Long.class) {
             v = int64(stmt, c);
         } else if (type == Integer.class) {
-            v = int32(stmt, c);
+            v = (int) checkRange(int64(stmt, c), Integer.MIN_VALUE, Integer.MAX_VALUE, "int");
         } else if (type == Short.class) {
-            v = (short) int32(stmt, c);
+            v = (short) checkRange(int64(stmt, c), Short.MIN_VALUE, Short.MAX_VALUE, "short");
         } else if (type == Byte.class) {
-            v = (byte) int32(stmt, c);
+            v = (byte) checkRange(int64(stmt, c), Byte.MIN_VALUE, Byte.MAX_VALUE, "byte");
         } else if (type == Double.class) {
             v = float64(stmt, c);
         } else if (type == Float.class) {
