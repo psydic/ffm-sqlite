@@ -8,6 +8,7 @@
 | `src/main/java/ffmsqlite/SQLiteFFM.java` | The FFM connection wrapper: open / exec / prepare / close |
 | `src/main/java/ffmsqlite/SQLiteJDBC.java` | The JDBC equivalent: connect, `CREATE TABLE`, `INSERT` |
 | `src/main/java/ffmsqlite/SQLiteBenchmark.java` | JMH suite: connect, write (1,000 rows), read (1,000 rows) |
+| `src/main/java/ffmsqlite/BulkLoadBenchmark.java`, `WideConcurrentBenchmark.java`, `WideRows.java` | 1M rows × 20 columns: bulk load, then 1 writer + N readers in WAL + synchronous=FULL (see PERFORMANCE.md) |
 | `scripts/build-sqlite.sh` | Builds `native/libsqlite3.so`: the same SQLite version (3.50.3) and compile options as the engine bundled in sqlite-jdbc 3.50.3.0 |
 
 ## Running

@@ -1,0 +1,639 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "pointRead", 1x "pointWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.point
+# Parameters: (lib = jdbc)
+
+# Run progress: 0.00% complete, ETA 00:03:12
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+269100.895 ops/s
+# Warmup Iteration   2: 273684.761 ops/s
+# Warmup Iteration   3: 273437.006 ops/s
+Iteration   1: 255964.382 ops/s
+                 pointRead:  255338.917 ops/s
+                 pointWrite: 625.465 ops/s
+
+Iteration   2: 268816.943 ops/s
+                 pointRead:  268148.583 ops/s
+                 pointWrite: 668.361 ops/s
+
+Iteration   3: 285151.587 ops/s
+                 pointRead:  284385.717 ops/s
+                 pointWrite: 765.870 ops/s
+
+Iteration   4: 275220.418 ops/s
+                 pointRead:  274497.748 ops/s
+                 pointWrite: 722.670 ops/s
+
+Iteration   5: 227287.736 ops/s
+                 pointRead:  226669.587 ops/s
+                 pointWrite: 618.150 ops/s
+
+
+# Run progress: 8.33% complete, ETA 00:05:33
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+241663.412 ops/s
+# Warmup Iteration   2: 285486.688 ops/s
+# Warmup Iteration   3: 321586.159 ops/s
+Iteration   1: 307003.936 ops/s
+                 pointRead:  306346.280 ops/s
+                 pointWrite: 657.656 ops/s
+
+Iteration   2: 307025.506 ops/s
+                 pointRead:  306559.560 ops/s
+                 pointWrite: 465.946 ops/s
+
+Iteration   3: 297023.181 ops/s
+                 pointRead:  296253.262 ops/s
+                 pointWrite: 769.919 ops/s
+
+Iteration   4: 295861.058 ops/s
+                 pointRead:  295065.978 ops/s
+                 pointWrite: 795.080 ops/s
+
+Iteration   5: 318969.844 ops/s
+                 pointRead:  318197.986 ops/s
+                 pointWrite: 771.858 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.point":
+  283832.459 ±(99.9%) 41871.932 ops/s [Average]
+  (min, avg, max) = (227287.736, 283832.459, 318969.844), stdev = 27695.690
+  CI (99.9%): [241960.527, 325704.391] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointRead":
+  283146.362 ±(99.9%) 41840.335 ops/s [Average]
+  (min, avg, max) = (226669.587, 283146.362, 318197.986), stdev = 27674.791
+  CI (99.9%): [241306.027, 324986.697] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointWrite":
+  686.097 ±(99.9%) 152.726 ops/s [Average]
+  (min, avg, max) = (465.946, 686.097, 795.080), stdev = 101.019
+  CI (99.9%): [533.372, 838.823] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "pointRead", 1x "pointWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.point
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 16.67% complete, ETA 00:04:16
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+738347.292 ops/s
+# Warmup Iteration   2: 801267.933 ops/s
+# Warmup Iteration   3: 791833.705 ops/s
+Iteration   1: 831022.452 ops/s
+                 pointRead:  830370.245 ops/s
+                 pointWrite: 652.207 ops/s
+
+Iteration   2: 816941.950 ops/s
+                 pointRead:  816166.038 ops/s
+                 pointWrite: 775.912 ops/s
+
+Iteration   3: 816059.036 ops/s
+                 pointRead:  815278.011 ops/s
+                 pointWrite: 781.025 ops/s
+
+Iteration   4: 753976.520 ops/s
+                 pointRead:  753188.832 ops/s
+                 pointWrite: 787.688 ops/s
+
+Iteration   5: 798544.426 ops/s
+                 pointRead:  797930.455 ops/s
+                 pointWrite: 613.972 ops/s
+
+
+# Run progress: 25.00% complete, ETA 00:03:33
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+802110.551 ops/s
+# Warmup Iteration   2: 773029.317 ops/s
+# Warmup Iteration   3: 820750.391 ops/s
+Iteration   1: 837469.228 ops/s
+                 pointRead:  836820.392 ops/s
+                 pointWrite: 648.835 ops/s
+
+Iteration   2: 816238.310 ops/s
+                 pointRead:  815444.721 ops/s
+                 pointWrite: 793.589 ops/s
+
+Iteration   3: 816602.195 ops/s
+                 pointRead:  815783.510 ops/s
+                 pointWrite: 818.684 ops/s
+
+Iteration   4: 834345.043 ops/s
+                 pointRead:  833564.852 ops/s
+                 pointWrite: 780.191 ops/s
+
+Iteration   5: 799134.804 ops/s
+                 pointRead:  798331.668 ops/s
+                 pointWrite: 803.136 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.point":
+  812033.396 ±(99.9%) 36699.217 ops/s [Average]
+  (min, avg, max) = (753976.520, 812033.396, 837469.228), stdev = 24274.260
+  CI (99.9%): [775334.180, 848732.613] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointRead":
+  811287.872 ±(99.9%) 36727.383 ops/s [Average]
+  (min, avg, max) = (753188.832, 811287.872, 836820.392), stdev = 24292.890
+  CI (99.9%): [774560.489, 848015.256] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointWrite":
+  745.524 ±(99.9%) 114.374 ops/s [Average]
+  (min, avg, max) = (613.972, 745.524, 818.684), stdev = 75.651
+  CI (99.9%): [631.150, 859.898] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "pointRead", 1x "pointWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.point
+# Parameters: (lib = ffm-sqlite-jdbc)
+
+# Run progress: 33.33% complete, ETA 00:03:03
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+750512.609 ops/s
+# Warmup Iteration   2: 783778.843 ops/s
+# Warmup Iteration   3: 796125.403 ops/s
+Iteration   1: 739258.424 ops/s
+                 pointRead:  738489.020 ops/s
+                 pointWrite: 769.404 ops/s
+
+Iteration   2: 764676.423 ops/s
+                 pointRead:  763924.726 ops/s
+                 pointWrite: 751.697 ops/s
+
+Iteration   3: 822331.864 ops/s
+                 pointRead:  821662.444 ops/s
+                 pointWrite: 669.419 ops/s
+
+Iteration   4: 786367.723 ops/s
+                 pointRead:  785582.883 ops/s
+                 pointWrite: 784.840 ops/s
+
+Iteration   5: 793743.678 ops/s
+                 pointRead:  792958.021 ops/s
+                 pointWrite: 785.658 ops/s
+
+
+# Run progress: 41.67% complete, ETA 00:02:33
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+721029.333 ops/s
+# Warmup Iteration   2: 810139.960 ops/s
+# Warmup Iteration   3: 781491.981 ops/s
+Iteration   1: 736143.814 ops/s
+                 pointRead:  735340.784 ops/s
+                 pointWrite: 803.030 ops/s
+
+Iteration   2: 743886.554 ops/s
+                 pointRead:  743136.265 ops/s
+                 pointWrite: 750.289 ops/s
+
+Iteration   3: 734140.152 ops/s
+                 pointRead:  733355.780 ops/s
+                 pointWrite: 784.372 ops/s
+
+Iteration   4: 770904.259 ops/s
+                 pointRead:  770135.423 ops/s
+                 pointWrite: 768.836 ops/s
+
+Iteration   5: 796686.473 ops/s
+                 pointRead:  796133.230 ops/s
+                 pointWrite: 553.243 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.point":
+  768813.937 ±(99.9%) 46068.733 ops/s [Average]
+  (min, avg, max) = (734140.152, 768813.937, 822331.864), stdev = 30471.615
+  CI (99.9%): [722745.204, 814882.670] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointRead":
+  768071.858 ±(99.9%) 46133.709 ops/s [Average]
+  (min, avg, max) = (733355.780, 768071.858, 821662.444), stdev = 30514.592
+  CI (99.9%): [721938.149, 814205.567] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.point:pointWrite":
+  742.079 ±(99.9%) 114.689 ops/s [Average]
+  (min, avg, max) = (553.243, 742.079, 803.030), stdev = 75.860
+  CI (99.9%): [627.389, 856.768] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "rangeRead", 1x "rangeWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.range
+# Parameters: (lib = jdbc)
+
+# Run progress: 50.00% complete, ETA 00:02:11
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+26896.270 ops/s
+# Warmup Iteration   2: 27521.995 ops/s
+# Warmup Iteration   3: 27297.232 ops/s
+Iteration   1: 27375.431 ops/s
+                 rangeRead:  26928.392 ops/s
+                 rangeWrite: 447.039 ops/s
+
+Iteration   2: 27540.797 ops/s
+                 rangeRead:  27185.064 ops/s
+                 rangeWrite: 355.733 ops/s
+
+Iteration   3: 29362.391 ops/s
+                 rangeRead:  28957.420 ops/s
+                 rangeWrite: 404.972 ops/s
+
+Iteration   4: 29392.152 ops/s
+                 rangeRead:  28951.327 ops/s
+                 rangeWrite: 440.825 ops/s
+
+Iteration   5: 28130.013 ops/s
+                 rangeRead:  27870.898 ops/s
+                 rangeWrite: 259.116 ops/s
+
+
+# Run progress: 58.33% complete, ETA 00:01:49
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+25346.378 ops/s
+# Warmup Iteration   2: 28613.890 ops/s
+# Warmup Iteration   3: 28223.007 ops/s
+Iteration   1: 27470.075 ops/s
+                 rangeRead:  27041.238 ops/s
+                 rangeWrite: 428.836 ops/s
+
+Iteration   2: 28414.506 ops/s
+                 rangeRead:  27993.189 ops/s
+                 rangeWrite: 421.317 ops/s
+
+Iteration   3: 28670.934 ops/s
+                 rangeRead:  28198.280 ops/s
+                 rangeWrite: 472.655 ops/s
+
+Iteration   4: 27578.099 ops/s
+                 rangeRead:  27126.166 ops/s
+                 rangeWrite: 451.933 ops/s
+
+Iteration   5: 29362.193 ops/s
+                 rangeRead:  28996.851 ops/s
+                 rangeWrite: 365.342 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.range":
+  28329.659 ±(99.9%) 1261.056 ops/s [Average]
+  (min, avg, max) = (27375.431, 28329.659, 29392.152), stdev = 834.111
+  CI (99.9%): [27068.603, 29590.715] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeRead":
+  27924.882 ±(99.9%) 1265.941 ops/s [Average]
+  (min, avg, max) = (26928.392, 27924.882, 28996.851), stdev = 837.341
+  CI (99.9%): [26658.942, 29190.823] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeWrite":
+  404.777 ±(99.9%) 95.547 ops/s [Average]
+  (min, avg, max) = (259.116, 404.777, 472.655), stdev = 63.199
+  CI (99.9%): [309.229, 500.324] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "rangeRead", 1x "rangeWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.range
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 66.67% complete, ETA 00:01:25
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+60280.808 ops/s
+# Warmup Iteration   2: 60514.268 ops/s
+# Warmup Iteration   3: 63989.040 ops/s
+Iteration   1: 65697.474 ops/s
+                 rangeRead:  65078.683 ops/s
+                 rangeWrite: 618.791 ops/s
+
+Iteration   2: 68368.555 ops/s
+                 rangeRead:  67691.695 ops/s
+                 rangeWrite: 676.859 ops/s
+
+Iteration   3: 65709.596 ops/s
+                 rangeRead:  65039.611 ops/s
+                 rangeWrite: 669.986 ops/s
+
+Iteration   4: 63026.785 ops/s
+                 rangeRead:  62335.719 ops/s
+                 rangeWrite: 691.066 ops/s
+
+Iteration   5: 67390.430 ops/s
+                 rangeRead:  67237.622 ops/s
+                 rangeWrite: 152.808 ops/s
+
+
+# Run progress: 75.00% complete, ETA 00:01:04
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+57909.899 ops/s
+# Warmup Iteration   2: 64883.440 ops/s
+# Warmup Iteration   3: 62414.393 ops/s
+Iteration   1: 64336.936 ops/s
+                 rangeRead:  63816.930 ops/s
+                 rangeWrite: 520.006 ops/s
+
+Iteration   2: 64018.833 ops/s
+                 rangeRead:  63464.240 ops/s
+                 rangeWrite: 554.593 ops/s
+
+Iteration   3: 65265.224 ops/s
+                 rangeRead:  64641.016 ops/s
+                 rangeWrite: 624.208 ops/s
+
+Iteration   4: 63708.253 ops/s
+                 rangeRead:  63199.529 ops/s
+                 rangeWrite: 508.724 ops/s
+
+Iteration   5: 65131.498 ops/s
+                 rangeRead:  64549.259 ops/s
+                 rangeWrite: 582.239 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.range":
+  65265.358 ±(99.9%) 2489.307 ops/s [Average]
+  (min, avg, max) = (63026.785, 65265.358, 68368.555), stdev = 1646.523
+  CI (99.9%): [62776.051, 67754.665] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeRead":
+  64705.430 ±(99.9%) 2560.880 ops/s [Average]
+  (min, avg, max) = (62335.719, 64705.430, 67691.695), stdev = 1693.864
+  CI (99.9%): [62144.550, 67266.310] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeWrite":
+  559.928 ±(99.9%) 236.948 ops/s [Average]
+  (min, avg, max) = (152.808, 559.928, 691.066), stdev = 156.726
+  CI (99.9%): [322.980, 796.876] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 2 s each
+# Measurement: 5 iterations, 2 s each
+# Timeout: 10 min per iteration
+# Threads: 5 threads (1 group; 4x "rangeRead", 1x "rangeWrite" in each group), will synchronize iterations
+# Benchmark mode: Throughput, ops/time
+# Benchmark: ffmsqlite.WideConcurrentBenchmark.range
+# Parameters: (lib = ffm-sqlite-jdbc)
+
+# Run progress: 83.33% complete, ETA 00:00:44
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+54814.970 ops/s
+# Warmup Iteration   2: 58516.397 ops/s
+# Warmup Iteration   3: 58262.408 ops/s
+Iteration   1: 59170.449 ops/s
+                 rangeRead:  58623.745 ops/s
+                 rangeWrite: 546.704 ops/s
+
+Iteration   2: 57812.639 ops/s
+                 rangeRead:  57181.492 ops/s
+                 rangeWrite: 631.147 ops/s
+
+Iteration   3: 58244.190 ops/s
+                 rangeRead:  57636.351 ops/s
+                 rangeWrite: 607.838 ops/s
+
+Iteration   4: 60607.514 ops/s
+                 rangeRead:  59993.130 ops/s
+                 rangeWrite: 614.384 ops/s
+
+Iteration   5: 57766.338 ops/s
+                 rangeRead:  57070.404 ops/s
+                 rangeWrite: 695.934 ops/s
+
+
+# Run progress: 91.67% complete, ETA 00:00:23
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+56472.507 ops/s
+# Warmup Iteration   2: 60099.655 ops/s
+# Warmup Iteration   3: 60243.591 ops/s
+Iteration   1: 59109.378 ops/s
+                 rangeRead:  58452.305 ops/s
+                 rangeWrite: 657.073 ops/s
+
+Iteration   2: 57777.103 ops/s
+                 rangeRead:  57160.501 ops/s
+                 rangeWrite: 616.602 ops/s
+
+Iteration   3: 58553.457 ops/s
+                 rangeRead:  58081.993 ops/s
+                 rangeWrite: 471.464 ops/s
+
+Iteration   4: 59998.223 ops/s
+                 rangeRead:  59332.080 ops/s
+                 rangeWrite: 666.143 ops/s
+
+Iteration   5: 60032.419 ops/s
+                 rangeRead:  59484.104 ops/s
+                 rangeWrite: 548.315 ops/s
+
+
+
+Result "ffmsqlite.WideConcurrentBenchmark.range":
+  58907.171 ±(99.9%) 1577.553 ops/s [Average]
+  (min, avg, max) = (57766.338, 58907.171, 60607.514), stdev = 1043.454
+  CI (99.9%): [57329.618, 60484.724] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeRead":
+  58301.611 ±(99.9%) 1594.541 ops/s [Average]
+  (min, avg, max) = (57070.404, 58301.611, 59993.130), stdev = 1054.690
+  CI (99.9%): [56707.069, 59896.152] (assumes normal distribution)
+
+Secondary result "ffmsqlite.WideConcurrentBenchmark.range:rangeWrite":
+  605.560 ±(99.9%) 100.883 ops/s [Average]
+  (min, avg, max) = (471.464, 605.560, 695.934), stdev = 66.728
+  CI (99.9%): [504.677, 706.444] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:04:37
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                           (lib)   Mode  Cnt       Score       Error  Units
+WideConcurrentBenchmark.point                        jdbc  thrpt   10  283832.459 ± 41871.932  ops/s
+WideConcurrentBenchmark.point:pointRead              jdbc  thrpt   10  283146.362 ± 41840.335  ops/s
+WideConcurrentBenchmark.point:pointWrite             jdbc  thrpt   10     686.097 ±   152.726  ops/s
+WideConcurrentBenchmark.point                  ffm-sqlite  thrpt   10  812033.396 ± 36699.217  ops/s
+WideConcurrentBenchmark.point:pointRead        ffm-sqlite  thrpt   10  811287.872 ± 36727.383  ops/s
+WideConcurrentBenchmark.point:pointWrite       ffm-sqlite  thrpt   10     745.524 ±   114.374  ops/s
+WideConcurrentBenchmark.point             ffm-sqlite-jdbc  thrpt   10  768813.937 ± 46068.733  ops/s
+WideConcurrentBenchmark.point:pointRead   ffm-sqlite-jdbc  thrpt   10  768071.858 ± 46133.709  ops/s
+WideConcurrentBenchmark.point:pointWrite  ffm-sqlite-jdbc  thrpt   10     742.079 ±   114.689  ops/s
+WideConcurrentBenchmark.range                        jdbc  thrpt   10   28329.659 ±  1261.056  ops/s
+WideConcurrentBenchmark.range:rangeRead              jdbc  thrpt   10   27924.882 ±  1265.941  ops/s
+WideConcurrentBenchmark.range:rangeWrite             jdbc  thrpt   10     404.777 ±    95.547  ops/s
+WideConcurrentBenchmark.range                  ffm-sqlite  thrpt   10   65265.358 ±  2489.307  ops/s
+WideConcurrentBenchmark.range:rangeRead        ffm-sqlite  thrpt   10   64705.430 ±  2560.880  ops/s
+WideConcurrentBenchmark.range:rangeWrite       ffm-sqlite  thrpt   10     559.928 ±   236.948  ops/s
+WideConcurrentBenchmark.range             ffm-sqlite-jdbc  thrpt   10   58907.171 ±  1577.553  ops/s
+WideConcurrentBenchmark.range:rangeRead   ffm-sqlite-jdbc  thrpt   10   58301.611 ±  1594.541  ops/s
+WideConcurrentBenchmark.range:rangeWrite  ffm-sqlite-jdbc  thrpt   10     605.560 ±   100.883  ops/s
+
+Benchmark result is saved to results/wide-concurrent-r4.json

@@ -115,6 +115,47 @@ be meaningless here). 3 forks × 5 iterations; µs per operation (`results/wal-f
 ran steadily at ~1.16 ms). A 4-fork rerun of this benchmark alone showed occasional spikes in both drivers and
 equal medians; the rerun's numbers are shown.
 
+## 1M rows × 20 columns: bulk load, then 1 writer + N readers (WAL + synchronous=FULL)
+
+`WideRows` table: 20 columns of mixed width (1/2/4/8-byte integers, boolean, REAL, texts of 8–128 bytes,
+ISO date-time, date, UUID, decimal text, 32-byte hash BLOB, 100–300-byte payload BLOB; ~600 bytes/row,
+plus an index on `email`). The database file is 704 MB at 1M rows. Values come from a precomputed
+deterministic pool, so all libraries bind identical data. Pinned to cores 2-15; 2 forks.
+
+### Bulk load of 1,000,000 rows (`BulkLoadBenchmark`). Seconds, lower is better
+
+One prepared INSERT, `executeUpdate` per row, commit every 10,000 rows; fresh WAL + FULL file each run.
+
+| | sqlite-jdbc | ffm-sqlite | ffm-sqlite-jdbc |
+|---|---|---|---|
+| disk | 17.6 ± 13.6 | 19.5 ± 24.5 | 21.8 ± 45.3 |
+| tmpfs (library cost only) | 9.56 ± 3.7 | **6.82 ± 1.2** | 7.51 ± 1.3 |
+
+On disk the result is decided by fsync and VM-induced disk stalls (error bars as large as the scores): no
+significant difference. With I/O removed (tmpfs), ffm-sqlite loads 29% faster and the wrapper 21% faster.
+
+### Concurrent: 1 writer + N readers (`WideConcurrentBenchmark`, on disk). Operations per second
+
+Every thread has its own connection to a fresh copy of the 1M-row database. The writer inserts full
+20-column rows in autocommit (one fsync per commit). `point` readers fetch a random row by id and read all 20
+columns through typed getters; `range` readers scan 100 consecutive rows (id, name, price, created, payload).
+
+| Readers | Workload | sqlite-jdbc read | ffm-sqlite read | ffm-sqlite-jdbc read | writer jdbc / ffm / wrapper |
+|---|---|---|---|---|---|
+| 1 | point | 97k | **272k (2.8×)** | 240k (2.5×) | 291 / 812 / 652 |
+| 4 | point | 283k | **811k (2.9×)** | 768k (2.7×) | 686 / 746 / 742 |
+| 8 | point | 287k | **759k (2.6×)** | 703k (2.4×) | 572 / 614 / 710 |
+| 1 | range | 9.6k | **20.7k (2.2×)** | 16.3k (1.7×) | 749 / 794 / 321 |
+| 4 | range | 27.9k | **64.7k (2.3×)** | 58.3k (2.1×) | 405 / 560 / 606 |
+| 8 | range | 25.4k | **60.6k (2.4×)** | 54.8k (2.2×) | 335 / 433 / 411 |
+
+- Reads: per-column cost dominates a 20-column row (sqlite-jdbc makes one JNI call per getter), so the
+  FFM gap is larger than in the 4-column concurrent-read test. WAL readers never block each other or the
+  writer; throughput scales to 4 readers and flattens at 8 (the VM shares the machine).
+- Writer: bounded by fsync (~600–800 commits/s alone). It slows as readers add load (checkpoints cannot
+  finish while readers hold old snapshots, and range readers stream more pages). Differences between
+  libraries are within disk noise; the 291 ± 354 and 321 ± 405 cells are stall outliers.
+
 ## Fixes found by this comparison
 
 1. **`setBytes` made a defensive copy.** 64 KB–1 MB BLOB writes were 16–35% slower and allocated the full blob
@@ -147,4 +188,13 @@ taskset -c 2-15 java -jar target/benchmarks.jar 'WorkloadBenchmark|TypeBenchmark
   -jvmArgsAppend "-Dsqlite.lib=$L -Dffmsqlite.lib=$L -Djava.io.tmpdir=/dev/shm"
 python3 scripts/report3.py results/three-way.json
 python3 scripts/report.py results/full.json results/coldstart.json
+```
+
+1M-row tests (the template database is built once into `data/`, git-ignored):
+
+```bash
+taskset -c 2-15 java -jar target/benchmarks.jar BulkLoadBenchmark -jvmArgsAppend "-Dsqlite.lib=$L -Dffmsqlite.lib=$L -Dwide.dir=$PWD/data"
+for n in 1 4 8; do   # -tg is readers,writer: JMH orders group methods by name
+  taskset -c 2-15 java -jar target/benchmarks.jar WideConcurrentBenchmark -tg $n,1 -jvmArgsAppend "-Dsqlite.lib=$L -Dffmsqlite.lib=$L -Dwide.dir=$PWD/data"
+done
 ```

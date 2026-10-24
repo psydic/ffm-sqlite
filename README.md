@@ -52,6 +52,25 @@ authentication even for public Maven packages: create a personal access token (c
 At run time you need JDK 25+, `--enable-native-access=ALL-UNNAMED`, and SQLite installed (`libsqlite3`), or
 `-Dffmsqlite.lib=/path/to/libsqlite3.so`.
 
+## Performance
+
+1M rows × 20 columns (mixed-width integers, REAL, texts of 8–128 bytes, dates, UUID, decimal, two BLOBs;
+~600 bytes/row, 704 MB file), WAL + `synchronous=FULL` on disk. Threads each have their own connection; one
+writer inserts rows in autocommit while N readers run. JMH, 2 forks, pinned to 14 cores, SQLite 3.50.3.
+
+| Readers | Read workload | sqlite-jdbc | ffm-sqlite | ffm-sqlite-jdbc |
+|---|---|---|---|---|
+| 4 | row by id, all 20 columns (reads/s) | 283k | **811k (2.9×)** | 768k (2.7×) |
+| 8 | row by id, all 20 columns (reads/s) | 287k | **759k (2.6×)** | 703k (2.4×) |
+| 4 | 100-row range scan (scans/s) | 27.9k | **64.7k (2.3×)** | 58.3k (2.1×) |
+| 8 | 100-row range scan (scans/s) | 25.4k | **60.6k (2.4×)** | 54.8k (2.2×) |
+
+The writer is fsync-bound (~400–800 commits/s) with no significant difference between libraries. Loading the
+1M rows takes the same time on disk (fsync-bound); with I/O removed (tmpfs) ffm-sqlite needs 6.8 s against
+sqlite-jdbc's 9.6 s. Full conditions, the 1-reader results, other workloads and caveats (ffm-sqlite uses a
+locally compiled SQLite, while sqlite-jdbc bundles its own build) are in
+[PERFORMANCE.md](ffm-vs-jdbc/PERFORMANCE.md#1m-rows--20-columns-bulk-load-then-1-writer--n-readers-wal--synchronousfull).
+
 ## Build
 
 ```bash

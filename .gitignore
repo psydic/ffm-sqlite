@@ -6,6 +6,7 @@ hs_err_pid*.log
 
 # Built locally by the scripts, not sources
 ffm-vs-jdbc/native/
+ffm-vs-jdbc/data/
 ffm-sqlite/target/test-ext/
 
 # IDE
