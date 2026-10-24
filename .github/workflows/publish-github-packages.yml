@@ -1,0 +1,57 @@
+name: Publish to GitHub Packages
+
+# Publishes io.github.psydic:ffm-sqlite-parent, ffm-sqlite and ffm-sqlite-jdbc to
+# https://github.com/psydic/ffm-sqlite/packages, authenticated with the workflow's GITHUB_TOKEN.
+# Runs when a version tag (v*) is pushed, or manually from the Actions tab.
+# The project version in the POMs is what gets published; a version cannot be re-published.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-github-packages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 25 (writes ~/.m2/settings.xml with server "github" from GITHUB_TOKEN)
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+          server-id: github
+          server-username: GITHUB_ACTOR
+          server-password: GITHUB_TOKEN
+
+      - name: Install SQLite and a C compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libsqlite3-0 libsqlite3-dev gcc
+
+      - name: Build the test extension
+        run: SQLITE_INCLUDE=/usr/include ffm-sqlite/scripts/build-test-extension.sh
+
+      - name: Check the tag matches the project version
+        if: startsWith(github.ref, 'refs/tags/v')
+        working-directory: ffm-sqlite-parent
+        run: |
+          version=$(mvn -B -ntp -q help:evaluate -Dexpression=project.version -DforceStdout)
+          [ "v$version" = "$GITHUB_REF_NAME" ] || { echo "::error::tag $GITHUB_REF_NAME does not match project version $version"; exit 1; }
+          case "$version" in *-SNAPSHOT) echo "::error::refusing to publish a SNAPSHOT from a tag"; exit 1;; esac
+
+      - name: Test and publish
+        working-directory: ffm-sqlite-parent
+        run: mvn -B -ntp -P github deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

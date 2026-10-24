@@ -243,5 +243,50 @@
                 </plugins>
             </build>
         </profile>
+        <!--
+          mvn -P github deploy : publish to GitHub Packages (https://github.com/psydic/ffm-sqlite/packages), with
+          sources and javadoc jars. Credentials: <server><id>github</id> (a token with write:packages); in GitHub
+          Actions, actions/setup-java provides it from GITHUB_TOKEN (.github/workflows/publish-github-packages.yml).
+        -->
+        <profile>
+            <id>github</id>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub psydic Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/psydic/ffm-sqlite</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals><goal>jar-no-fork</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <doclint>all,-missing</doclint>
+                            <links>
+                                <link>https://docs.oracle.com/en/java/javase/25/docs/api/</link>
+                            </links>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals><goal>jar</goal></goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>

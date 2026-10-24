@@ -87,6 +87,27 @@ To publish without the manual Portal step, set `<autoPublish>true</autoPublish>`
 For CI releases, export the key with `gpg --armor --export-secret-keys`, store it with its passphrase and the
 Portal token as secrets, and pass `-Dgpg.passphrase=…` (or use `gpg-agent`).
 
+## Releasing to GitHub Packages (no Central account needed)
+
+`.github/workflows/publish-github-packages.yml` publishes all three artifacts to
+<https://github.com/psydic/ffm-sqlite/packages> with the workflow's own `GITHUB_TOKEN`: no personal token, no GPG
+key and no namespace verification. It runs the full test suite first and refuses to publish if the tag does not
+match the POM version, or if the version is a SNAPSHOT.
+
+```bash
+cd ffm-sqlite-parent
+mvn versions:set -DnewVersion=0.1.0 -DprocessAllModules -DgenerateBackupPoms=false
+git commit -am "Release 0.1.0" && git tag v0.1.0 && git push && git push origin v0.1.0   # the tag triggers the publish
+```
+
+It can also be started from the Actions tab (**Publish to GitHub Packages → Run workflow**), publishing the version
+currently in the POMs. To publish from your machine instead: `mvn -P github deploy`, with a `<server><id>github</id>`
+in `~/.m2/settings.xml` holding your username and a personal access token (classic) with `write:packages`.
+
+A published GitHub Packages version cannot be overwritten; deleting it and re-publishing is possible but
+discouraged. Consumers need a token with `read:packages` (see the root README). GitHub Packages and Maven Central
+are independent: the same version can be released to Central later.
+
 ## What users add
 
 ```xml

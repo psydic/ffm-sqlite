@@ -17,6 +17,38 @@ SQLite for Java 25+ through the **Foreign Function & Memory API**: no JNI, no bu
 </dependency>
 ```
 
+### From GitHub Packages
+
+Releases are published to [GitHub Packages](https://github.com/psydic/ffm-sqlite/packages). GitHub requires
+authentication even for public Maven packages: create a personal access token (classic) with the
+`read:packages` scope, then add the repository and credentials to `~/.m2/settings.xml`:
+
+```xml
+<settings>
+  <profiles>
+    <profile>
+      <id>github-psydic</id>
+      <repositories>
+        <repository>
+          <id>github-psydic</id>
+          <url>https://maven.pkg.github.com/psydic/ffm-sqlite</url>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>github-psydic</activeProfile>
+  </activeProfiles>
+  <servers>
+    <server>
+      <id>github-psydic</id>
+      <username>YOUR_GITHUB_USERNAME</username>
+      <password>YOUR_TOKEN_WITH_read:packages</password>
+    </server>
+  </servers>
+</settings>
+```
+
 At run time you need JDK 25+, `--enable-native-access=ALL-UNNAMED`, and SQLite installed (`libsqlite3`), or
 `-Dffmsqlite.lib=/path/to/libsqlite3.so`.
 
