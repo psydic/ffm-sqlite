@@ -1,0 +1,256 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, single-shot each
+# Measurement: 3 iterations, single-shot each
+# Timeout: 10 min per iteration
+# Threads: 1 thread
+# Benchmark mode: Single shot invocation time
+# Benchmark: ffmsqlite.BulkLoadBenchmark.load
+# Parameters: (lib = jdbc)
+
+# Run progress: 0.00% complete, ETA 00:00:00
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+18.848 s/op
+Iteration   1: 22.191 s/op
+Iteration   2: 20.276 s/op
+Iteration   3: 18.515 s/op
+
+# Run progress: 16.67% complete, ETA 00:06:43
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+19.166 s/op
+Iteration   1: 41.834 s/op
+Iteration   2: 20.290 s/op
+Iteration   3: 18.011 s/op
+
+
+Result "ffmsqlite.BulkLoadBenchmark.load":
+  N = 6
+  mean =     23.519 ±(99.9%) 25.502 s/op
+
+  Histogram, s/op:
+    [10.000, 12.500) = 0 
+    [12.500, 15.000) = 0 
+    [15.000, 17.500) = 0 
+    [17.500, 20.000) = 2 
+    [20.000, 22.500) = 3 
+    [22.500, 25.000) = 0 
+    [25.000, 27.500) = 0 
+    [27.500, 30.000) = 0 
+    [30.000, 32.500) = 0 
+    [32.500, 35.000) = 0 
+    [35.000, 37.500) = 0 
+    [37.500, 40.000) = 0 
+    [40.000, 42.500) = 1 
+    [42.500, 45.000) = 0 
+    [45.000, 47.500) = 0 
+
+  Percentiles, s/op:
+      p(0.0000) =     18.011 s/op
+     p(50.0000) =     20.283 s/op
+     p(90.0000) =     41.834 s/op
+     p(95.0000) =     41.834 s/op
+     p(99.0000) =     41.834 s/op
+     p(99.9000) =     41.834 s/op
+     p(99.9900) =     41.834 s/op
+     p(99.9990) =     41.834 s/op
+     p(99.9999) =     41.834 s/op
+    p(100.0000) =     41.834 s/op
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, single-shot each
+# Measurement: 3 iterations, single-shot each
+# Timeout: 10 min per iteration
+# Threads: 1 thread
+# Benchmark mode: Single shot invocation time
+# Benchmark: ffmsqlite.BulkLoadBenchmark.load
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 33.33% complete, ETA 00:06:01
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+17.707 s/op
+Iteration   1: 17.031 s/op
+Iteration   2: 16.578 s/op
+Iteration   3: 15.910 s/op
+
+# Run progress: 50.00% complete, ETA 00:04:08
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+14.772 s/op
+Iteration   1: 11.494 s/op
+Iteration   2: 12.799 s/op
+Iteration   3: 16.030 s/op
+
+
+Result "ffmsqlite.BulkLoadBenchmark.load":
+  N = 6
+  mean =     14.974 ±(99.9%) 6.350 s/op
+
+  Histogram, s/op:
+    [11.000, 11.500) = 1 
+    [11.500, 12.000) = 0 
+    [12.000, 12.500) = 0 
+    [12.500, 13.000) = 1 
+    [13.000, 13.500) = 0 
+    [13.500, 14.000) = 0 
+    [14.000, 14.500) = 0 
+    [14.500, 15.000) = 0 
+    [15.000, 15.500) = 0 
+    [15.500, 16.000) = 1 
+    [16.000, 16.500) = 1 
+    [16.500, 17.000) = 1 
+    [17.000, 17.500) = 1 
+
+  Percentiles, s/op:
+      p(0.0000) =     11.494 s/op
+     p(50.0000) =     15.970 s/op
+     p(90.0000) =     17.031 s/op
+     p(95.0000) =     17.031 s/op
+     p(99.0000) =     17.031 s/op
+     p(99.9000) =     17.031 s/op
+     p(99.9900) =     17.031 s/op
+     p(99.9990) =     17.031 s/op
+     p(99.9999) =     17.031 s/op
+    p(100.0000) =     17.031 s/op
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3-gcc4.so -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 1 iterations, single-shot each
+# Measurement: 3 iterations, single-shot each
+# Timeout: 10 min per iteration
+# Threads: 1 thread
+# Benchmark mode: Single shot invocation time
+# Benchmark: ffmsqlite.BulkLoadBenchmark.load
+# Parameters: (lib = ffm-sqlite-jdbc)
+
+# Run progress: 66.67% complete, ETA 00:02:32
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+16.800 s/op
+Iteration   1: 16.756 s/op
+Iteration   2: 16.881 s/op
+Iteration   3: 16.940 s/op
+
+# Run progress: 83.33% complete, ETA 00:01:14
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.psydic.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+17.218 s/op
+Iteration   1: 16.506 s/op
+Iteration   2: 16.551 s/op
+Iteration   3: 16.891 s/op
+
+
+Result "ffmsqlite.BulkLoadBenchmark.load":
+  N = 6
+  mean =     16.754 ±(99.9%) 0.520 s/op
+
+  Histogram, s/op:
+    [16.500, 16.550) = 1 
+    [16.550, 16.600) = 1 
+    [16.600, 16.650) = 0 
+    [16.650, 16.700) = 0 
+    [16.700, 16.750) = 0 
+    [16.750, 16.800) = 1 
+    [16.800, 16.850) = 0 
+    [16.850, 16.900) = 2 
+    [16.900, 16.950) = 1 
+
+  Percentiles, s/op:
+      p(0.0000) =     16.506 s/op
+     p(50.0000) =     16.819 s/op
+     p(90.0000) =     16.940 s/op
+     p(95.0000) =     16.940 s/op
+     p(99.0000) =     16.940 s/op
+     p(99.9000) =     16.940 s/op
+     p(99.9900) =     16.940 s/op
+     p(99.9990) =     16.940 s/op
+     p(99.9999) =     16.940 s/op
+    p(100.0000) =     16.940 s/op
+
+
+# Run complete. Total time: 00:07:20
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                         (lib)  Mode  Cnt   Score    Error  Units
+BulkLoadBenchmark.load             jdbc    ss    6  23.519 ± 25.502   s/op
+BulkLoadBenchmark.load       ffm-sqlite    ss    6  14.974 ±  6.350   s/op
+BulkLoadBenchmark.load  ffm-sqlite-jdbc    ss    6  16.754 ±  0.520   s/op
+
+Benchmark result is saved to results/gcc4-bulkload-disk.json

@@ -9,7 +9,8 @@
 | `src/main/java/ffmsqlite/SQLiteJDBC.java` | The JDBC equivalent: connect, `CREATE TABLE`, `INSERT` |
 | `src/main/java/ffmsqlite/SQLiteBenchmark.java` | JMH suite: connect, write (1,000 rows), read (1,000 rows) |
 | `src/main/java/ffmsqlite/BulkLoadBenchmark.java`, `WideConcurrentBenchmark.java`, `WideRows.java` | 1M rows × 20 columns: bulk load, then 1 writer + N readers in WAL + synchronous=FULL (see PERFORMANCE.md) |
-| `scripts/build-sqlite.sh` | Builds `native/libsqlite3.so`: the same SQLite version (3.50.3) and compile options as the engine bundled in sqlite-jdbc 3.50.3.0 |
+| `scripts/build-sqlite-gcc4.sh` | Builds `native/libsqlite3-gcc4.so` exactly as sqlite-jdbc builds its engine (its container image, gcc 4.1.2, `-Os`, its flags and patches): identical `PRAGMA compile_options` |
+| `scripts/build-sqlite.sh` | Builds `native/libsqlite3.so`: the same SQLite version (3.50.3) and `SQLITE_*` defines as the engine bundled in sqlite-jdbc 3.50.3.0, but with the system gcc at `-O2` (so `COMPILER=`, `ATOMIC_INTRINSICS` and `JDBC_EXTENSIONS` differ; use `build-sqlite-gcc4.sh` for an identical build) |
 
 ## Running
 
@@ -23,11 +24,13 @@ java -jar target/benchmarks.jar 'read_' -f 1    # a subset
 ## Fairness controls
 
 - **Same engine version and options.** sqlite-jdbc statically links SQLite and does not export the `sqlite3_*`
-  symbols, so FFM cannot call its copy. `build-sqlite.sh` rebuilds 3.50.3 with the options from
+  symbols, so FFM cannot call its copy. `build-sqlite.sh` rebuilds 3.50.3 with the `SQLITE_*` defines from
   `PRAGMA compile_options` (THREADSAFE=1, DEFAULT_MEMSTATUS=0, TEMP_STORE=1, ...).
 - **Remaining confounder: the compiler.** sqlite-jdbc builds with gcc 4.1.2, for glibc compatibility. On a
   query that is pure engine work (a recursive CTE over 3M rows, one call), the bundled engine took ≈480 ms and
-  the local build ≈390 ms. So up to ~15–20% of the *engine* time favours FFM. The results section accounts for this.
+  the local build ≈390 ms. So up to ~15–20% of the *engine* time favours FFM with `build-sqlite.sh`.
+  `build-sqlite-gcc4.sh` removes this: it builds in sqlite-jdbc's own container with gcc 4.1.2 and `-Os`, giving
+  identical `PRAGMA compile_options`. The 1M-row results in PERFORMANCE.md are reported on both builds.
 - In-memory databases for read and write, which isolates call overhead from fsync. Every write batch is one
   transaction: `BEGIN; DELETE FROM t; 1,000 x INSERT; COMMIT`. The `DELETE` uses SQLite's truncate
   optimisation and is the same on both sides.

@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         # system: the runner's libsqlite3 (3.45 on Ubuntu 24.04); 3.50.3: built from the amalgamation with
-        # sqlite-jdbc's compile options (ffm-vs-jdbc/scripts/build-sqlite.sh).
+        # sqlite-jdbc's SQLITE_* defines (ffm-vs-jdbc/scripts/build-sqlite.sh).
         sqlite: [system, "3.50.3"]
 
     steps:

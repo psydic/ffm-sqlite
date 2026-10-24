@@ -56,19 +56,20 @@ At run time you need JDK 25+, `--enable-native-access=ALL-UNNAMED`, and SQLite i
 
 1M rows × 20 columns (mixed-width integers, REAL, texts of 8–128 bytes, dates, UUID, decimal, two BLOBs;
 ~600 bytes/row, 704 MB file), WAL + `synchronous=FULL` on disk. Threads each have their own connection; one
-writer inserts rows in autocommit while N readers run. JMH, 2 forks, pinned to 14 cores, SQLite 3.50.3.
+writer inserts rows in autocommit while N readers run. JMH, 2 forks, pinned to 14 cores. Both drivers run the
+same SQLite engine build: 3.50.3 compiled by gcc 4.1.2 with sqlite-jdbc's own flags (identical
+`PRAGMA compile_options`).
 
 | Readers | Read workload | sqlite-jdbc | ffm-sqlite | ffm-sqlite-jdbc |
 |---|---|---|---|---|
-| 4 | row by id, all 20 columns (reads/s) | 283k | **811k (2.9×)** | 768k (2.7×) |
-| 8 | row by id, all 20 columns (reads/s) | 287k | **759k (2.6×)** | 703k (2.4×) |
-| 4 | 100-row range scan (scans/s) | 27.9k | **64.7k (2.3×)** | 58.3k (2.1×) |
-| 8 | 100-row range scan (scans/s) | 25.4k | **60.6k (2.4×)** | 54.8k (2.2×) |
+| 4 | row by id, all 20 columns (reads/s) | 199k | **505k (2.5×)** | 487k (2.5×) |
+| 8 | row by id, all 20 columns (reads/s) | 281k | **701k (2.5×)** | 671k (2.4×) |
+| 4 | 100-row range scan (scans/s) | 18.4k | **37.1k (2.0×)** | 32.5k (1.8×) |
+| 8 | 100-row range scan (scans/s) | 25.3k | **62.5k (2.5×)** | 44.3k (1.8×) |
 
 The writer is fsync-bound (~400–800 commits/s) with no significant difference between libraries. Loading the
-1M rows takes the same time on disk (fsync-bound); with I/O removed (tmpfs) ffm-sqlite needs 6.8 s against
-sqlite-jdbc's 9.6 s. Full conditions, the 1-reader results, other workloads and caveats (ffm-sqlite uses a
-locally compiled SQLite, while sqlite-jdbc bundles its own build) are in
+1M rows is fsync-bound on disk; with I/O removed (tmpfs) ffm-sqlite needs 8.95 s against sqlite-jdbc's 11.0 s.
+Full conditions, the 1-reader results, the earlier run on a gcc 13 build and other workloads are in
 [PERFORMANCE.md](ffm-vs-jdbc/PERFORMANCE.md#1m-rows--20-columns-bulk-load-then-1-writer--n-readers-wal--synchronousfull).
 
 ## Build

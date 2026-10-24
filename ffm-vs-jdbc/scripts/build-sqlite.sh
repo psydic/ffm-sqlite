@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Builds native/libsqlite3.so from the same SQLite version and compile options that
-# sqlite-jdbc 3.50.3.0 bundles (from `PRAGMA compile_options`), so FFM and JDBC run the same engine.
+# Builds native/libsqlite3.so from the same SQLite version and SQLITE_* defines that sqlite-jdbc 3.50.3.0
+# bundles (from `PRAGMA compile_options`), with the system gcc at -O2. The compiler, ATOMIC_INTRINSICS and
+# sqlite-jdbc's extension functions still differ; build-sqlite-gcc4.sh makes an identical build.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 VER=3500300

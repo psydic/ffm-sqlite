@@ -156,6 +156,37 @@ columns through typed getters; `range` readers scan 100 consecutive rows (id, na
   finish while readers hold old snapshots, and range readers stream more pages). Differences between
   libraries are within disk noise; the 291 ± 354 and 321 ± 405 cells are stall outliers.
 
+### Same engine binary build: ffm-sqlite on SQLite compiled like sqlite-jdbc's (gcc 4.1.2, `-Os`)
+
+The run above gave ffm-sqlite `native/libsqlite3.so` (gcc 13.3, `-O2`, atomic intrinsics). To remove the
+engine build as a variable, `scripts/build-sqlite-gcc4.sh` builds `native/libsqlite3-gcc4.so` inside
+sqlite-jdbc's own build image (`xerial/centos5-linux-x86_64`, gcc 4.1.2 20080704 Red Hat 4.1.2-55) with the
+flags, source patches and extension functions of sqlite-jdbc 3.50.3.0's Makefile; the only difference is no
+`-fvisibility=hidden`, so FFM can call the symbols. `PRAGMA compile_options` is then identical for both drivers
+(all 51 entries, including `COMPILER=`, `ATOMIC_INTRINSICS=0` and `JDBC_EXTENSIONS`), and the 163 library and
+driver tests pass on it. Everything else as above; results in `results/gcc4-*`.
+
+Absolute numbers move between runs by up to ~30% for *all* libraries, sqlite-jdbc included (VM load on the
+host), so compare ratios within a run.
+
+| Readers | Workload | sqlite-jdbc read | ffm-sqlite read | ffm-sqlite-jdbc read | writer jdbc / ffm / wrapper |
+|---|---|---|---|---|---|
+| 1 | point | 68.7k | **176k (2.6×)** | 170k (2.5×) | 774 / 660 / 798 |
+| 4 | point | 199k | **505k (2.5×)** | 487k (2.5×) | 767 / 754 / 764 |
+| 8 | point | 281k | **701k (2.5×)** | 671k (2.4×) | 759 / 679 / 744 |
+| 1 | range | 6.4k | **12.5k (2.0×)** | 11.8k (1.9×) | 715 / 670 / 773 |
+| 4 | range | 18.4k | **37.1k (2.0×)** | 32.5k (1.8×) | 416 / 466 / 486 |
+| 8 | range | 25.3k | **62.5k ± 17k (2.5×)** | 44.3k (1.8×) | 357 / 460 / 430 |
+
+| Bulk load, seconds | sqlite-jdbc | ffm-sqlite | ffm-sqlite-jdbc |
+|---|---|---|---|
+| disk | 23.5 ± 25.5 | 15.0 ± 6.4 | 16.8 ± 0.5 |
+| tmpfs | 11.0 ± 1.4 | **8.95 ± 0.6** (−19%) | 9.53 ± 1.1 (−13%) |
+
+With the engine binary matched, the read advantage mostly drops a little (point 2.6–2.9× → 2.5–2.6×,
+range 2.2–2.4× → 2.0–2.5×; the 8-reader range cell is the noisiest, ± 17k, and went up) and the tmpfs bulk-load advantage from 29% to 19%. What remains is the driver: per
+column, sqlite-jdbc makes a JNI call, ffm-sqlite an FFM downcall. Writer throughput is unchanged: fsync-bound.
+
 ## Fixes found by this comparison
 
 1. **`setBytes` made a defensive copy.** 64 KB–1 MB BLOB writes were 16–35% slower and allocated the full blob
@@ -194,6 +225,7 @@ python3 scripts/report.py results/full.json results/coldstart.json
 
 ```bash
 taskset -c 2-15 java -jar target/benchmarks.jar BulkLoadBenchmark -jvmArgsAppend "-Dsqlite.lib=$L -Dffmsqlite.lib=$L -Dwide.dir=$PWD/data"
+# fairest engine comparison: ./scripts/build-sqlite-gcc4.sh (podman or docker), then L=$PWD/native/libsqlite3-gcc4.so
 for n in 1 4 8; do   # -tg is readers,writer: JMH orders group methods by name
   taskset -c 2-15 java -jar target/benchmarks.jar WideConcurrentBenchmark -tg $n,1 -jvmArgsAppend "-Dsqlite.lib=$L -Dffmsqlite.lib=$L -Dwide.dir=$PWD/data"
 done
