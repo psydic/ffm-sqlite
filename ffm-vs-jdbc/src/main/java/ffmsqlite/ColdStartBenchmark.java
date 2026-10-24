@@ -42,7 +42,7 @@ public class ColdStartBenchmark {
                 }
             }
         }
-        try (var c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:"); var st = c.createStatement()) {
+        try (var c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:"); var st = c.createStatement()) {
             st.executeUpdate("CREATE TABLE t (x TEXT)");
             st.executeUpdate("INSERT INTO t VALUES ('hello')");
             try (var rs = st.executeQuery("SELECT x FROM t")) {

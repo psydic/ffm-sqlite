@@ -1,12 +1,12 @@
 # Releasing to Maven Central
 
-Published artifacts (all `io.github.psydic`, Apache-2.0):
+Published artifacts (all `io.github.revsnai`, Apache-2.0):
 
 | Artifact | Contents |
 |---|---|
 | `ffm-sqlite-parent` | the parent POM (metadata, plugin versions) |
-| `ffm-sqlite` | the FFM library, package `io.github.psydic.ffmsqlite.db`, module `io.github.psydic.ffmsqlite.db` |
-| `ffm-sqlite-jdbc` | the `java.sql` driver, package `io.github.psydic.ffmsqlite.jdbc`, module `io.github.psydic.ffmsqlite.jdbc`; depends on `ffm-sqlite` |
+| `ffm-sqlite` | the FFM library, package `io.github.revsnai.ffmsqlite.db`, module `io.github.revsnai.ffmsqlite.db` |
+| `ffm-sqlite-jdbc` | the `java.sql` driver, package `io.github.revsnai.ffmsqlite.jdbc`, module `io.github.revsnai.ffmsqlite.jdbc`; depends on `ffm-sqlite` |
 
 `ffm-vs-jdbc` (the benchmarks) is not published.
 
@@ -18,13 +18,13 @@ plugin requires JDK 25. What remains needs your accounts and keys.
 
 ### 1. Check the groupId and repository URLs
 
-`io.github.psydic` requires that you own the GitHub account **`psydic`** (github.com/psydic). To use another namespace, change the groupId,
+`io.github.revsnai` requires that you own (or are a member of) the GitHub organization **`revsnai`** (github.com/revsnai). To use another namespace, change the groupId,
 URL, SCM and issue URLs in `ffm-sqlite-parent/pom.xml`, and the `<parent>` groupId in both module POMs, for
 example to `io.github.<your-username>`. Also check the developer name and email.
 
 ### 2. Publish the source on GitHub
 
-Central requires a public source repository matching the `<scm>` in the POM (`github.com/psydic/ffm-sqlite`). Include
+Central requires a public source repository matching the `<scm>` in the POM (`github.com/revsnai/ffm-sqlite`). Include
 `ffm-sqlite-parent/`, `ffm-sqlite/` and `ffm-sqlite-jdbc/`, and optionally `ffm-vs-jdbc/`. Do not include the
 unrelated `ggogle/`, `goo` or `SqliteBechmark.java` from the local folder. Optionally move the parent POM to the
 repository root (then change the modules to `ffm-sqlite`/`ffm-sqlite-jdbc`, and the children's `<relativePath>`
@@ -33,7 +33,7 @@ to `../pom.xml`).
 ### 3. Central Portal account and namespace
 
 1. Sign in at <https://central.sonatype.com> (GitHub login is simplest).
-2. **Namespaces → Add** `io.github.psydic`. With a GitHub login it is usually verified automatically; otherwise create
+2. **Namespaces → Add** `io.github.revsnai`. With a GitHub login it is usually verified automatically; otherwise create
    the temporary public repository it asks for.
 3. **Account → Generate User Token**, and put it in `~/.m2/settings.xml`:
 
@@ -90,7 +90,7 @@ Portal token as secrets, and pass `-Dgpg.passphrase=…` (or use `gpg-agent`).
 ## Releasing to GitHub Packages (no Central account needed)
 
 `.github/workflows/publish-github-packages.yml` publishes all three artifacts to
-<https://github.com/psydic/ffm-sqlite/packages> with the workflow's own `GITHUB_TOKEN`: no personal token, no GPG
+<https://github.com/revsnai/ffm-sqlite/packages> with the workflow's own `GITHUB_TOKEN`: no personal token, no GPG
 key and no namespace verification. It runs the full test suite first and refuses to publish if the tag does not
 match the POM version, or if the version is a SNAPSHOT.
 
@@ -112,12 +112,12 @@ are independent: the same version can be released to Central later.
 
 ```xml
 <dependency>
-    <groupId>io.github.psydic</groupId>
+    <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>   <!-- the JDBC driver; or ffm-sqlite for the library API alone -->
     <version>0.1.0</version>
 </dependency>
 ```
 
 At run time users need JDK 25+, `--enable-native-access=ALL-UNNAMED` (module path:
-`--enable-native-access=io.github.psydic.ffmsqlite.db`), and SQLite installed (`libsqlite3`, e.g. `apt install libsqlite3-0`), or
+`--enable-native-access=io.github.revsnai.ffmsqlite.db`), and SQLite installed (`libsqlite3`, e.g. `apt install libsqlite3-0`), or
 `-Dffmsqlite.lib=/path/to/libsqlite3.so`.

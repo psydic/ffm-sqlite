@@ -109,11 +109,11 @@ public class OperationsBenchmark {
     }
 
     static final class LibSql implements Sql {
-        final io.github.psydic.ffmsqlite.db.Connection conn;
-        final io.github.psydic.ffmsqlite.db.Statement st;
+        final io.github.revsnai.ffmsqlite.db.Connection conn;
+        final io.github.revsnai.ffmsqlite.db.Statement st;
 
         LibSql(String path) throws Exception {
-            conn = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path);
+            conn = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path);
             st = conn.createStatement();
         }
 

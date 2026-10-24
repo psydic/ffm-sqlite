@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.psydic</groupId>
+        <groupId>io.github.revsnai</groupId>
         <artifactId>ffm-sqlite-parent</artifactId>
-        <version>0.1.1</version>
+        <version>0.2.0</version>
         <relativePath>../ffm-sqlite-parent/pom.xml</relativePath>
     </parent>
 
@@ -17,12 +17,12 @@
     <description>A JDBC driver (java.sql) for SQLite on top of ffm-sqlite: Foreign Function &amp; Memory API, no JNI</description>
 
     <properties>
-        <module.name>io.github.psydic.ffmsqlite.jdbc</module.name>
+        <module.name>io.github.revsnai.ffmsqlite.jdbc</module.name>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>io.github.psydic</groupId>
+            <groupId>io.github.revsnai</groupId>
             <artifactId>ffm-sqlite</artifactId>
         </dependency>
 

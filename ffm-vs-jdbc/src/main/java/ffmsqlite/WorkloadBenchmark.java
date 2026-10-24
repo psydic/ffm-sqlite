@@ -87,8 +87,8 @@ public class WorkloadBenchmark {
     public void setup() throws Exception {
         dir = Files.createTempDirectory("sqlite-workload");
         path = dir.resolve("app.db").toString();
-        try (io.github.psydic.ffmsqlite.db.Connection c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path);
-             io.github.psydic.ffmsqlite.db.Statement st = c.createStatement()) {
+        try (io.github.revsnai.ffmsqlite.db.Connection c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path);
+             io.github.revsnai.ffmsqlite.db.Statement st = c.createStatement()) {
             st.executeUpdate("""
                     PRAGMA journal_mode = WAL;
                     CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL,
@@ -315,29 +315,29 @@ public class WorkloadBenchmark {
 
     static final class Ffm implements Workload {
         final String path;
-        final io.github.psydic.ffmsqlite.db.Connection conn, tx;
-        final io.github.psydic.ffmsqlite.db.PreparedStatement selUser, selEmail, insEvent, updAge, range, join;
-        final io.github.psydic.ffmsqlite.db.PreparedStatement txSel, txIns, txUpd;
-        final io.github.psydic.ffmsqlite.db.SQLite.Config CONFIG;
+        final io.github.revsnai.ffmsqlite.db.Connection conn, tx;
+        final io.github.revsnai.ffmsqlite.db.PreparedStatement selUser, selEmail, insEvent, updAge, range, join;
+        final io.github.revsnai.ffmsqlite.db.PreparedStatement txSel, txIns, txUpd;
+        final io.github.revsnai.ffmsqlite.db.SQLite.Config CONFIG;
 
         Ffm(String path, String synchronous) throws Exception {
             this.path = path;
-            CONFIG = io.github.psydic.ffmsqlite.db.SQLite.Config.DEFAULT.withSynchronous(io.github.psydic.ffmsqlite.db.SQLite.Synchronous.valueOf(synchronous));
-            conn = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path, CONFIG);
+            CONFIG = io.github.revsnai.ffmsqlite.db.SQLite.Config.DEFAULT.withSynchronous(io.github.revsnai.ffmsqlite.db.SQLite.Synchronous.valueOf(synchronous));
+            conn = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path, CONFIG);
             selUser = conn.prepareStatement(SELECT_USER);
             selEmail = conn.prepareStatement(SELECT_BY_EMAIL);
             insEvent = conn.prepareStatement(INSERT_EVENT);
             updAge = conn.prepareStatement(UPDATE_AGE);
             range = conn.prepareStatement(RANGE);
             join = conn.prepareStatement(JOIN);
-            tx = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path, CONFIG);
+            tx = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path, CONFIG);
             tx.setAutoCommit(false);
             txSel = tx.prepareStatement(SELECT_USER);
             txIns = tx.prepareStatement(INSERT_ORDER);
             txUpd = tx.prepareStatement(UPDATE_AGE);
         }
 
-        static void readUser(io.github.psydic.ffmsqlite.db.PreparedStatement ps, int id, Blackhole bh) throws Exception {
+        static void readUser(io.github.revsnai.ffmsqlite.db.PreparedStatement ps, int id, Blackhole bh) throws Exception {
             ps.setInt(1, id);
             try (var rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -426,7 +426,7 @@ public class WorkloadBenchmark {
 
         @Override
         public void connectQueryClose(int id, Blackhole bh) throws Exception {
-            try (var c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path, CONFIG); var ps = c.prepareStatement(SELECT_USER)) {
+            try (var c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path, CONFIG); var ps = c.prepareStatement(SELECT_USER)) {
                 readUser(ps, id, bh);
             }
         }

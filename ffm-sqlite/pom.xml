@@ -5,9 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>io.github.psydic</groupId>
+        <groupId>io.github.revsnai</groupId>
         <artifactId>ffm-sqlite-parent</artifactId>
-        <version>0.1.1</version>
+        <version>0.2.0</version>
         <relativePath>../ffm-sqlite-parent/pom.xml</relativePath>
     </parent>
 
@@ -17,7 +17,7 @@
     <description>JDBC-style SQLite access over the Java Foreign Function &amp; Memory API (no JDBC, no JNI, no bundled native code)</description>
 
     <properties>
-        <module.name>io.github.psydic.ffmsqlite.db</module.name>
+        <module.name>io.github.revsnai.ffmsqlite.db</module.name>
     </properties>
 
     <dependencies>

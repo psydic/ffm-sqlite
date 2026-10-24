@@ -322,13 +322,13 @@ public class SQLiteBenchmark {
     @State(Scope.Thread)
     public static class LibWriteState {
         final String[] names = names();
-        io.github.psydic.ffmsqlite.db.Connection conn;
-        io.github.psydic.ffmsqlite.db.PreparedStatement insert, delete;
+        io.github.revsnai.ffmsqlite.db.Connection conn;
+        io.github.revsnai.ffmsqlite.db.PreparedStatement insert, delete;
 
         @Setup(Level.Trial)
-        public void setup() throws io.github.psydic.ffmsqlite.db.SQLiteException {
-            conn = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:");
-            try (io.github.psydic.ffmsqlite.db.Statement st = conn.createStatement()) {
+        public void setup() throws io.github.revsnai.ffmsqlite.db.SQLiteException {
+            conn = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:");
+            try (io.github.revsnai.ffmsqlite.db.Statement st = conn.createStatement()) {
                 st.executeUpdate(DDL);
             }
             conn.setAutoCommit(false);
@@ -344,8 +344,8 @@ public class SQLiteBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ROWS)
-    public void write_libExecuteUpdate(LibWriteState s) throws io.github.psydic.ffmsqlite.db.SQLiteException {
-        io.github.psydic.ffmsqlite.db.PreparedStatement ps = s.insert;
+    public void write_libExecuteUpdate(LibWriteState s) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
+        io.github.revsnai.ffmsqlite.db.PreparedStatement ps = s.insert;
         s.delete.executeUpdate();
         for (int i = 0; i < ROWS; i++) {
             ps.setInt(1, i);
@@ -358,8 +358,8 @@ public class SQLiteBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ROWS)
-    public void write_libBatch(LibWriteState s) throws io.github.psydic.ffmsqlite.db.SQLiteException {
-        io.github.psydic.ffmsqlite.db.PreparedStatement ps = s.insert;
+    public void write_libBatch(LibWriteState s) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
+        io.github.revsnai.ffmsqlite.db.PreparedStatement ps = s.insert;
         s.delete.executeUpdate();
         for (int i = 0; i < ROWS; i++) {
             ps.setInt(1, i);
@@ -495,18 +495,18 @@ public class SQLiteBenchmark {
 
     @State(Scope.Thread)
     public static class LibReadState {
-        io.github.psydic.ffmsqlite.db.Connection conn;
-        io.github.psydic.ffmsqlite.db.PreparedStatement select;
+        io.github.revsnai.ffmsqlite.db.Connection conn;
+        io.github.revsnai.ffmsqlite.db.PreparedStatement select;
 
         @Setup(Level.Trial)
-        public void setup() throws io.github.psydic.ffmsqlite.db.SQLiteException {
-            conn = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:");
-            try (io.github.psydic.ffmsqlite.db.Statement st = conn.createStatement()) {
+        public void setup() throws io.github.revsnai.ffmsqlite.db.SQLiteException {
+            conn = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:");
+            try (io.github.revsnai.ffmsqlite.db.Statement st = conn.createStatement()) {
                 st.executeUpdate(DDL);
             }
             conn.setAutoCommit(false);
             String[] names = names();
-            try (io.github.psydic.ffmsqlite.db.PreparedStatement ps = conn.prepareStatement(INSERT)) {
+            try (io.github.revsnai.ffmsqlite.db.PreparedStatement ps = conn.prepareStatement(INSERT)) {
                 for (int i = 0; i < ROWS; i++) {
                     ps.setInt(1, i);
                     ps.setString(2, names[i]);
@@ -526,8 +526,8 @@ public class SQLiteBenchmark {
 
     @Benchmark
     @OperationsPerInvocation(ROWS)
-    public void read_lib(LibReadState s, Blackhole bh) throws io.github.psydic.ffmsqlite.db.SQLiteException {
-        try (io.github.psydic.ffmsqlite.db.ResultSet rs = s.select.executeQuery()) {
+    public void read_lib(LibReadState s, Blackhole bh) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
+        try (io.github.revsnai.ffmsqlite.db.ResultSet rs = s.select.executeQuery()) {
             while (rs.next()) {
                 bh.consume(rs.getInt(1));
                 bh.consume(rs.getString(2));

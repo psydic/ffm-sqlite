@@ -35,8 +35,8 @@ public class BlobBenchmark {
     byte[] data;
     java.sql.Connection jdbc;
     java.sql.PreparedStatement jWrite, jRead;
-    io.github.psydic.ffmsqlite.db.Connection ffm;
-    io.github.psydic.ffmsqlite.db.PreparedStatement fWrite, fRead;
+    io.github.revsnai.ffmsqlite.db.Connection ffm;
+    io.github.revsnai.ffmsqlite.db.PreparedStatement fWrite, fRead;
 
     @Setup(Level.Trial)
     public void setup() throws Exception {
@@ -53,7 +53,7 @@ public class BlobBenchmark {
             jWrite = jdbc.prepareStatement(write);
             jRead = jdbc.prepareStatement(read);
         } else {
-            ffm = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:");
+            ffm = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:");
             try (var st = ffm.createStatement()) {
                 st.executeUpdate(ddl);
             }

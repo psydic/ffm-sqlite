@@ -10,7 +10,7 @@
 >   `getObject` behaviour.
 >
 > The remaining differences are listed in section 8. The analysis below is about the core library
-> (`io.github.psydic.ffmsqlite.db`) on its own, which is still not a drop-in replacement.
+> (`io.github.revsnai.ffmsqlite.db`) on its own, which is still not a drop-in replacement.
 
 **Is ffm-sqlite (the core library) a drop-in replacement for sqlite-jdbc? No.**
 
@@ -32,7 +32,7 @@ describes how to get true drop-in compatibility if that is wanted.
 - **implemented by sqlite-jdbc**: its implementation can return. Bytecode in which the method can only
   throw (sqlite-jdbc's `throw unsupported()` pattern) counts as unsupported. Read with Java 25's
   `java.lang.classfile` API.
-- **present in ffm-sqlite**: same name and parameter types, with `java.sql.X` mapped to `io.github.psydic.ffmsqlite.db.X`.
+- **present in ffm-sqlite**: same name and parameter types, with `java.sql.X` mapped to `io.github.revsnai.ffmsqlite.db.X`.
 
 | java.sql interface | Methods | Implemented by sqlite-jdbc | ffm-sqlite: same signature | ffm-sqlite: same name, other parameters | Missing in ffm-sqlite (of those sqlite-jdbc implements) |
 |---|---:|---:|---:|---:|---:|
@@ -51,7 +51,7 @@ Full per-method lists: `results/interface-coverage.md`.
 - **sqlite-jdbc covers most of JDBC, ffm-sqlite only its core.** sqlite-jdbc implements 439 of 627 methods
   (the rest throw `SQLFeatureNotSupportedException`, e.g. scrollable or updatable result sets, arrays, SQLXML).
   ffm-sqlite matches 78 exactly: the core.
-- **Even matching methods are not source-compatible.** They throw `io.github.psydic.ffmsqlite.db.SQLiteException`, which is
+- **Even matching methods are not source-compatible.** They throw `io.github.revsnai.ffmsqlite.db.SQLiteException`, which is
   not a `java.sql.SQLException`, so every `catch (SQLException e)` around them stops compiling.
 - **Most of the 361 is JDBC ceremony with little meaning for SQLite:** 120+ `DatabaseMetaData` capability flags
   (`supportsX()`, `getMaxY()`), warnings, holdability, catalogs, type maps, cursor names, fetch hints and
@@ -81,7 +81,7 @@ Full per-method lists: `results/interface-coverage.md`.
 | Timeout / cancel | `setQueryTimeout` (**only bounds lock waits**), `cancel()` | `setQueryTimeout(int)` / `(Duration)` (interrupts running work), `cancel()` | ffm ahead |
 | Result metadata | `ResultSetMetaData` (23 methods) | `getColumnCount`, `getColumnLabel/Name`, `getColumnTypeName` | ⚠️ |
 | Schema metadata | `DatabaseMetaData` (ResultSets) | `DatabaseMetaData` (typed records) | ❌ different shape |
-| Errors | `org.sqlite.SQLiteException extends java.sql.SQLException`; `getErrorCode()` = 19 for a constraint | `io.github.psydic.ffmsqlite.db.SQLiteException extends Exception`; `getErrorCode()` = 19, `getExtendedErrorCode()` = 2067 | ❌ type |
+| Errors | `org.sqlite.SQLiteException extends java.sql.SQLException`; `getErrorCode()` = 19 for a constraint | `io.github.revsnai.ffmsqlite.db.SQLiteException extends Exception`; `getErrorCode()` = 19, `getExtendedErrorCode()` = 2067 | ❌ type |
 | Timeout error type | none (does not time out running queries) | `SQLiteTimeoutException` | – |
 | UDFs, collations | `org.sqlite.Function` / `Function.Window` / `Collation` (abstract classes) | `createFunction` / `createAggregateFunction` / `createWindowFunction` / `createCollation` (lambdas) | ≈ |
 | Hooks | `addUpdateListener`, `addCommitListener`, `BusyHandler`, `ProgressHandler` | same ideas, Connection methods | ≈ |
@@ -145,7 +145,7 @@ For code that uses JDBC directly, with no framework:
 
 ```java
 // before (sqlite-jdbc)                                  // after (ffm-sqlite)
-import java.sql.*;                                      import io.github.psydic.ffmsqlite.db.*;
+import java.sql.*;                                      import io.github.revsnai.ffmsqlite.db.*;
 Connection c = DriverManager.getConnection(             Connection c = SQLite.getConnection("app.db");
         "jdbc:sqlite:app.db");
 try (PreparedStatement ps = c.prepareStatement(sql)) {  try (PreparedStatement ps = c.prepareStatement(sql)) {   // unchanged
@@ -157,7 +157,7 @@ try (PreparedStatement ps = c.prepareStatement(sql)) {  try (PreparedStatement p
 
 Checklist:
 
-1. Imports: `java.sql.*` → `io.github.psydic.ffmsqlite.db.*`; `DriverManager.getConnection(url)` → `SQLite.getConnection(path, config)`.
+1. Imports: `java.sql.*` → `io.github.revsnai.ffmsqlite.db.*`; `DriverManager.getConnection(url)` → `SQLite.getConnection(path, config)`.
 2. Exceptions: `SQLException` → `SQLiteException`; `SQLTimeoutException` → `SQLiteTimeoutException`.
 3. Dates: `java.sql.Date/Time/Timestamp` → java.time via `setObject`/`getObject(i, Type.class)`. Check existing data
    for INTEGER-millisecond columns (behaviour 5).
@@ -224,7 +224,7 @@ overloads that delegate to one that throws.
 **Still different** (details in `../ffm-sqlite-jdbc/README.md`):
 
 - sqlite-jdbc-specific classes (`SQLiteConnection`, `SQLiteConfig`, `org.sqlite.Function`, `backup to` SQL) do not
-  exist. The equivalents are reached through `unwrap(io.github.psydic.ffmsqlite.db.Connection.class)`.
+  exist. The equivalents are reached through `unwrap(io.github.revsnai.ffmsqlite.db.Connection.class)`.
 - There is no `transaction_mode=IMMEDIATE` option.
 - `DatabaseMetaData` reports `main`/`temp`/attached schema names where sqlite-jdbc reports null.
 - The runtime is Java 25+ with a system `libsqlite3`.

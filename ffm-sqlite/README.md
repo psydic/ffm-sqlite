@@ -2,9 +2,9 @@
 
 ```xml
 <dependency>
-    <groupId>io.github.psydic</groupId>
+    <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -13,7 +13,7 @@ implemented directly on the Foreign Function & Memory API. It has no `java.sql`,
 native code, and no dependencies. It calls the platform's `libsqlite3`.
 
 ```java
-import io.github.psydic.ffmsqlite.db.*;
+import io.github.revsnai.ffmsqlite.db.*;
 
 try (Connection conn = SQLite.getConnection("app.db")) {
     try (Statement st = conn.createStatement()) {

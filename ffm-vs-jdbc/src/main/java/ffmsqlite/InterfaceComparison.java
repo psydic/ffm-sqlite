@@ -20,7 +20,7 @@ import java.util.TreeMap;
 /**
  * For each method of a java.sql interface: does sqlite-jdbc implement it (its implementation can return, i.e.
  * is not an unconditional {@code throw unsupported()}), and does ffm-sqlite have an equivalent method (same
- * name and parameter types, java.sql types mapped to their io.github.psydic.ffmsqlite.db counterparts)? Prints Markdown.
+ * name and parameter types, java.sql types mapped to their io.github.revsnai.ffmsqlite.db counterparts)? Prints Markdown.
  */
 public class InterfaceComparison {
 
@@ -28,20 +28,20 @@ public class InterfaceComparison {
     }
 
     static final List<Pair> PAIRS = List.of(
-            new Pair(java.sql.Connection.class, "org.sqlite.jdbc4.JDBC4Connection", "io.github.psydic.ffmsqlite.db.Connection", "io.github.psydic.ffmsqlite.jdbc.JdbcConnection"),
-            new Pair(java.sql.Statement.class, "org.sqlite.jdbc4.JDBC4Statement", "io.github.psydic.ffmsqlite.db.Statement", "io.github.psydic.ffmsqlite.jdbc.JdbcStatement"),
-            new Pair(java.sql.PreparedStatement.class, "org.sqlite.jdbc4.JDBC4PreparedStatement", "io.github.psydic.ffmsqlite.db.PreparedStatement", "io.github.psydic.ffmsqlite.jdbc.JdbcPreparedStatement"),
-            new Pair(java.sql.ResultSet.class, "org.sqlite.jdbc4.JDBC4ResultSet", "io.github.psydic.ffmsqlite.db.ResultSet", "io.github.psydic.ffmsqlite.jdbc.JdbcResultSet"),
-            new Pair(java.sql.ResultSetMetaData.class, "org.sqlite.jdbc4.JDBC4ResultSet", "io.github.psydic.ffmsqlite.db.ResultSetMetaData", "io.github.psydic.ffmsqlite.jdbc.JdbcResultSetMetaData"),
-            new Pair(java.sql.DatabaseMetaData.class, "org.sqlite.jdbc4.JDBC4DatabaseMetaData", "io.github.psydic.ffmsqlite.db.DatabaseMetaData", "io.github.psydic.ffmsqlite.jdbc.JdbcDatabaseMetaData"));
+            new Pair(java.sql.Connection.class, "org.sqlite.jdbc4.JDBC4Connection", "io.github.revsnai.ffmsqlite.db.Connection", "io.github.revsnai.ffmsqlite.jdbc.JdbcConnection"),
+            new Pair(java.sql.Statement.class, "org.sqlite.jdbc4.JDBC4Statement", "io.github.revsnai.ffmsqlite.db.Statement", "io.github.revsnai.ffmsqlite.jdbc.JdbcStatement"),
+            new Pair(java.sql.PreparedStatement.class, "org.sqlite.jdbc4.JDBC4PreparedStatement", "io.github.revsnai.ffmsqlite.db.PreparedStatement", "io.github.revsnai.ffmsqlite.jdbc.JdbcPreparedStatement"),
+            new Pair(java.sql.ResultSet.class, "org.sqlite.jdbc4.JDBC4ResultSet", "io.github.revsnai.ffmsqlite.db.ResultSet", "io.github.revsnai.ffmsqlite.jdbc.JdbcResultSet"),
+            new Pair(java.sql.ResultSetMetaData.class, "org.sqlite.jdbc4.JDBC4ResultSet", "io.github.revsnai.ffmsqlite.db.ResultSetMetaData", "io.github.revsnai.ffmsqlite.jdbc.JdbcResultSetMetaData"),
+            new Pair(java.sql.DatabaseMetaData.class, "org.sqlite.jdbc4.JDBC4DatabaseMetaData", "io.github.revsnai.ffmsqlite.db.DatabaseMetaData", "io.github.revsnai.ffmsqlite.jdbc.JdbcDatabaseMetaData"));
 
     static final Map<Class<?>, String> TYPE_MAP = Map.of(
-            java.sql.Connection.class, "io.github.psydic.ffmsqlite.db.Connection",
-            java.sql.Statement.class, "io.github.psydic.ffmsqlite.db.Statement",
-            java.sql.PreparedStatement.class, "io.github.psydic.ffmsqlite.db.PreparedStatement",
-            java.sql.ResultSet.class, "io.github.psydic.ffmsqlite.db.ResultSet",
-            java.sql.ResultSetMetaData.class, "io.github.psydic.ffmsqlite.db.ResultSetMetaData",
-            java.sql.DatabaseMetaData.class, "io.github.psydic.ffmsqlite.db.DatabaseMetaData");
+            java.sql.Connection.class, "io.github.revsnai.ffmsqlite.db.Connection",
+            java.sql.Statement.class, "io.github.revsnai.ffmsqlite.db.Statement",
+            java.sql.PreparedStatement.class, "io.github.revsnai.ffmsqlite.db.PreparedStatement",
+            java.sql.ResultSet.class, "io.github.revsnai.ffmsqlite.db.ResultSet",
+            java.sql.ResultSetMetaData.class, "io.github.revsnai.ffmsqlite.db.ResultSetMetaData",
+            java.sql.DatabaseMetaData.class, "io.github.revsnai.ffmsqlite.db.DatabaseMetaData");
 
     enum Jdbc { IMPLEMENTED, UNSUPPORTED, DEFAULT_ONLY }
 

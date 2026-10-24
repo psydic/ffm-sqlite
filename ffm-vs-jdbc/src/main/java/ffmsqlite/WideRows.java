@@ -118,7 +118,7 @@ final class WideRows {
         ps.setBytes(20, PAYLOAD[i]);
     }
 
-    static void bind(io.github.psydic.ffmsqlite.db.PreparedStatement ps, long id) throws io.github.psydic.ffmsqlite.db.SQLiteException {
+    static void bind(io.github.revsnai.ffmsqlite.db.PreparedStatement ps, long id) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
         int i = (int) (id % POOL);
         ps.setLong(1, id);
         ps.setInt(2, TINY[i]);
@@ -164,7 +164,7 @@ final class WideRows {
         bh.consume(rs.getBytes(20));
     }
 
-    static void read(io.github.psydic.ffmsqlite.db.ResultSet rs, org.openjdk.jmh.infra.Blackhole bh) throws io.github.psydic.ffmsqlite.db.SQLiteException {
+    static void read(io.github.revsnai.ffmsqlite.db.ResultSet rs, org.openjdk.jmh.infra.Blackhole bh) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
         bh.consume(rs.getLong(1));
         bh.consume(rs.getInt(2));
         bh.consume(rs.getInt(3));
@@ -199,9 +199,9 @@ final class WideRows {
         }
         Path tmp = dataDir().resolve("wide-1m.db.building");
         Files.deleteIfExists(tmp);
-        var config = io.github.psydic.ffmsqlite.db.SQLite.Config.DEFAULT
-                .withSynchronous(io.github.psydic.ffmsqlite.db.SQLite.Synchronous.OFF);
-        try (var c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(tmp.toString(), config)) {
+        var config = io.github.revsnai.ffmsqlite.db.SQLite.Config.DEFAULT
+                .withSynchronous(io.github.revsnai.ffmsqlite.db.SQLite.Synchronous.OFF);
+        try (var c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(tmp.toString(), config)) {
             try (var st = c.createStatement()) {
                 st.executeUpdate(DDL);
             }
@@ -224,7 +224,7 @@ final class WideRows {
         Path dir = Files.createTempDirectory(dataDir(), "wide-run");
         Path db = dir.resolve("wide.db");
         Files.copy(template, db);
-        try (var c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(db.toString());
+        try (var c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(db.toString());
              var st = c.createStatement()) {
             st.executeUpdate("PRAGMA journal_mode = WAL");
         }

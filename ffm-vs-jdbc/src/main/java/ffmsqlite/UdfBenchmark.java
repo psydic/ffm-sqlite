@@ -41,7 +41,7 @@ public class UdfBenchmark {
     String lib;
 
     java.sql.Connection jdbc;
-    io.github.psydic.ffmsqlite.db.Connection ffm;
+    io.github.revsnai.ffmsqlite.db.Connection ffm;
 
     @Setup(Level.Trial)
     public void setup() throws Exception {
@@ -107,18 +107,18 @@ public class UdfBenchmark {
                 }
             });
         } else {
-            ffm = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:");
+            ffm = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:");
             ffm.createCollation("jci", String.CASE_INSENSITIVE_ORDER);
             try (var st = ffm.createStatement()) {
                 st.executeUpdate(TABLE);
             }
             ffm.createFunction("plus_one", 1, args -> args.getLong(0) + 1);
             ffm.createFunction("jupper", 1, args -> args.getString(0).toUpperCase());
-            ffm.createAggregateFunction("jsum", 1, () -> new io.github.psydic.ffmsqlite.db.AggregateFunction() {
+            ffm.createAggregateFunction("jsum", 1, () -> new io.github.revsnai.ffmsqlite.db.AggregateFunction() {
                 long sum;
 
                 @Override
-                public void step(io.github.psydic.ffmsqlite.db.FunctionArgs args) throws io.github.psydic.ffmsqlite.db.SQLiteException {
+                public void step(io.github.revsnai.ffmsqlite.db.FunctionArgs args) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
                     sum += args.getLong(0);
                 }
 
@@ -127,16 +127,16 @@ public class UdfBenchmark {
                     return sum;
                 }
             });
-            ffm.createWindowFunction("wsum", 1, () -> new io.github.psydic.ffmsqlite.db.WindowFunction() {
+            ffm.createWindowFunction("wsum", 1, () -> new io.github.revsnai.ffmsqlite.db.WindowFunction() {
                 long sum;
 
                 @Override
-                public void step(io.github.psydic.ffmsqlite.db.FunctionArgs args) throws io.github.psydic.ffmsqlite.db.SQLiteException {
+                public void step(io.github.revsnai.ffmsqlite.db.FunctionArgs args) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
                     sum += args.getLong(0);
                 }
 
                 @Override
-                public void inverse(io.github.psydic.ffmsqlite.db.FunctionArgs args) throws io.github.psydic.ffmsqlite.db.SQLiteException {
+                public void inverse(io.github.revsnai.ffmsqlite.db.FunctionArgs args) throws io.github.revsnai.ffmsqlite.db.SQLiteException {
                     sum -= args.getLong(0);
                 }
 

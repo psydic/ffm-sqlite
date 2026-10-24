@@ -45,8 +45,8 @@ public class ConcurrentReadBenchmark {
         public void create() throws Exception {
             dir = Files.createTempDirectory("sqlite-concurrent");
             path = dir.resolve("app.db").toString();
-            try (io.github.psydic.ffmsqlite.db.Connection c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path);
-                 io.github.psydic.ffmsqlite.db.Statement st = c.createStatement()) {
+            try (io.github.revsnai.ffmsqlite.db.Connection c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path);
+                 io.github.revsnai.ffmsqlite.db.Statement st = c.createStatement()) {
                 st.executeUpdate("""
                         PRAGMA journal_mode = WAL;
                         CREATE TABLE users (id INTEGER PRIMARY KEY, email TEXT, name TEXT, age INTEGER);
@@ -71,8 +71,8 @@ public class ConcurrentReadBenchmark {
     public static class Reader {
         java.sql.Connection jdbc;
         java.sql.PreparedStatement jSel;
-        io.github.psydic.ffmsqlite.db.Connection ffm;
-        io.github.psydic.ffmsqlite.db.PreparedStatement fSel;
+        io.github.revsnai.ffmsqlite.db.Connection ffm;
+        io.github.revsnai.ffmsqlite.db.PreparedStatement fSel;
         final SplittableRandom rnd = new SplittableRandom(Thread.currentThread().threadId());
 
         @Setup(Level.Trial)
@@ -81,7 +81,7 @@ public class ConcurrentReadBenchmark {
                 jdbc = DriverManager.getConnection((db.lib.equals("jdbc") ? "jdbc:sqlite:" : "jdbc:ffmsqlite:") + db.path);
                 jSel = jdbc.prepareStatement(SELECT_USER);
             } else {
-                ffm = io.github.psydic.ffmsqlite.db.SQLite.getConnection(db.path);
+                ffm = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(db.path);
                 fSel = ffm.prepareStatement(SELECT_USER);
             }
         }

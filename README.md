@@ -4,23 +4,23 @@ SQLite for Java 25+ through the **Foreign Function & Memory API**: no JNI, no bu
 
 | Module | Artifact | What it is |
 |---|---|---|
-| [`ffm-sqlite`](ffm-sqlite) | `io.github.psydic:ffm-sqlite` | the library: a JDBC-like API (`Connection`, `PreparedStatement`, `ResultSet`, …) plus UDFs, window functions, collations, hooks, backup, serialize, extensions, metadata |
-| [`ffm-sqlite-jdbc`](ffm-sqlite-jdbc) | `io.github.psydic:ffm-sqlite-jdbc` | a `java.sql` driver on top of it (`jdbc:ffmsqlite:`), drop-in for sqlite-jdbc in most applications; tested with HikariCP, Spring JDBC and jOOQ |
-| [`ffm-sqlite-parent`](ffm-sqlite-parent) | `io.github.psydic:ffm-sqlite-parent` | build and release configuration ([RELEASING.md](ffm-sqlite-parent/RELEASING.md)) |
+| [`ffm-sqlite`](ffm-sqlite) | `io.github.revsnai:ffm-sqlite` | the library: a JDBC-like API (`Connection`, `PreparedStatement`, `ResultSet`, …) plus UDFs, window functions, collations, hooks, backup, serialize, extensions, metadata |
+| [`ffm-sqlite-jdbc`](ffm-sqlite-jdbc) | `io.github.revsnai:ffm-sqlite-jdbc` | a `java.sql` driver on top of it (`jdbc:ffmsqlite:`), drop-in for sqlite-jdbc in most applications; tested with HikariCP, Spring JDBC and jOOQ |
+| [`ffm-sqlite-parent`](ffm-sqlite-parent) | `io.github.revsnai:ffm-sqlite-parent` | build and release configuration ([RELEASING.md](ffm-sqlite-parent/RELEASING.md)) |
 | [`ffm-sqlite-shop`](ffm-sqlite-shop) | not published | a sample e-commerce backend on ffm-sqlite-jdbc, written as a training guide for integrating the driver: pools, transactions, migrations, search, checkout, error handling |
 | [`ffm-vs-jdbc`](ffm-vs-jdbc) | not published | JMH benchmarks against sqlite-jdbc: [PERFORMANCE.md](ffm-vs-jdbc/PERFORMANCE.md), [INTERFACE-COMPARISON.md](ffm-vs-jdbc/INTERFACE-COMPARISON.md) |
 
 ```xml
 <dependency>
-    <groupId>io.github.psydic</groupId>
+    <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>   <!-- or ffm-sqlite for the library API -->
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
 ### From GitHub Packages
 
-Releases are published to [GitHub Packages](https://github.com/psydic/ffm-sqlite/packages). GitHub requires
+Releases are published to [GitHub Packages](https://github.com/revsnai/ffm-sqlite/packages). GitHub requires
 authentication even for public Maven packages: create a personal access token (classic) with the
 `read:packages` scope, then add the repository and credentials to `~/.m2/settings.xml`:
 
@@ -28,21 +28,21 @@ authentication even for public Maven packages: create a personal access token (c
 <settings>
   <profiles>
     <profile>
-      <id>github-psydic</id>
+      <id>github-revsnai</id>
       <repositories>
         <repository>
-          <id>github-psydic</id>
-          <url>https://maven.pkg.github.com/psydic/ffm-sqlite</url>
+          <id>github-revsnai</id>
+          <url>https://maven.pkg.github.com/revsnai/ffm-sqlite</url>
         </repository>
       </repositories>
     </profile>
   </profiles>
   <activeProfiles>
-    <activeProfile>github-psydic</activeProfile>
+    <activeProfile>github-revsnai</activeProfile>
   </activeProfiles>
   <servers>
     <server>
-      <id>github-psydic</id>
+      <id>github-revsnai</id>
       <username>YOUR_GITHUB_USERNAME</username>
       <password>YOUR_TOKEN_WITH_read:packages</password>
     </server>

@@ -6,19 +6,19 @@
 
     <!--
       Parent and aggregator for the published artifacts:
-        io.github.psydic:ffm-sqlite       the FFM SQLite library (io.github.psydic.ffmsqlite.db)
-        io.github.psydic:ffm-sqlite-jdbc  the java.sql driver on top of it (io.github.psydic.ffmsqlite.jdbc)
+        io.github.revsnai:ffm-sqlite       the FFM SQLite library (io.github.revsnai.ffmsqlite.db)
+        io.github.revsnai:ffm-sqlite-jdbc  the java.sql driver on top of it (io.github.revsnai.ffmsqlite.jdbc)
       Release steps: RELEASING.md. The groupId must match a namespace you own on Maven Central
       (io.github.<github-username>, or a reversed domain you control).
     -->
-    <groupId>io.github.psydic</groupId>
+    <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-parent</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <packaging>pom</packaging>
 
     <name>ffm-sqlite parent</name>
     <description>SQLite for Java 25+ through the Foreign Function &amp; Memory API: a JDBC-style library and a java.sql driver, no JNI</description>
-    <url>https://github.com/psydic/ffm-sqlite</url>
+    <url>https://github.com/revsnai/ffm-sqlite</url>
 
     <licenses>
         <license>
@@ -27,6 +27,11 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <organization>
+        <name>revsnai</name>
+        <url>https://github.com/revsnai</url>
+    </organization>
 
     <developers>
         <developer>
@@ -38,15 +43,15 @@
 
     <scm child.scm.connection.inherit.append.path="false" child.scm.developerConnection.inherit.append.path="false"
          child.scm.url.inherit.append.path="false">
-        <connection>scm:git:https://github.com/psydic/ffm-sqlite.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/psydic/ffm-sqlite.git</developerConnection>
-        <url>https://github.com/psydic/ffm-sqlite</url>
+        <connection>scm:git:https://github.com/revsnai/ffm-sqlite.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/revsnai/ffm-sqlite.git</developerConnection>
+        <url>https://github.com/revsnai/ffm-sqlite</url>
         <tag>HEAD</tag>
     </scm>
 
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/psydic/ffm-sqlite/issues</url>
+        <url>https://github.com/revsnai/ffm-sqlite/issues</url>
     </issueManagement>
 
     <modules>
@@ -59,7 +64,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Reproducible builds: fixed timestamp in archives (update on release). -->
-        <project.build.outputTimestamp>2026-10-24T17:08:50Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-10-24T17:27:39Z</project.build.outputTimestamp>
         <junit.version>5.12.2</junit.version>
         <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so runs them against that SQLite (empty = system library). -->
         <ffmsqlite.lib></ffmsqlite.lib>
@@ -70,7 +75,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.github.psydic</groupId>
+                <groupId>io.github.revsnai</groupId>
                 <artifactId>ffm-sqlite</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -244,7 +249,7 @@
             </build>
         </profile>
         <!--
-          mvn -P github deploy : publish to GitHub Packages (https://github.com/psydic/ffm-sqlite/packages), with
+          mvn -P github deploy : publish to GitHub Packages (https://github.com/revsnai/ffm-sqlite/packages), with
           sources and javadoc jars. Credentials: <server><id>github</id> (a token with write:packages); in GitHub
           Actions, actions/setup-java provides it from GITHUB_TOKEN (.github/workflows/publish-github-packages.yml).
         -->
@@ -253,8 +258,8 @@
             <distributionManagement>
                 <repository>
                     <id>github</id>
-                    <name>GitHub psydic Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/psydic/ffm-sqlite</url>
+                    <name>GitHub revsnai Apache Maven Packages</name>
+                    <url>https://maven.pkg.github.com/revsnai/ffm-sqlite</url>
                 </repository>
             </distributionManagement>
             <build>

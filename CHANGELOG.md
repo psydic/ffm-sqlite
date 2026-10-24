@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.2.0
+
+The project moved to the **revsnai** GitHub organization: https://github.com/revsnai/ffm-sqlite.
+
+- **New Maven coordinates:** `io.github.revsnai:ffm-sqlite` and `io.github.revsnai:ffm-sqlite-jdbc`
+  (were `io.github.psydic:*`).
+- **New package names:** `io.github.revsnai.ffmsqlite.db` and `io.github.revsnai.ffmsqlite.jdbc` (were
+  `io.github.psydic.ffmsqlite.*`); JPMS automatic module names changed the same way. To upgrade, change the
+  dependency and replace `io.github.psydic.ffmsqlite` with `io.github.revsnai.ffmsqlite` in imports.
+  The JDBC URL (`jdbc:ffmsqlite:`) and all APIs are unchanged.
+- Everything in 0.1.1, below. 0.1.1 was only published to GitHub Packages, under the old coordinates.
+
 ## 0.1.1
 
 Fixes from a code review of 0.1.0. Upgrading is recommended: the first two can crash the JVM.

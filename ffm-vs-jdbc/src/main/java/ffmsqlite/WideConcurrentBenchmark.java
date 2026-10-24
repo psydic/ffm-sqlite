@@ -126,12 +126,12 @@ public class WideConcurrentBenchmark {
     }
 
     static final class Ffm implements Conn {
-        final io.github.psydic.ffmsqlite.db.Connection c;
-        final io.github.psydic.ffmsqlite.db.PreparedStatement ins, row, range;
+        final io.github.revsnai.ffmsqlite.db.Connection c;
+        final io.github.revsnai.ffmsqlite.db.PreparedStatement ins, row, range;
 
         Ffm(String path) throws Exception {
-            c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path, io.github.psydic.ffmsqlite.db.SQLite.Config.DEFAULT
-                    .withSynchronous(io.github.psydic.ffmsqlite.db.SQLite.Synchronous.FULL));
+            c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path, io.github.revsnai.ffmsqlite.db.SQLite.Config.DEFAULT
+                    .withSynchronous(io.github.revsnai.ffmsqlite.db.SQLite.Synchronous.FULL));
             ins = c.prepareStatement(WideRows.INSERT);
             row = c.prepareStatement(WideRows.SELECT_ROW);
             range = c.prepareStatement(WideRows.SELECT_RANGE);

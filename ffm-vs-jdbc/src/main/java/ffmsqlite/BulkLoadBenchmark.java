@@ -85,10 +85,10 @@ public class BulkLoadBenchmark {
     }
 
     long loadFfm() throws Exception {
-        var config = io.github.psydic.ffmsqlite.db.SQLite.Config.DEFAULT
-                .withJournalMode(io.github.psydic.ffmsqlite.db.SQLite.JournalMode.WAL)
-                .withSynchronous(io.github.psydic.ffmsqlite.db.SQLite.Synchronous.FULL);
-        try (var c = io.github.psydic.ffmsqlite.db.SQLite.getConnection(path, config)) {
+        var config = io.github.revsnai.ffmsqlite.db.SQLite.Config.DEFAULT
+                .withJournalMode(io.github.revsnai.ffmsqlite.db.SQLite.JournalMode.WAL)
+                .withSynchronous(io.github.revsnai.ffmsqlite.db.SQLite.Synchronous.FULL);
+        try (var c = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(path, config)) {
             try (var st = c.createStatement()) {
                 st.executeUpdate(WideRows.DDL);
             }

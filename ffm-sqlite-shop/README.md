@@ -52,24 +52,24 @@ curl -X POST $B/admin/backup                   # online backup through the ffm-s
 
 | # | Topic | Where | What to take away |
 |---|---|---|---|
-| 1 | Connecting | [`db/Database.java`](src/main/java/io/github/psydic/shop/db/Database.java) | `jdbc:ffmsqlite:` URL, PRAGMAs as URL parameters (applied to every pooled connection), **one writer pool of size 1 + a `query_only` reader pool**: SQLite has one writer at a time, so writes queue in the pool instead of failing with `SQLITE_BUSY` |
+| 1 | Connecting | [`db/Database.java`](src/main/java/io/github/revsnai/shop/db/Database.java) | `jdbc:ffmsqlite:` URL, PRAGMAs as URL parameters (applied to every pooled connection), **one writer pool of size 1 + a `query_only` reader pool**: SQLite has one writer at a time, so writes queue in the pool instead of failing with `SQLITE_BUSY` |
 | 2 | Transactions | `Database.write` / `Database.read` | commit/rollback in one place; retry on `SQLTransientException` (SQLITE_BUSY, SQLState 40001); read transactions give a consistent snapshot in WAL mode |
-| 3 | Migrations | [`db/Migrations.java`](src/main/java/io/github/psydic/shop/db/Migrations.java), [`db/migration/*.sql`](src/main/resources/db/migration) | version in `PRAGMA user_version`; multi-statement scripts (triggers included) run through `Statement.executeUpdate`; STRICT tables; money as integer cents |
-| 4 | Queries | [`catalog/ProductRepository.java`](src/main/java/io/github/psydic/shop/catalog/ProductRepository.java) | bind everything with `?`; keyset pagination instead of OFFSET; FTS5 search with `bm25` and `snippet`, user input escaped for the MATCH syntax |
-| 5 | A business transaction | [`order/OrderRepository.java`](src/main/java/io/github/psydic/shop/order/OrderRepository.java) `checkout` | conditional `UPDATE … WHERE stock >= ?` against overselling; `getGeneratedKeys()`; `addBatch`/`executeBatch`; all or nothing |
-| 6 | Constraint errors | [`customer/CustomerRepository.java`](src/main/java/io/github/psydic/shop/customer/CustomerRepository.java) | let the UNIQUE index decide; `SQLIntegrityConstraintViolationException` with SQLState 23505 / 23503 / 23502 / 23514 |
-| 7 | Upserts, UUID, java.time | [`cart/CartRepository.java`](src/main/java/io/github/psydic/shop/cart/CartRepository.java) | `ON CONFLICT DO UPDATE`; `setObject(uuid)` / `getObject(i, UUID.class)`; `setObject(instant)` / `getObject(i, Instant.class)`; `wasNull()` |
+| 3 | Migrations | [`db/Migrations.java`](src/main/java/io/github/revsnai/shop/db/Migrations.java), [`db/migration/*.sql`](src/main/resources/db/migration) | version in `PRAGMA user_version`; multi-statement scripts (triggers included) run through `Statement.executeUpdate`; STRICT tables; money as integer cents |
+| 4 | Queries | [`catalog/ProductRepository.java`](src/main/java/io/github/revsnai/shop/catalog/ProductRepository.java) | bind everything with `?`; keyset pagination instead of OFFSET; FTS5 search with `bm25` and `snippet`, user input escaped for the MATCH syntax |
+| 5 | A business transaction | [`order/OrderRepository.java`](src/main/java/io/github/revsnai/shop/order/OrderRepository.java) `checkout` | conditional `UPDATE … WHERE stock >= ?` against overselling; `getGeneratedKeys()`; `addBatch`/`executeBatch`; all or nothing |
+| 6 | Constraint errors | [`customer/CustomerRepository.java`](src/main/java/io/github/revsnai/shop/customer/CustomerRepository.java) | let the UNIQUE index decide; `SQLIntegrityConstraintViolationException` with SQLState 23505 / 23503 / 23502 / 23514 |
+| 7 | Upserts, UUID, java.time | [`cart/CartRepository.java`](src/main/java/io/github/revsnai/shop/cart/CartRepository.java) | `ON CONFLICT DO UPDATE`; `setObject(uuid)` / `getObject(i, UUID.class)`; `setObject(instant)` / `getObject(i, Instant.class)`; `wasNull()` |
 | 8 | State transitions | `OrderRepository.changeStatus` | `WHERE status = ?` as optimistic concurrency; `UPDATE … FROM` to restore stock |
-| 9 | Beyond JDBC | `Database.backupTo` | `unwrap(io.github.psydic.ffmsqlite.db.Connection.class)` for ffm-sqlite features (backup, serialize, UDFs, hooks); translate its `SQLiteException` |
-| 10 | Analytics | [`report/ReportRepository.java`](src/main/java/io/github/psydic/shop/report/ReportRepository.java) | `rank() OVER (PARTITION BY …)`, running totals, `date()` on stored timestamps |
+| 9 | Beyond JDBC | `Database.backupTo` | `unwrap(io.github.revsnai.ffmsqlite.db.Connection.class)` for ffm-sqlite features (backup, serialize, UDFs, hooks); translate its `SQLiteException` |
+| 10 | Analytics | [`report/ReportRepository.java`](src/main/java/io/github/revsnai/shop/report/ReportRepository.java) | `rank() OVER (PARTITION BY …)`, running totals, `date()` on stored timestamps |
 
-[`Shop.java`](src/main/java/io/github/psydic/shop/Shop.java) is the service layer: it decides where transactions
-begin and end; repositories only take a `Connection`. [`web/HttpApi.java`](src/main/java/io/github/psydic/shop/web/HttpApi.java)
+[`Shop.java`](src/main/java/io/github/revsnai/shop/Shop.java) is the service layer: it decides where transactions
+begin and end; repositories only take a `Connection`. [`web/HttpApi.java`](src/main/java/io/github/revsnai/shop/web/HttpApi.java)
 maps `ShopException` to HTTP statuses.
 
 ## Integration checklist (for your own application)
 
-1. **Dependency**: `io.github.psydic:ffm-sqlite-jdbc` (see [`pom.xml`](pom.xml)); it brings `ffm-sqlite`.
+1. **Dependency**: `io.github.revsnai:ffm-sqlite-jdbc` (see [`pom.xml`](pom.xml)); it brings `ffm-sqlite`.
 2. **Native access**: start the JVM with `--enable-native-access=ALL-UNNAMED`, or put
    `Enable-Native-Access: ALL-UNNAMED` in the jar manifest (done here by the shade plugin). Tests: surefire `argLine`.
 3. **Fat jars**: merge `META-INF/services/java.sql.Driver` (`ServicesResourceTransformer`), or `DriverManager`
@@ -88,11 +88,11 @@ maps `ShopException` to HTTP statuses.
 
 `mvn test` runs them against a fresh database in a temporary directory:
 
-- [`CheckoutTest`](src/test/java/io/github/psydic/shop/CheckoutTest.java): totals, rollback on short stock,
+- [`CheckoutTest`](src/test/java/io/github/revsnai/shop/CheckoutTest.java): totals, rollback on short stock,
   **40 concurrent buyers for 10 items sell exactly 10**, status transitions, duplicate emails, backup.
-- [`MigrationsTest`](src/test/java/io/github/psydic/shop/MigrationsTest.java): idempotent migrations, search
+- [`MigrationsTest`](src/test/java/io/github/revsnai/shop/MigrationsTest.java): idempotent migrations, search
   index kept in sync by triggers, FTS5 syntax in user input, reader connections cannot write.
-- [`HttpApiTest`](src/test/java/io/github/psydic/shop/HttpApiTest.java): the API over real HTTP.
+- [`HttpApiTest`](src/test/java/io/github/revsnai/shop/HttpApiTest.java): the API over real HTTP.
 
 ## Exercises
 

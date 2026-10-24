@@ -2,9 +2,9 @@
 
 ```xml
 <dependency>
-    <groupId>io.github.psydic</groupId>
+    <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ parameters, `setObject(…, SQLType)`, `setURL`/`getURL`, `getBlob`, generated-k
 | `setObject(LocalDateTime)` text | `2024-02-29T13:45:30.500` | `2024-02-29 13:45:30.5` (SQLite's own format); each driver reads both |
 | `DatabaseMetaData` TABLE_SCHEM | null | the SQLite schema name (`main`, `temp`, attached), consistent with `getSchemas()` |
 | `BatchUpdateException.getUpdateCounts()` on failure | counts for all entries | counts for the entries before the failure (JDBC allows both) |
-| sqlite-jdbc-specific classes (`SQLiteConnection`, `SQLiteConfig`, `org.sqlite.Function`, `backup to …` SQL) | ✅ | ❌: use `connection.unwrap(io.github.psydic.ffmsqlite.db.Connection.class)` for functions, collations, hooks, backup, serialize, extensions |
+| sqlite-jdbc-specific classes (`SQLiteConnection`, `SQLiteConfig`, `org.sqlite.Function`, `backup to …` SQL) | ✅ | ❌: use `connection.unwrap(io.github.revsnai.ffmsqlite.db.Connection.class)` for functions, collations, hooks, backup, serialize, extensions |
 | Options without an equivalent: `transaction_mode` (IMMEDIATE/EXCLUSIVE), `shared_cache`, `enable_load_extension` | ✅ | ❌ (`BEGIN IMMEDIATE` can be issued as SQL; extensions via `unwrap(...).loadExtension`) |
 | Runtime | Java 8+, bundled natives | Java 25+, system `libsqlite3`, `--enable-native-access` |
 
@@ -108,7 +108,7 @@ thread (e.g. a pool), as with any SQLite driver.
 ## Escape hatch to ffm-sqlite
 
 ```java
-io.github.psydic.ffmsqlite.db.Connection ffm = jdbcConnection.unwrap(io.github.psydic.ffmsqlite.db.Connection.class);
+io.github.revsnai.ffmsqlite.db.Connection ffm = jdbcConnection.unwrap(io.github.revsnai.ffmsqlite.db.Connection.class);
 ffm.createFunction("twice", 1, args -> args.getLong(0) * 2);   // now usable from SQL through JDBC
 ffm.backup("backup.db");
 ```

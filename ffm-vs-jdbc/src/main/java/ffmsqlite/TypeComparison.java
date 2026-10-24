@@ -26,8 +26,8 @@ public class TypeComparison {
 
     interface JdbcBind { void bind(java.sql.PreparedStatement ps) throws Exception; }
     interface JdbcRead { Object read(java.sql.ResultSet rs) throws Exception; }
-    interface LibBind { void bind(io.github.psydic.ffmsqlite.db.PreparedStatement ps) throws Exception; }
-    interface LibRead { Object read(io.github.psydic.ffmsqlite.db.ResultSet rs) throws Exception; }
+    interface LibBind { void bind(io.github.revsnai.ffmsqlite.db.PreparedStatement ps) throws Exception; }
+    interface LibRead { Object read(io.github.revsnai.ffmsqlite.db.ResultSet rs) throws Exception; }
 
     record Case(String javaType, String declType, Object value,
                 String jdbcApi, JdbcBind jdbcBind, JdbcRead jdbcRead,
@@ -102,7 +102,7 @@ public class TypeComparison {
         System.out.println("| Java type | Declared column | sqlite-jdbc API | sqlite-jdbc stores | sqlite-jdbc reads back | ffm-sqlite API | ffm-sqlite stores | ffm-sqlite reads back |");
         System.out.println("|---|---|---|---|---|---|---|---|");
         try (java.sql.Connection jc = DriverManager.getConnection("jdbc:sqlite::memory:");
-             io.github.psydic.ffmsqlite.db.Connection lc = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:")) {
+             io.github.revsnai.ffmsqlite.db.Connection lc = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:")) {
             for (Case c : CASES) {
                 String ddl = "CREATE TABLE t (v " + c.declType + ")";
                 try (var st = jc.createStatement()) {
@@ -136,7 +136,7 @@ public class TypeComparison {
         }
     }
 
-    static String[] probeLib(io.github.psydic.ffmsqlite.db.Connection conn, Case c) throws Exception {
+    static String[] probeLib(io.github.revsnai.ffmsqlite.db.Connection conn, Case c) throws Exception {
         if (c.libBind == null) {
             return new String[]{"—", "—"};
         }

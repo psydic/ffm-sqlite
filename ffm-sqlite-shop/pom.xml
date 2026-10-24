@@ -8,7 +8,7 @@
       Sample e-commerce application on ffm-sqlite-jdbc: a training project for integrating the driver.
       Standalone on purpose (no parent): copy this pom as the starting point of your own application.
     -->
-    <groupId>io.github.psydic.samples</groupId>
+    <groupId>io.github.revsnai.samples</groupId>
     <artifactId>ffm-sqlite-shop</artifactId>
     <version>0.1.0</version>
     <name>ffm-sqlite shop (sample)</name>
@@ -16,7 +16,7 @@
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ffm-sqlite.version>0.1.1</ffm-sqlite.version>
+        <ffm-sqlite.version>0.2.0</ffm-sqlite.version>
         <jackson.version>2.19.2</jackson.version>
         <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so (empty = the system library). -->
         <ffmsqlite.lib></ffmsqlite.lib>
@@ -25,7 +25,7 @@
     <dependencies>
         <!-- The driver: jdbc:ffmsqlite: URLs, registered through ServiceLoader. Brings in ffm-sqlite. -->
         <dependency>
-            <groupId>io.github.psydic</groupId>
+            <groupId>io.github.revsnai</groupId>
             <artifactId>ffm-sqlite-jdbc</artifactId>
             <version>${ffm-sqlite.version}</version>
         </dependency>
@@ -95,7 +95,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
-                                        <Main-Class>io.github.psydic.shop.ShopApplication</Main-Class>
+                                        <Main-Class>io.github.revsnai.shop.ShopApplication</Main-Class>
                                         <!-- Native access without a JVM flag when started with java -jar. -->
                                         <Enable-Native-Access>ALL-UNNAMED</Enable-Native-Access>
                                     </manifestEntries>

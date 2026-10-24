@@ -200,21 +200,21 @@ public class TypeBenchmark {
     // ------------------------------------------------------------------ ffm-sqlite
 
     interface LibBinder {
-        void bind(io.github.psydic.ffmsqlite.db.PreparedStatement ps, int i) throws Exception;
+        void bind(io.github.revsnai.ffmsqlite.db.PreparedStatement ps, int i) throws Exception;
     }
 
     interface LibReader {
-        void read(io.github.psydic.ffmsqlite.db.ResultSet rs, Blackhole bh) throws Exception;
+        void read(io.github.revsnai.ffmsqlite.db.ResultSet rs, Blackhole bh) throws Exception;
     }
 
     static final class LibDb implements Db {
-        final io.github.psydic.ffmsqlite.db.Connection conn;
-        final io.github.psydic.ffmsqlite.db.PreparedStatement insert, delete, select;
+        final io.github.revsnai.ffmsqlite.db.Connection conn;
+        final io.github.revsnai.ffmsqlite.db.PreparedStatement insert, delete, select;
         final LibBinder binder;
         final LibReader reader;
 
         LibDb(String type) throws Exception {
-            conn = io.github.psydic.ffmsqlite.db.SQLite.getConnection(":memory:");
+            conn = io.github.revsnai.ffmsqlite.db.SQLite.getConnection(":memory:");
             try (var st = conn.createStatement()) {
                 st.executeUpdate("CREATE TABLE t (v " + declType(type) + ")");
             }
