@@ -1,0 +1,80 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Build and test (SQLite ${{ matrix.sqlite }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        # system: the runner's libsqlite3 (3.45 on Ubuntu 24.04); 3.50.3: built from the amalgamation with
+        # sqlite-jdbc's compile options (ffm-vs-jdbc/scripts/build-sqlite.sh).
+        sqlite: [system, "3.50.3"]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Install SQLite and a C compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libsqlite3-0 libsqlite3-dev gcc
+
+      - name: Build SQLite ${{ matrix.sqlite }}
+        if: matrix.sqlite != 'system'
+        run: |
+          ffm-vs-jdbc/scripts/build-sqlite.sh
+          echo "FFMSQLITE_LIB=$GITHUB_WORKSPACE/ffm-vs-jdbc/native/libsqlite3.so" >> "$GITHUB_ENV"
+
+      - name: Build the test extension (enables the extension-loading tests)
+        run: SQLITE_INCLUDE=/usr/include ffm-sqlite/scripts/build-test-extension.sh
+
+      - name: Build and test ffm-sqlite and ffm-sqlite-jdbc
+        working-directory: ffm-sqlite-parent
+        run: mvn -B -ntp install -Dffmsqlite.lib="${FFMSQLITE_LIB:-}"
+
+      - name: Check which SQLite the tests used
+        if: matrix.sqlite != 'system'
+        run: |
+          grep -q "name=\"ffmsqlite.lib\" value=\"$FFMSQLITE_LIB\"" ffm-sqlite/target/surefire-reports/TEST-*SQLiteTest.xml \
+            || { echo "::error::tests did not run against $FFMSQLITE_LIB"; exit 1; }
+          echo "tests ran against $FFMSQLITE_LIB"
+
+      - name: Verify the release artifacts build (sources, javadoc; unsigned)
+        if: matrix.sqlite == 'system'
+        working-directory: ffm-sqlite-parent
+        run: mvn -B -ntp -P release verify -Dgpg.skip -DskipTests
+
+      - name: Compile the benchmarks
+        if: matrix.sqlite == 'system'
+        run: mvn -B -ntp -f ffm-vs-jdbc/pom.xml package -DskipTests
+
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports-sqlite-${{ matrix.sqlite }}
+          path: |
+            ffm-sqlite/target/surefire-reports/
+            ffm-sqlite-jdbc/target/surefire-reports/
+          retention-days: 7

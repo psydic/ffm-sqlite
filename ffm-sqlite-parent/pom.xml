@@ -61,6 +61,8 @@
         <!-- Reproducible builds: fixed timestamp in archives (update on release). -->
         <project.build.outputTimestamp>2026-10-24T00:00:00Z</project.build.outputTimestamp>
         <junit.version>5.12.2</junit.version>
+        <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so runs them against that SQLite (empty = system library). -->
+        <ffmsqlite.lib></ffmsqlite.lib>
         <!-- Set per module: the JPMS name for module-path users (Automatic-Module-Name). -->
         <module.name>UNSET</module.name>
     </properties>
@@ -107,6 +109,10 @@
                     <version>3.5.3</version>
                     <configuration>
                         <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+                        <systemPropertyVariables>
+                            <!-- Forwarded explicitly: a -DargLine override is ignored once argLine is set here. -->
+                            <ffmsqlite.lib>${ffmsqlite.lib}</ffmsqlite.lib>
+                        </systemPropertyVariables>
                     </configuration>
                 </plugin>
                 <plugin>

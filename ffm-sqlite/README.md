@@ -265,7 +265,8 @@ conn.deserialize(image, "aux", true);            // into an ATTACHed schema, rea
 - **Copying:** SQLite takes its own copy of the bytes, so your array can be reused. The database can grow
   beyond the image, up to SQLite's in-memory limit (1 GB by default), unless it is opened read-only.
 - **Edge cases:**
-  - an empty database serializes to an empty array, which deserializes to an empty writable database;
+  - an empty database serializes to an empty array (older SQLite, e.g. 3.45) or a single empty page (newer, e.g.
+    3.50); either deserializes to an empty writable database;
   - images of WAL-mode databases are switched to rollback-journal mode, without which SQLite cannot open them
     in memory;
   - only the 16-byte SQLite header is checked up front (bad header: code 26, NOTADB, and the database is left

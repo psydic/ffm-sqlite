@@ -53,6 +53,9 @@ final class Native {
 
     private static SymbolLookup loadLibrary() {
         String configured = System.getProperty("ffmsqlite.lib");
+        if (configured != null && configured.isBlank()) {
+            configured = null; // set but empty (e.g. by a build tool): use the platform library
+        }
         List<String> candidates = configured != null
                 ? List.of(configured)
                 : List.of("libsqlite3.so.0", "libsqlite3.so", "libsqlite3.dylib", "sqlite3.dll", "winsqlite3.dll");

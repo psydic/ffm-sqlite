@@ -397,7 +397,7 @@ public final class Connection implements AutoCloseable {
     /**
      * The database {@code schema} ({@code main}, {@code temp} or an ATTACHed name) as bytes, i.e. the content
      * of the equivalent database file, including changes of a transaction open on this connection. An empty
-     * database gives an empty array. Limited to databases under 2 GB (the maximum Java array).
+     * database gives an empty array or one empty page, depending on the SQLite version. Limited to databases under 2 GB (the maximum Java array).
      */
     public byte[] serialize(String schema) throws SQLiteException {
         checkOpen();

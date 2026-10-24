@@ -130,7 +130,8 @@ class SerializeTest {
     void emptyDatabases() throws SQLiteException {
         try (Connection empty = SQLite.getConnection(":memory:")) {
             byte[] image = empty.serialize();
-            assertEquals(0, image.length);
+            // Older SQLite (e.g. 3.45) has no pages yet and serializes to nothing; newer (e.g. 3.50) to one empty page.
+            assertTrue(image.length == 0 || image.length == one(empty, "PRAGMA page_size"), "length " + image.length);
             try (Connection c = SQLite.getConnection(image)) {
                 exec(c, "CREATE TABLE t (x); INSERT INTO t VALUES (1)");
                 assertEquals(1, one(c, "SELECT count(*) FROM t"));
