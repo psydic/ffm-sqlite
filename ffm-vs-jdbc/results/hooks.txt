@@ -1,0 +1,374 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.HookBenchmark.insertRows
+# Parameters: (hook = none, lib = jdbc)
+
+# Run progress: 0.00% complete, ETA 00:00:32
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+707.795 ns/op
+# Warmup Iteration   2: 655.967 ns/op
+# Warmup Iteration   3: 706.156 ns/op
+Iteration   1: 612.089 ns/op
+                 gc.alloc.rate:      37.593 MB/sec
+                 gc.alloc.rate.norm: 24.132 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 644.274 ns/op
+                 gc.alloc.rate:      35.714 MB/sec
+                 gc.alloc.rate.norm: 24.132 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 629.852 ns/op
+                 gc.alloc.rate:      36.528 MB/sec
+                 gc.alloc.rate.norm: 24.132 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 628.026 ns/op
+                 gc.alloc.rate:      36.636 MB/sec
+                 gc.alloc.rate.norm: 24.132 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 652.641 ns/op
+                 gc.alloc.rate:      35.251 MB/sec
+                 gc.alloc.rate.norm: 24.133 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            3.000 ms
+
+
+
+Result "ffmsqlite.HookBenchmark.insertRows":
+  633.376 ±(99.9%) 60.398 ns/op [Average]
+  (min, avg, max) = (612.089, 633.376, 652.641), stdev = 15.685
+  CI (99.9%): [572.978, 693.774] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate":
+  36.344 ±(99.9%) 3.482 MB/sec [Average]
+  (min, avg, max) = (35.251, 36.344, 37.593), stdev = 0.904
+  CI (99.9%): [32.862, 39.827] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate.norm":
+  24.132 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (24.132, 24.132, 24.133), stdev = 0.001
+  CI (99.9%): [24.132, 24.133] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.count":
+  1.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (≈ 0, 0.200, 1.000), stdev = 0.447
+  CI (99.9%): [1.000, 1.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.time":
+  3.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (≈ 0, 0.600, 3.000), stdev = 1.342
+  CI (99.9%): [3.000, 3.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.HookBenchmark.insertRows
+# Parameters: (hook = none, lib = ffm-sqlite)
+
+# Run progress: 25.00% complete, ETA 00:00:25
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+335.338 ns/op
+# Warmup Iteration   2: 327.424 ns/op
+# Warmup Iteration   3: 394.160 ns/op
+Iteration   1: 343.358 ns/op
+                 gc.alloc.rate:      66.872 MB/sec
+                 gc.alloc.rate.norm: 24.082 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            3.000 ms
+
+Iteration   2: 349.339 ns/op
+                 gc.alloc.rate:      65.730 MB/sec
+                 gc.alloc.rate.norm: 24.082 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 399.303 ns/op
+                 gc.alloc.rate:      57.505 MB/sec
+                 gc.alloc.rate.norm: 24.083 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 296.247 ns/op
+                 gc.alloc.rate:      77.500 MB/sec
+                 gc.alloc.rate.norm: 24.082 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 309.163 ns/op
+                 gc.alloc.rate:      74.262 MB/sec
+                 gc.alloc.rate.norm: 24.082 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            1.000 ms
+
+
+
+Result "ffmsqlite.HookBenchmark.insertRows":
+  339.482 ±(99.9%) 154.976 ns/op [Average]
+  (min, avg, max) = (296.247, 339.482, 399.303), stdev = 40.247
+  CI (99.9%): [184.506, 494.458] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate":
+  68.374 ±(99.9%) 30.156 MB/sec [Average]
+  (min, avg, max) = (57.505, 68.374, 77.500), stdev = 7.831
+  CI (99.9%): [38.217, 98.530] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate.norm":
+  24.082 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (24.082, 24.082, 24.083), stdev = 0.001
+  CI (99.9%): [24.081, 24.083] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.count":
+  2.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (≈ 0, 0.400, 1.000), stdev = 0.548
+  CI (99.9%): [2.000, 2.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.time":
+  4.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (≈ 0, 0.800, 3.000), stdev = 1.304
+  CI (99.9%): [4.000, 4.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.HookBenchmark.insertRows
+# Parameters: (hook = updateListener, lib = jdbc)
+
+# Run progress: 50.00% complete, ETA 00:00:16
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+1405.927 ns/op
+# Warmup Iteration   2: 1442.986 ns/op
+# Warmup Iteration   3: 1261.885 ns/op
+Iteration   1: 1321.704 ns/op
+                 gc.alloc.rate:      409.860 MB/sec
+                 gc.alloc.rate.norm: 568.158 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+Iteration   2: 1341.738 ns/op
+                 gc.alloc.rate:      403.717 MB/sec
+                 gc.alloc.rate.norm: 568.137 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+Iteration   3: 1328.962 ns/op
+                 gc.alloc.rate:      407.567 MB/sec
+                 gc.alloc.rate.norm: 568.137 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            4.000 ms
+
+Iteration   4: 1408.484 ns/op
+                 gc.alloc.rate:      384.550 MB/sec
+                 gc.alloc.rate.norm: 568.138 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+Iteration   5: 1411.344 ns/op
+                 gc.alloc.rate:      383.780 MB/sec
+                 gc.alloc.rate.norm: 568.138 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            1.000 ms
+
+
+
+Result "ffmsqlite.HookBenchmark.insertRows":
+  1362.446 ±(99.9%) 169.171 ns/op [Average]
+  (min, avg, max) = (1321.704, 1362.446, 1411.344), stdev = 43.933
+  CI (99.9%): [1193.276, 1531.617] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate":
+  397.895 ±(99.9%) 49.008 MB/sec [Average]
+  (min, avg, max) = (383.780, 397.895, 409.860), stdev = 12.727
+  CI (99.9%): [348.887, 446.903] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate.norm":
+  568.142 ±(99.9%) 0.035 B/op [Average]
+  (min, avg, max) = (568.137, 568.142, 568.158), stdev = 0.009
+  CI (99.9%): [568.107, 568.177] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.count":
+  6.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (1.000, 1.200, 2.000), stdev = 0.447
+  CI (99.9%): [6.000, 6.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.time":
+  11.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (1.000, 2.200, 4.000), stdev = 1.095
+  CI (99.9%): [11.000, 11.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.HookBenchmark.insertRows
+# Parameters: (hook = updateListener, lib = ffm-sqlite)
+
+# Run progress: 75.00% complete, ETA 00:00:08
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+570.088 ns/op
+# Warmup Iteration   2: 480.932 ns/op
+# Warmup Iteration   3: 443.192 ns/op
+Iteration   1: 499.230 ns/op
+                 gc.alloc.rate:      596.078 MB/sec
+                 gc.alloc.rate.norm: 312.084 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            4.000 ms
+
+Iteration   2: 456.220 ns/op
+                 gc.alloc.rate:      652.270 MB/sec
+                 gc.alloc.rate.norm: 312.083 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            4.000 ms
+
+Iteration   3: 501.156 ns/op
+                 gc.alloc.rate:      593.748 MB/sec
+                 gc.alloc.rate.norm: 312.084 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            4.000 ms
+
+Iteration   4: 474.282 ns/op
+                 gc.alloc.rate:      627.377 MB/sec
+                 gc.alloc.rate.norm: 312.083 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            3.000 ms
+
+Iteration   5: 453.471 ns/op
+                 gc.alloc.rate:      655.735 MB/sec
+                 gc.alloc.rate.norm: 312.085 B/op
+                 gc.count:           2.000 counts
+                 gc.time:            3.000 ms
+
+
+
+Result "ffmsqlite.HookBenchmark.insertRows":
+  476.872 ±(99.9%) 87.606 ns/op [Average]
+  (min, avg, max) = (453.471, 476.872, 501.156), stdev = 22.751
+  CI (99.9%): [389.266, 564.478] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate":
+  625.042 ±(99.9%) 114.019 MB/sec [Average]
+  (min, avg, max) = (593.748, 625.042, 655.735), stdev = 29.610
+  CI (99.9%): [511.023, 739.060] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.alloc.rate.norm":
+  312.084 ±(99.9%) 0.003 B/op [Average]
+  (min, avg, max) = (312.083, 312.084, 312.085), stdev = 0.001
+  CI (99.9%): [312.080, 312.087] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.count":
+  10.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (2.000, 2.000, 2.000), stdev = 0.001
+  CI (99.9%): [10.000, 10.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.HookBenchmark.insertRows:gc.time":
+  18.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (3.000, 3.600, 4.000), stdev = 0.548
+  CI (99.9%): [18.000, 18.000] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:00:33
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                            (hook)       (lib)  Mode  Cnt     Score     Error   Units
+HookBenchmark.insertRows                               none        jdbc  avgt    5   633.376 ±  60.398   ns/op
+HookBenchmark.insertRows:gc.alloc.rate                 none        jdbc  avgt    5    36.344 ±   3.482  MB/sec
+HookBenchmark.insertRows:gc.alloc.rate.norm            none        jdbc  avgt    5    24.132 ±   0.001    B/op
+HookBenchmark.insertRows:gc.count                      none        jdbc  avgt    5     1.000            counts
+HookBenchmark.insertRows:gc.time                       none        jdbc  avgt    5     3.000                ms
+HookBenchmark.insertRows                               none  ffm-sqlite  avgt    5   339.482 ± 154.976   ns/op
+HookBenchmark.insertRows:gc.alloc.rate                 none  ffm-sqlite  avgt    5    68.374 ±  30.156  MB/sec
+HookBenchmark.insertRows:gc.alloc.rate.norm            none  ffm-sqlite  avgt    5    24.082 ±   0.001    B/op
+HookBenchmark.insertRows:gc.count                      none  ffm-sqlite  avgt    5     2.000            counts
+HookBenchmark.insertRows:gc.time                       none  ffm-sqlite  avgt    5     4.000                ms
+HookBenchmark.insertRows                     updateListener        jdbc  avgt    5  1362.446 ± 169.171   ns/op
+HookBenchmark.insertRows:gc.alloc.rate       updateListener        jdbc  avgt    5   397.895 ±  49.008  MB/sec
+HookBenchmark.insertRows:gc.alloc.rate.norm  updateListener        jdbc  avgt    5   568.142 ±   0.035    B/op
+HookBenchmark.insertRows:gc.count            updateListener        jdbc  avgt    5     6.000            counts
+HookBenchmark.insertRows:gc.time             updateListener        jdbc  avgt    5    11.000                ms
+HookBenchmark.insertRows                     updateListener  ffm-sqlite  avgt    5   476.872 ±  87.606   ns/op
+HookBenchmark.insertRows:gc.alloc.rate       updateListener  ffm-sqlite  avgt    5   625.042 ± 114.019  MB/sec
+HookBenchmark.insertRows:gc.alloc.rate.norm  updateListener  ffm-sqlite  avgt    5   312.084 ±   0.003    B/op
+HookBenchmark.insertRows:gc.count            updateListener  ffm-sqlite  avgt    5    10.000            counts
+HookBenchmark.insertRows:gc.time             updateListener  ffm-sqlite  avgt    5    18.000                ms
+
+Benchmark result is saved to results/hooks.json

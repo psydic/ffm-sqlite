@@ -1,0 +1,535 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMax
+# Parameters: (lib = jdbc)
+
+# Run progress: 0.00% complete, ETA 00:00:48
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+425.109 ns/op
+# Warmup Iteration   2: 370.169 ns/op
+# Warmup Iteration   3: 355.754 ns/op
+Iteration   1: 338.122 ns/op
+                 gc.alloc.rate:      291.159 MB/sec
+                 gc.alloc.rate.norm: 103.255 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+Iteration   2: 352.363 ns/op
+                 gc.alloc.rate:      279.366 MB/sec
+                 gc.alloc.rate.norm: 103.255 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            3.000 ms
+
+Iteration   3: 365.576 ns/op
+                 gc.alloc.rate:      269.276 MB/sec
+                 gc.alloc.rate.norm: 103.255 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            4.000 ms
+
+Iteration   4: 365.518 ns/op
+                 gc.alloc.rate:      269.315 MB/sec
+                 gc.alloc.rate.norm: 103.255 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+Iteration   5: 349.805 ns/op
+                 gc.alloc.rate:      281.387 MB/sec
+                 gc.alloc.rate.norm: 103.255 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            2.000 ms
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationMax":
+  354.277 ±(99.9%) 44.686 ns/op [Average]
+  (min, avg, max) = (338.122, 354.277, 365.576), stdev = 11.605
+  CI (99.9%): [309.591, 398.963] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.alloc.rate":
+  278.101 ±(99.9%) 35.396 MB/sec [Average]
+  (min, avg, max) = (269.276, 278.101, 291.159), stdev = 9.192
+  CI (99.9%): [242.705, 313.497] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.alloc.rate.norm":
+  103.255 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (103.255, 103.255, 103.255), stdev = 0.001
+  CI (99.9%): [103.255, 103.256] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.count":
+  5.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (1.000, 1.000, 1.000), stdev = 0.001
+  CI (99.9%): [5.000, 5.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.time":
+  13.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (2.000, 2.600, 4.000), stdev = 0.894
+  CI (99.9%): [13.000, 13.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMax
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 16.67% complete, ETA 00:00:41
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+114.820 ns/op
+# Warmup Iteration   2: 90.218 ns/op
+# Warmup Iteration   3: 98.601 ns/op
+Iteration   1: 103.204 ns/op
+                 gc.alloc.rate:      1693.044 MB/sec
+                 gc.alloc.rate.norm: 183.251 B/op
+                 gc.count:           5.000 counts
+                 gc.time:            5.000 ms
+
+Iteration   2: 98.300 ns/op
+                 gc.alloc.rate:      1777.535 MB/sec
+                 gc.alloc.rate.norm: 183.251 B/op
+                 gc.count:           4.000 counts
+                 gc.time:            5.000 ms
+
+Iteration   3: 92.446 ns/op
+                 gc.alloc.rate:      1889.922 MB/sec
+                 gc.alloc.rate.norm: 183.234 B/op
+                 gc.count:           6.000 counts
+                 gc.time:            5.000 ms
+
+Iteration   4: 93.828 ns/op
+                 gc.alloc.rate:      1861.913 MB/sec
+                 gc.alloc.rate.norm: 183.223 B/op
+                 gc.count:           5.000 counts
+                 gc.time:            5.000 ms
+
+Iteration   5: 93.106 ns/op
+                 gc.alloc.rate:      1875.041 MB/sec
+                 gc.alloc.rate.norm: 183.223 B/op
+                 gc.count:           5.000 counts
+                 gc.time:            4.000 ms
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationMax":
+  96.177 ±(99.9%) 17.514 ns/op [Average]
+  (min, avg, max) = (92.446, 96.177, 103.204), stdev = 4.548
+  CI (99.9%): [78.662, 113.691] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.alloc.rate":
+  1819.491 ±(99.9%) 319.830 MB/sec [Average]
+  (min, avg, max) = (1693.044, 1819.491, 1889.922), stdev = 83.059
+  CI (99.9%): [1499.661, 2139.321] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.alloc.rate.norm":
+  183.237 ±(99.9%) 0.054 B/op [Average]
+  (min, avg, max) = (183.223, 183.237, 183.251), stdev = 0.014
+  CI (99.9%): [183.183, 183.290] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.count":
+  25.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (4.000, 5.000, 6.000), stdev = 0.707
+  CI (99.9%): [25.000, 25.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMax:gc.time":
+  24.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (4.000, 4.800, 5.000), stdev = 0.447
+  CI (99.9%): [24.000, 24.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMaxBuiltin
+# Parameters: (lib = jdbc)
+
+# Run progress: 33.33% complete, ETA 00:00:33
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+47.781 ns/op
+# Warmup Iteration   2: 47.168 ns/op
+# Warmup Iteration   3: 44.033 ns/op
+Iteration   1: 41.319 ns/op
+                 gc.alloc.rate:      1.114 MB/sec
+                 gc.alloc.rate.norm: 0.048 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 40.936 ns/op
+                 gc.alloc.rate:      1.125 MB/sec
+                 gc.alloc.rate.norm: 0.048 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 49.317 ns/op
+                 gc.alloc.rate:      0.935 MB/sec
+                 gc.alloc.rate.norm: 0.048 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 42.893 ns/op
+                 gc.alloc.rate:      1.073 MB/sec
+                 gc.alloc.rate.norm: 0.048 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 44.301 ns/op
+                 gc.alloc.rate:      1.040 MB/sec
+                 gc.alloc.rate.norm: 0.048 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationMaxBuiltin":
+  43.753 ±(99.9%) 13.039 ns/op [Average]
+  (min, avg, max) = (40.936, 43.753, 49.317), stdev = 3.386
+  CI (99.9%): [30.715, 56.792] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.alloc.rate":
+  1.057 ±(99.9%) 0.295 MB/sec [Average]
+  (min, avg, max) = (0.935, 1.057, 1.125), stdev = 0.076
+  CI (99.9%): [0.763, 1.352] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.alloc.rate.norm":
+  0.048 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (0.048, 0.048, 0.048), stdev = 0.001
+  CI (99.9%): [0.048, 0.048] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.count":
+  ≈ 0 counts
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMaxBuiltin
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 50.00% complete, ETA 00:00:25
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+38.686 ns/op
+# Warmup Iteration   2: 37.928 ns/op
+# Warmup Iteration   3: 37.836 ns/op
+Iteration   1: 37.222 ns/op
+                 gc.alloc.rate:      0.806 MB/sec
+                 gc.alloc.rate.norm: 0.031 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 34.929 ns/op
+                 gc.alloc.rate:      0.858 MB/sec
+                 gc.alloc.rate.norm: 0.031 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 35.794 ns/op
+                 gc.alloc.rate:      0.838 MB/sec
+                 gc.alloc.rate.norm: 0.031 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 37.231 ns/op
+                 gc.alloc.rate:      0.806 MB/sec
+                 gc.alloc.rate.norm: 0.031 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 38.728 ns/op
+                 gc.alloc.rate:      0.778 MB/sec
+                 gc.alloc.rate.norm: 0.032 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationMaxBuiltin":
+  36.781 ±(99.9%) 5.643 ns/op [Average]
+  (min, avg, max) = (34.929, 36.781, 38.728), stdev = 1.465
+  CI (99.9%): [31.138, 42.424] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.alloc.rate":
+  0.817 ±(99.9%) 0.120 MB/sec [Average]
+  (min, avg, max) = (0.778, 0.817, 0.858), stdev = 0.031
+  CI (99.9%): [0.697, 0.938] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.alloc.rate.norm":
+  0.031 ±(99.9%) 0.001 B/op [Average]
+  (min, avg, max) = (0.031, 0.031, 0.032), stdev = 0.001
+  CI (99.9%): [0.031, 0.032] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationMaxBuiltin:gc.count":
+  ≈ 0 counts
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationOrderBy
+# Parameters: (lib = jdbc)
+
+# Run progress: 66.67% complete, ETA 00:00:16
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+3361.970 ns/op
+# Warmup Iteration   2: 3074.652 ns/op
+# Warmup Iteration   3: 3596.614 ns/op
+Iteration   1: 3197.604 ns/op
+                 gc.alloc.rate:      290.125 MB/sec
+                 gc.alloc.rate.norm: 973.112 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            17.000 ms
+
+Iteration   2: 3393.793 ns/op
+                 gc.alloc.rate:      273.398 MB/sec
+                 gc.alloc.rate.norm: 973.113 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            34.000 ms
+
+Iteration   3: 2915.500 ns/op
+                 gc.alloc.rate:      318.243 MB/sec
+                 gc.alloc.rate.norm: 973.110 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            24.000 ms
+
+Iteration   4: 2875.651 ns/op
+                 gc.alloc.rate:      322.655 MB/sec
+                 gc.alloc.rate.norm: 973.110 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            22.000 ms
+
+Iteration   5: 2879.928 ns/op
+                 gc.alloc.rate:      322.148 MB/sec
+                 gc.alloc.rate.norm: 973.113 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            17.000 ms
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationOrderBy":
+  3052.495 ±(99.9%) 897.625 ns/op [Average]
+  (min, avg, max) = (2875.651, 3052.495, 3393.793), stdev = 233.110
+  CI (99.9%): [2154.871, 3950.120] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.alloc.rate":
+  305.314 ±(99.9%) 86.116 MB/sec [Average]
+  (min, avg, max) = (273.398, 305.314, 322.655), stdev = 22.364
+  CI (99.9%): [219.198, 391.430] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.alloc.rate.norm":
+  973.111 ±(99.9%) 0.006 B/op [Average]
+  (min, avg, max) = (973.110, 973.111, 973.113), stdev = 0.002
+  CI (99.9%): [973.105, 973.118] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.count":
+  5.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (1.000, 1.000, 1.000), stdev = 0.001
+  CI (99.9%): [5.000, 5.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.time":
+  114.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (17.000, 22.800, 34.000), stdev = 6.979
+  CI (99.9%): [114.000, 114.000] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationOrderBy
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 83.33% complete, ETA 00:00:08
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+943.989 ns/op
+# Warmup Iteration   2: 671.818 ns/op
+# Warmup Iteration   3: 806.361 ns/op
+Iteration   1: 831.336 ns/op
+                 gc.alloc.rate:      1777.725 MB/sec
+                 gc.alloc.rate.norm: 1550.204 B/op
+                 gc.count:           5.000 counts
+                 gc.time:            6.000 ms
+
+Iteration   2: 664.444 ns/op
+                 gc.alloc.rate:      2224.344 MB/sec
+                 gc.alloc.rate.norm: 1550.203 B/op
+                 gc.count:           7.000 counts
+                 gc.time:            6.000 ms
+
+Iteration   3: 653.038 ns/op
+                 gc.alloc.rate:      2263.199 MB/sec
+                 gc.alloc.rate.norm: 1550.203 B/op
+                 gc.count:           6.000 counts
+                 gc.time:            6.000 ms
+
+Iteration   4: 680.387 ns/op
+                 gc.alloc.rate:      2172.244 MB/sec
+                 gc.alloc.rate.norm: 1550.203 B/op
+                 gc.count:           6.000 counts
+                 gc.time:            6.000 ms
+
+Iteration   5: 694.968 ns/op
+                 gc.alloc.rate:      2125.784 MB/sec
+                 gc.alloc.rate.norm: 1550.206 B/op
+                 gc.count:           6.000 counts
+                 gc.time:            4.000 ms
+
+
+
+Result "ffmsqlite.UdfBenchmark.collationOrderBy":
+  704.835 ±(99.9%) 279.085 ns/op [Average]
+  (min, avg, max) = (653.038, 704.835, 831.336), stdev = 72.477
+  CI (99.9%): [425.750, 983.919] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.alloc.rate":
+  2112.659 ±(99.9%) 748.253 MB/sec [Average]
+  (min, avg, max) = (1777.725, 2112.659, 2263.199), stdev = 194.319
+  CI (99.9%): [1364.406, 2860.912] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.alloc.rate.norm":
+  1550.204 ±(99.9%) 0.006 B/op [Average]
+  (min, avg, max) = (1550.203, 1550.204, 1550.206), stdev = 0.001
+  CI (99.9%): [1550.198, 1550.210] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.count":
+  30.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (5.000, 6.000, 7.000), stdev = 0.707
+  CI (99.9%): [30.000, 30.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.UdfBenchmark.collationOrderBy:gc.time":
+  28.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (4.000, 5.600, 6.000), stdev = 0.894
+  CI (99.9%): [28.000, 28.000] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:00:50
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                                 (lib)  Mode  Cnt     Score     Error   Units
+UdfBenchmark.collationMax                                  jdbc  avgt    5   354.277 ±  44.686   ns/op
+UdfBenchmark.collationMax:gc.alloc.rate                    jdbc  avgt    5   278.101 ±  35.396  MB/sec
+UdfBenchmark.collationMax:gc.alloc.rate.norm               jdbc  avgt    5   103.255 ±   0.001    B/op
+UdfBenchmark.collationMax:gc.count                         jdbc  avgt    5     5.000            counts
+UdfBenchmark.collationMax:gc.time                          jdbc  avgt    5    13.000                ms
+UdfBenchmark.collationMax                            ffm-sqlite  avgt    5    96.177 ±  17.514   ns/op
+UdfBenchmark.collationMax:gc.alloc.rate              ffm-sqlite  avgt    5  1819.491 ± 319.830  MB/sec
+UdfBenchmark.collationMax:gc.alloc.rate.norm         ffm-sqlite  avgt    5   183.237 ±   0.054    B/op
+UdfBenchmark.collationMax:gc.count                   ffm-sqlite  avgt    5    25.000            counts
+UdfBenchmark.collationMax:gc.time                    ffm-sqlite  avgt    5    24.000                ms
+UdfBenchmark.collationMaxBuiltin                           jdbc  avgt    5    43.753 ±  13.039   ns/op
+UdfBenchmark.collationMaxBuiltin:gc.alloc.rate             jdbc  avgt    5     1.057 ±   0.295  MB/sec
+UdfBenchmark.collationMaxBuiltin:gc.alloc.rate.norm        jdbc  avgt    5     0.048 ±   0.001    B/op
+UdfBenchmark.collationMaxBuiltin:gc.count                  jdbc  avgt    5       ≈ 0            counts
+UdfBenchmark.collationMaxBuiltin                     ffm-sqlite  avgt    5    36.781 ±   5.643   ns/op
+UdfBenchmark.collationMaxBuiltin:gc.alloc.rate       ffm-sqlite  avgt    5     0.817 ±   0.120  MB/sec
+UdfBenchmark.collationMaxBuiltin:gc.alloc.rate.norm  ffm-sqlite  avgt    5     0.031 ±   0.001    B/op
+UdfBenchmark.collationMaxBuiltin:gc.count            ffm-sqlite  avgt    5       ≈ 0            counts
+UdfBenchmark.collationOrderBy                              jdbc  avgt    5  3052.495 ± 897.625   ns/op
+UdfBenchmark.collationOrderBy:gc.alloc.rate                jdbc  avgt    5   305.314 ±  86.116  MB/sec
+UdfBenchmark.collationOrderBy:gc.alloc.rate.norm           jdbc  avgt    5   973.111 ±   0.006    B/op
+UdfBenchmark.collationOrderBy:gc.count                     jdbc  avgt    5     5.000            counts
+UdfBenchmark.collationOrderBy:gc.time                      jdbc  avgt    5   114.000                ms
+UdfBenchmark.collationOrderBy                        ffm-sqlite  avgt    5   704.835 ± 279.085   ns/op
+UdfBenchmark.collationOrderBy:gc.alloc.rate          ffm-sqlite  avgt    5  2112.659 ± 748.253  MB/sec
+UdfBenchmark.collationOrderBy:gc.alloc.rate.norm     ffm-sqlite  avgt    5  1550.204 ±   0.006    B/op
+UdfBenchmark.collationOrderBy:gc.count               ffm-sqlite  avgt    5    30.000            counts
+UdfBenchmark.collationOrderBy:gc.time                ffm-sqlite  avgt    5    28.000                ms
+
+Benchmark result is saved to results/udf-collation.json

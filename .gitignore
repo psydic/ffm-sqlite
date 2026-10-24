@@ -1,0 +1,19 @@
+# Build output
+target/
+dependency-reduced-pom.xml
+*.class
+hs_err_pid*.log
+
+# Built locally by the scripts, not sources
+ffm-vs-jdbc/native/
+ffm-sqlite/target/test-ext/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Unrelated files in this working folder (not part of ffm-sqlite)
+/ggogle/
+/goo
+/SqliteBechmark.java

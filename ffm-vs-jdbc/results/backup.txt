@@ -1,0 +1,338 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.OperationsBenchmark.db_backupToFile
+# Parameters: (lib = jdbc)
+
+# Run progress: 0.00% complete, ETA 00:00:32
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+4733.970 us/op
+# Warmup Iteration   2: 4491.680 us/op
+# Warmup Iteration   3: 4417.568 us/op
+Iteration   1: 4339.985 us/op
+                 gc.alloc.rate:      0.223 MB/sec
+                 gc.alloc.rate.norm: 1014.303 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 4305.305 us/op
+                 gc.alloc.rate:      0.228 MB/sec
+                 gc.alloc.rate.norm: 1031.348 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 4321.913 us/op
+                 gc.alloc.rate:      0.231 MB/sec
+                 gc.alloc.rate.norm: 1046.034 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 7492.780 us/op
+                 gc.alloc.rate:      0.136 MB/sec
+                 gc.alloc.rate.norm: 1068.000 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 4195.173 us/op
+                 gc.alloc.rate:      0.239 MB/sec
+                 gc.alloc.rate.norm: 1052.050 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.OperationsBenchmark.db_backupToFile":
+  4931.031 ±(99.9%) 5518.639 us/op [Average]
+  (min, avg, max) = (4195.173, 4931.031, 7492.780), stdev = 1433.173
+  CI (99.9%): [≈ 0, 10449.670] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.alloc.rate":
+  0.211 ±(99.9%) 0.164 MB/sec [Average]
+  (min, avg, max) = (0.136, 0.211, 0.239), stdev = 0.043
+  CI (99.9%): [0.048, 0.375] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.alloc.rate.norm":
+  1042.347 ±(99.9%) 78.757 B/op [Average]
+  (min, avg, max) = (1014.303, 1042.347, 1068.000), stdev = 20.453
+  CI (99.9%): [963.590, 1121.104] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.count":
+  ≈ 0 counts
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.OperationsBenchmark.db_backupToFile
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 25.00% complete, ETA 00:00:25
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+4743.428 us/op
+# Warmup Iteration   2: 4489.761 us/op
+# Warmup Iteration   3: 4366.450 us/op
+Iteration   1: 4452.883 us/op
+                 gc.alloc.rate:      0.418 MB/sec
+                 gc.alloc.rate.norm: 1951.929 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 4240.011 us/op
+                 gc.alloc.rate:      0.439 MB/sec
+                 gc.alloc.rate.norm: 1950.136 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 4270.842 us/op
+                 gc.alloc.rate:      0.437 MB/sec
+                 gc.alloc.rate.norm: 1957.787 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 4226.403 us/op
+                 gc.alloc.rate:      0.442 MB/sec
+                 gc.alloc.rate.norm: 1957.536 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 4279.804 us/op
+                 gc.alloc.rate:      0.499 MB/sec
+                 gc.alloc.rate.norm: 2247.145 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.OperationsBenchmark.db_backupToFile":
+  4293.989 ±(99.9%) 352.213 us/op [Average]
+  (min, avg, max) = (4226.403, 4293.989, 4452.883), stdev = 91.469
+  CI (99.9%): [3941.776, 4646.201] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.alloc.rate":
+  0.447 ±(99.9%) 0.117 MB/sec [Average]
+  (min, avg, max) = (0.418, 0.447, 0.499), stdev = 0.030
+  CI (99.9%): [0.329, 0.564] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.alloc.rate.norm":
+  2012.907 ±(99.9%) 504.384 B/op [Average]
+  (min, avg, max) = (1950.136, 2012.907, 2247.145), stdev = 130.987
+  CI (99.9%): [1508.523, 2517.291] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_backupToFile:gc.count":
+  ≈ 0 counts
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.OperationsBenchmark.db_restoreFromFile
+# Parameters: (lib = jdbc)
+
+# Run progress: 50.00% complete, ETA 00:00:16
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.sqlite.SQLiteJDBCLoader in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+193.843 us/op
+# Warmup Iteration   2: 198.376 us/op
+# Warmup Iteration   3: 237.414 us/op
+Iteration   1: 193.412 us/op
+                 gc.alloc.rate:      2.965 MB/sec
+                 gc.alloc.rate.norm: 601.354 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 200.447 us/op
+                 gc.alloc.rate:      2.861 MB/sec
+                 gc.alloc.rate.norm: 601.396 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   3: 195.097 us/op
+                 gc.alloc.rate:      2.939 MB/sec
+                 gc.alloc.rate.norm: 601.365 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 214.527 us/op
+                 gc.alloc.rate:      2.673 MB/sec
+                 gc.alloc.rate.norm: 601.494 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 191.972 us/op
+                 gc.alloc.rate:      2.987 MB/sec
+                 gc.alloc.rate.norm: 601.690 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.OperationsBenchmark.db_restoreFromFile":
+  199.091 ±(99.9%) 35.448 us/op [Average]
+  (min, avg, max) = (191.972, 199.091, 214.527), stdev = 9.206
+  CI (99.9%): [163.643, 234.539] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.alloc.rate":
+  2.885 ±(99.9%) 0.491 MB/sec [Average]
+  (min, avg, max) = (2.673, 2.885, 2.987), stdev = 0.128
+  CI (99.9%): [2.394, 3.376] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.alloc.rate.norm":
+  601.460 ±(99.9%) 0.539 B/op [Average]
+  (min, avg, max) = (601.354, 601.460, 601.690), stdev = 0.140
+  CI (99.9%): [600.921, 601.999] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.count":
+  ≈ 0 counts
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/native/libsqlite3.so
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.OperationsBenchmark.db_restoreFromFile
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 75.00% complete, ETA 00:00:08
+# Fork: 1 of 1
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+188.600 us/op
+# Warmup Iteration   2: 177.907 us/op
+# Warmup Iteration   3: 181.356 us/op
+Iteration   1: 175.494 us/op
+                 gc.alloc.rate:      5.092 MB/sec
+                 gc.alloc.rate.norm: 937.228 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   2: 184.533 us/op
+                 gc.alloc.rate:      4.843 MB/sec
+                 gc.alloc.rate.norm: 937.322 B/op
+                 gc.count:           1.000 counts
+                 gc.time:            3.000 ms
+
+Iteration   3: 193.049 us/op
+                 gc.alloc.rate:      4.630 MB/sec
+                 gc.alloc.rate.norm: 937.351 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   4: 176.942 us/op
+                 gc.alloc.rate:      5.050 MB/sec
+                 gc.alloc.rate.norm: 937.233 B/op
+                 gc.count:           ≈ 0 counts
+
+Iteration   5: 163.608 us/op
+                 gc.alloc.rate:      5.514 MB/sec
+                 gc.alloc.rate.norm: 948.277 B/op
+                 gc.count:           ≈ 0 counts
+
+
+
+Result "ffmsqlite.OperationsBenchmark.db_restoreFromFile":
+  178.725 ±(99.9%) 42.228 us/op [Average]
+  (min, avg, max) = (163.608, 178.725, 193.049), stdev = 10.966
+  CI (99.9%): [136.497, 220.953] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.alloc.rate":
+  5.026 ±(99.9%) 1.268 MB/sec [Average]
+  (min, avg, max) = (4.630, 5.026, 5.514), stdev = 0.329
+  CI (99.9%): [3.758, 6.293] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.alloc.rate.norm":
+  939.482 ±(99.9%) 18.933 B/op [Average]
+  (min, avg, max) = (937.228, 939.482, 948.277), stdev = 4.917
+  CI (99.9%): [920.549, 958.416] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.count":
+  1.000 ±(99.9%) 0.001 counts [Sum]
+  (min, avg, max) = (≈ 0, 0.200, 1.000), stdev = 0.447
+  CI (99.9%): [1.000, 1.000] (assumes normal distribution)
+
+Secondary result "ffmsqlite.OperationsBenchmark.db_restoreFromFile:gc.time":
+  3.000 ±(99.9%) 0.001 ms [Sum]
+  (min, avg, max) = (≈ 0, 0.600, 3.000), stdev = 1.342
+  CI (99.9%): [3.000, 3.000] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:00:33
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                                                       (lib)  Mode  Cnt     Score      Error   Units
+OperationsBenchmark.db_backupToFile                              jdbc  avgt    5  4931.031 ± 5518.639   us/op
+OperationsBenchmark.db_backupToFile:gc.alloc.rate                jdbc  avgt    5     0.211 ±    0.164  MB/sec
+OperationsBenchmark.db_backupToFile:gc.alloc.rate.norm           jdbc  avgt    5  1042.347 ±   78.757    B/op
+OperationsBenchmark.db_backupToFile:gc.count                     jdbc  avgt    5       ≈ 0             counts
+OperationsBenchmark.db_backupToFile                        ffm-sqlite  avgt    5  4293.989 ±  352.213   us/op
+OperationsBenchmark.db_backupToFile:gc.alloc.rate          ffm-sqlite  avgt    5     0.447 ±    0.117  MB/sec
+OperationsBenchmark.db_backupToFile:gc.alloc.rate.norm     ffm-sqlite  avgt    5  2012.907 ±  504.384    B/op
+OperationsBenchmark.db_backupToFile:gc.count               ffm-sqlite  avgt    5       ≈ 0             counts
+OperationsBenchmark.db_restoreFromFile                           jdbc  avgt    5   199.091 ±   35.448   us/op
+OperationsBenchmark.db_restoreFromFile:gc.alloc.rate             jdbc  avgt    5     2.885 ±    0.491  MB/sec
+OperationsBenchmark.db_restoreFromFile:gc.alloc.rate.norm        jdbc  avgt    5   601.460 ±    0.539    B/op
+OperationsBenchmark.db_restoreFromFile:gc.count                  jdbc  avgt    5       ≈ 0             counts
+OperationsBenchmark.db_restoreFromFile                     ffm-sqlite  avgt    5   178.725 ±   42.228   us/op
+OperationsBenchmark.db_restoreFromFile:gc.alloc.rate       ffm-sqlite  avgt    5     5.026 ±    1.268  MB/sec
+OperationsBenchmark.db_restoreFromFile:gc.alloc.rate.norm  ffm-sqlite  avgt    5   939.482 ±   18.933    B/op
+OperationsBenchmark.db_restoreFromFile:gc.count            ffm-sqlite  avgt    5     1.000             counts
+OperationsBenchmark.db_restoreFromFile:gc.time             ffm-sqlite  avgt    5     3.000                 ms
+
+Benchmark result is saved to results/backup.json
