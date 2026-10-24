@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -42,13 +43,24 @@ public final class Connection implements AutoCloseable {
     private final Map<String, Stmt> cache;
     private final Set<Child> children = Collections.newSetFromMap(new IdentityHashMap<>());
     private final Map<String, Udf> functions = new HashMap<>();
+    /** Hook stubs (created once per hook kind, reused). */
     private Arena callbackArena;
     private final Map<String, CollationCallback> collations = new HashMap<>();
+    /**
+     * The upcall stubs of each registered function ("name/nArgs") and collation ("name"), one arena per
+     * registration, closed when SQLite has accepted its replacement or removal: re-registering in a loop (e.g. on
+     * every pool checkout) does not accumulate native memory.
+     */
+    private final Map<String, Arena> functionStubs = new HashMap<>();
+    private final Map<String, Arena> collationStubs = new HashMap<>();
     private final Hooks hooks = new Hooks(this);
     private Throwable callbackFailure;
     private String callbackFailureMessage;
     private boolean autoCommit = true;
-    private boolean closed;
+    /** Volatile and set under {@link #interruptLock}: {@link #interrupt()} runs on other threads. */
+    private volatile boolean closed;
+    /** Orders {@link #interrupt()} against {@link #close()}, so sqlite3_interrupt never sees a freed handle. */
+    private final Object interruptLock = new Object();
 
     private Connection(MemorySegment db, int cacheSize) {
         this.db = db;
@@ -84,7 +96,7 @@ public final class Connection implements AutoCloseable {
             Native.busy_timeout(db, config.busyTimeoutMillis());
         }
         Connection conn = new Connection(db, config.statementCacheSize());
-        for (Map.Entry<String, String> pragma : config.pragmas().entrySet()) {
+        for (Map.Entry<String, String> pragma : inApplyOrder(config.pragmas())) {
             String sql = "PRAGMA " + pragma.getKey() + " = " + pragma.getValue();
             try {
                 conn.runScript(sql, false);
@@ -116,7 +128,9 @@ public final class Connection implements AutoCloseable {
 
     /**
      * {@code false} starts a transaction that {@link #commit()} / {@link #rollback()} end, each
-     * starting the next one immediately. Switching back to {@code true} commits the open transaction.
+     * starting the next one immediately. Switching back to {@code true} commits the open transaction; if that
+     * commit fails, SQLite has rolled it back, a new transaction is started and the connection stays in
+     * manual-commit mode (as after a failed {@link #commit()}).
      */
     public void setAutoCommit(boolean autoCommit) throws SQLiteException {
         checkOpen();
@@ -124,7 +138,7 @@ public final class Connection implements AutoCloseable {
             return;
         }
         if (autoCommit) {
-            endTransaction("COMMIT");
+            endTransactionOrRestart("COMMIT", false);
         } else {
             run("BEGIN");
         }
@@ -138,18 +152,31 @@ public final class Connection implements AutoCloseable {
      */
     public void commit() throws SQLiteException {
         checkManualCommit("commit");
-        try {
-            endTransaction("COMMIT");
-        } finally {
-            restartTransaction();
-        }
+        endTransactionOrRestart("COMMIT", true);
     }
 
     public void rollback() throws SQLiteException {
         checkManualCommit("rollback");
+        endTransactionOrRestart("ROLLBACK", true);
+    }
+
+    /**
+     * Runs COMMIT or ROLLBACK. On failure the next transaction is started before rethrowing, and a failure of that
+     * BEGIN is added as suppressed, so the caller sees why the COMMIT/ROLLBACK failed. On success the next
+     * transaction is started only if {@code restartOnSuccess}.
+     */
+    private void endTransactionOrRestart(String sql, boolean restartOnSuccess) throws SQLiteException {
         try {
-            endTransaction("ROLLBACK");
-        } finally {
+            endTransaction(sql);
+        } catch (SQLiteException | RuntimeException e) {
+            try {
+                restartTransaction();
+            } catch (SQLiteException | RuntimeException again) {
+                e.addSuppressed(again);
+            }
+            throw e;
+        }
+        if (restartOnSuccess) {
             restartTransaction();
         }
     }
@@ -162,6 +189,20 @@ public final class Connection implements AutoCloseable {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    /** PRAGMAs that set the file format: they only take effect before the database file is first written. */
+    private static final Set<String> FILE_FORMAT_PRAGMAS = Set.of("page_size", "auto_vacuum", "encoding");
+
+    /**
+     * File-format PRAGMAs first, then the others in their given order: e.g. {@code journal_mode = WAL} writes the
+     * file header, after which {@code page_size} would be silently ignored on a new database.
+     */
+    private static List<Map.Entry<String, String>> inApplyOrder(Map<String, String> pragmas) {
+        List<Map.Entry<String, String>> ordered = new ArrayList<>(pragmas.entrySet());
+        ordered.sort(Comparator.comparing(
+                (Map.Entry<String, String> e) -> !FILE_FORMAT_PRAGMAS.contains(e.getKey().toLowerCase(Locale.ROOT))));
+        return ordered;   // List.sort is stable: the order within each group is kept
     }
 
     /** Closes every open statement and result set, then the database. Idempotent. */
@@ -180,13 +221,19 @@ public final class Connection implements AutoCloseable {
         }
         cache.clear();
         hooks.detachAll();
-        closed = true;
+        synchronized (interruptLock) {
+            closed = true;   // from here on interrupt() is a no-op, and none is still running
+        }
         Native.close_v2(db); // every statement is finalized and no hook is set, so this closes fully: no more upcalls
         functions.clear();
         collations.clear();
         if (callbackArena != null) {
             callbackArena.close();
         }
+        functionStubs.values().forEach(Arena::close);
+        functionStubs.clear();
+        collationStubs.values().forEach(Arena::close);
+        collationStubs.clear();
     }
 
     /** Schema information: tables, columns, indexes, foreign keys, attached databases. */
@@ -248,19 +295,22 @@ public final class Connection implements AutoCloseable {
         for (FunctionFlag f : flags) {
             textRep |= f.bit;
         }
-        if (udf != null) {
-            ensureCallbackArena();
-        }
+        Arena stubs = udf == null ? null : Arena.ofShared();
         try (Arena arena = Arena.ofConfined()) {
             MemorySegment cName = arena.allocateFrom(name);
             int rc = xValue != null
-                    ? Native.create_window_function(db, cName, nArgs, textRep, stub(xStep, Native.X_FUNC),
-                            stub(xFinal, Native.X_FINAL), stub(xValue, Native.X_FINAL), stub(xInverse, Native.X_FUNC))
+                    ? Native.create_window_function(db, cName, nArgs, textRep, stub(xStep, Native.X_FUNC, stubs),
+                            stub(xFinal, Native.X_FINAL, stubs), stub(xValue, Native.X_FINAL, stubs), stub(xInverse, Native.X_FUNC, stubs))
                     : Native.create_function_v2(db, cName, nArgs, textRep,
-                            stub(xFunc, Native.X_FUNC), stub(xStep, Native.X_FUNC), stub(xFinal, Native.X_FINAL));
+                            stub(xFunc, Native.X_FUNC, stubs), stub(xStep, Native.X_FUNC, stubs), stub(xFinal, Native.X_FINAL, stubs));
             if (rc != Native.SQLITE_OK) {
                 throw SQLiteException.of(db, rc, (udf == null ? "remove" : "create") + " function " + name + "/" + nArgs);
             }
+        } catch (SQLiteException | RuntimeException e) {
+            if (stubs != null) {
+                stubs.close();   // SQLite kept the previous definition, and its stubs
+            }
+            throw e;
         }
         String key = name.toLowerCase(Locale.ROOT) + "/" + nArgs;
         if (udf == null) {
@@ -268,10 +318,16 @@ public final class Connection implements AutoCloseable {
         } else {
             functions.put(key, udf);
         }
+        // SQLite no longer calls the previous definition's stubs: a replacement only succeeds while no statement
+        // runs, and it expires prepared statements, which re-prepare against the new definition.
+        Arena previous = udf == null ? functionStubs.remove(key) : functionStubs.put(key, stubs);
+        if (previous != null) {
+            previous.close();
+        }
     }
 
-    private MemorySegment stub(MethodHandle target, java.lang.foreign.FunctionDescriptor descriptor) {
-        return target == null ? MemorySegment.NULL : Native.linker().upcallStub(target, descriptor, callbackArena);
+    private static MemorySegment stub(MethodHandle target, java.lang.foreign.FunctionDescriptor descriptor, Arena arena) {
+        return target == null ? MemorySegment.NULL : Native.linker().upcallStub(target, descriptor, arena);
     }
 
     Arena callbackArena() {
@@ -301,11 +357,21 @@ public final class Connection implements AutoCloseable {
     public void createCollation(String name, Comparator<? super String> comparator) throws SQLiteException {
         Objects.requireNonNull(comparator, "comparator");
         checkOpen();
-        ensureCallbackArena();
         CollationCallback callback = new CollationCallback(this, name, comparator);
-        registerCollation(name, Native.linker().upcallStub(CollationCallback.X_COMPARE.bindTo(callback),
-                Native.X_COMPARE, callbackArena), "create");
-        collations.put(name.toLowerCase(Locale.ROOT), callback);
+        Arena stubs = Arena.ofShared();
+        try {
+            registerCollation(name, Native.linker().upcallStub(CollationCallback.X_COMPARE.bindTo(callback),
+                    Native.X_COMPARE, stubs), "create");
+        } catch (SQLiteException | RuntimeException e) {
+            stubs.close();
+            throw e;
+        }
+        String key = name.toLowerCase(Locale.ROOT);
+        collations.put(key, callback);
+        Arena previous = collationStubs.put(key, stubs);   // no longer called: see register()
+        if (previous != null) {
+            previous.close();
+        }
     }
 
     /** Removes a collation registered with {@link #createCollation}. */
@@ -313,6 +379,10 @@ public final class Connection implements AutoCloseable {
         checkOpen();
         registerCollation(name, MemorySegment.NULL, "remove");
         collations.remove(name.toLowerCase(Locale.ROOT));
+        Arena previous = collationStubs.remove(name.toLowerCase(Locale.ROOT));
+        if (previous != null) {
+            previous.close();
+        }
     }
 
     private void registerCollation(String name, MemorySegment xCompare, String action) throws SQLiteException {
@@ -587,8 +657,10 @@ public final class Connection implements AutoCloseable {
 
     /** Thread-safe: aborts whatever statement is running on this connection (for Statement.cancel()). */
     void interrupt() {
-        if (!closed) {
-            Native.interrupt(db);
+        synchronized (interruptLock) {
+            if (!closed) {
+                Native.interrupt(db);
+            }
         }
     }
 
@@ -858,10 +930,29 @@ public final class Connection implements AutoCloseable {
         return Native.total_changes(db) == totalBefore ? 0 : Native.changes(db);
     }
 
+    /**
+     * Whether the SQL from {@code from} to the terminating NUL holds no statement: only whitespace, semicolons and
+     * comments ({@code -- ...} to the end of the line, {@code /* ... *}{@code /}, unterminated running to the end,
+     * as in SQLite's tokenizer).
+     */
     private static boolean isBlank(MemorySegment text, long from) {
-        for (long i = from, end = text.byteSize() - 1; i < end; i++) {
+        long end = text.byteSize() - 1;   // the NUL
+        long i = from;
+        while (i < end) {
             byte b = text.get(JAVA_BYTE, i);
-            if (b != ' ' && b != '\t' && b != '\n' && b != '\r' && b != ';') {
+            if (b == ' ' || b == '\t' || b == '\n' || b == '\r' || b == '\f' || b == 0x0B || b == ';') {
+                i++;
+            } else if (b == '-' && i + 1 < end && text.get(JAVA_BYTE, i + 1) == '-') {
+                while (i < end && text.get(JAVA_BYTE, i) != '\n') {
+                    i++;
+                }
+            } else if (b == '/' && i + 1 < end && text.get(JAVA_BYTE, i + 1) == '*') {
+                i += 2;
+                while (i < end && !(text.get(JAVA_BYTE, i) == '*' && i + 1 < end && text.get(JAVA_BYTE, i + 1) == '/')) {
+                    i++;
+                }
+                i += 2;
+            } else {
                 return false;
             }
         }

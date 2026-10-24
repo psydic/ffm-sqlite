@@ -236,8 +236,17 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
                 try {
                     counts[n] = (int) conn.stepToEnd(stmt, stmt.sql, queryTimeoutMillis);
                 } catch (SQLiteException e) {
-                    throw new SQLiteException("batch entry " + n + " failed: " + e.getMessage(),
-                            e.getErrorCode(), e.getExtendedErrorCode());
+                    // Same type (a timeout stays a SQLiteTimeoutException) and same cause (a UDF or listener
+                    // failure), as when the statement runs outside a batch; only the message names the entry.
+                    String message = "batch entry " + n + " failed: " + e.getMessage();
+                    SQLiteException failure = e instanceof SQLiteTimeoutException
+                            ? new SQLiteTimeoutException(message, e.getErrorCode(), e.getExtendedErrorCode())
+                            : new SQLiteException(message, e.getErrorCode(), e.getExtendedErrorCode());
+                    if (e.getCause() != null) {
+                        failure.initCause(e.getCause());
+                    }
+                    failure.setStackTrace(e.getStackTrace());
+                    throw failure;
                 } finally {
                     Native.reset(stmt.ptr);
                 }

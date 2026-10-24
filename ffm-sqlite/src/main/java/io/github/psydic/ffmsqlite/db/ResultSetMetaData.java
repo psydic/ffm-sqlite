@@ -1,20 +1,37 @@
 package io.github.psydic.ffmsqlite.db;
 
-/** Column information for a {@link ResultSet}, in the role of {@code java.sql.ResultSetMetaData}. */
+/**
+ * Column information for a {@link ResultSet}, in the role of {@code java.sql.ResultSetMetaData}.
+ *
+ * <p>Everything is read from the statement when this object is created, so it stays valid after the result set,
+ * the statement or the connection is closed (SQLite frees the statement, and the information with it).
+ */
 public final class ResultSetMetaData {
-    private final Stmt stmt;
+    private final int columnCount;
+    private final String[] labels, declTypes, tables, schemas, origins;
 
     ResultSetMetaData(Stmt stmt) {
-        this.stmt = stmt;
+        columnCount = stmt.columnCount;
+        labels = stmt.names().clone();
+        declTypes = new String[columnCount];
+        tables = new String[columnCount];
+        schemas = new String[columnCount];
+        origins = new String[columnCount];
+        for (int i = 0; i < columnCount; i++) {
+            declTypes[i] = Native.column_decltype(stmt.ptr, i);
+            tables[i] = Native.column_source(stmt.ptr, i, 0);
+            schemas[i] = Native.column_source(stmt.ptr, i, 1);
+            origins[i] = Native.column_source(stmt.ptr, i, 2);
+        }
     }
 
     public int getColumnCount() {
-        return stmt.columnCount;
+        return columnCount;
     }
 
     /** The column's name, or its {@code AS} alias. */
     public String getColumnLabel(int column) throws SQLiteException {
-        return stmt.names()[index(column)];
+        return labels[index(column)];
     }
 
     public String getColumnName(int column) throws SQLiteException {
@@ -23,27 +40,27 @@ public final class ResultSetMetaData {
 
     /** The type as declared in CREATE TABLE (e.g. {@code "TEXT"}); {@code null} for expressions. */
     public String getColumnTypeName(int column) throws SQLiteException {
-        return Native.column_decltype(stmt.ptr, index(column));
+        return declTypes[index(column)];
     }
 
     /** The table the column comes from; null for expressions (or a SQLite built without column metadata). */
     public String getTableName(int column) throws SQLiteException {
-        return Native.column_source(stmt.ptr, index(column), 0);
+        return tables[index(column)];
     }
 
     /** The schema ({@code main}, {@code temp}, attached name) of {@link #getTableName}'s table, or null. */
     public String getSchemaName(int column) throws SQLiteException {
-        return Native.column_source(stmt.ptr, index(column), 1);
+        return schemas[index(column)];
     }
 
     /** The column's name in its table (unlike {@link #getColumnLabel}, unaffected by AS), or null. */
     public String getColumnOriginName(int column) throws SQLiteException {
-        return Native.column_source(stmt.ptr, index(column), 2);
+        return origins[index(column)];
     }
 
     private int index(int column) throws SQLiteException {
-        if (column < 1 || column > stmt.columnCount) {
-            throw new SQLiteException("column index " + column + " out of range 1.." + stmt.columnCount);
+        if (column < 1 || column > columnCount) {
+            throw new SQLiteException("column index " + column + " out of range 1.." + columnCount);
         }
         return column - 1;
     }

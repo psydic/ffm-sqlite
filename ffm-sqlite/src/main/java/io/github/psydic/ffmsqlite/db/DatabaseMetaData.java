@@ -91,7 +91,7 @@ public final class DatabaseMetaData {
             ps.setString(1, schema);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    out.add(new TableInfo(schema, rs.getString(1), TableType.valueOf(rs.getString(2).toUpperCase()),
+                    out.add(new TableInfo(schema, rs.getString(1), TableType.valueOf(rs.getString(2).toUpperCase(java.util.Locale.ROOT)),
                             rs.getInt(3), rs.getBoolean(4), rs.getBoolean(5), rs.getString(6)));
                 }
             }

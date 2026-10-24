@@ -14,7 +14,7 @@ SQLite for Java 25+ through the **Foreign Function & Memory API**: no JNI, no bu
 <dependency>
     <groupId>io.github.psydic</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>   <!-- or ffm-sqlite for the library API -->
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 

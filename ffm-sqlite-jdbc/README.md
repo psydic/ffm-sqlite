@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.psydic</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>
-    <version>0.1.0</version>   <!-- once released; until then 0.1.0-SNAPSHOT via mvn install -->
+    <version>0.1.1</version>
 </dependency>
 ```
 

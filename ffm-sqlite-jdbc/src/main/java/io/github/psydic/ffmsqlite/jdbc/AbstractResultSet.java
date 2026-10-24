@@ -46,6 +46,8 @@ import java.util.regex.Pattern;
  */
 abstract class AbstractResultSet implements ResultSet {
     private static final Pattern TRAILING_OFFSET = Pattern.compile(".*\\d(Z|z|[+-]\\d\\d:\\d\\d)\\s*$");
+    /** Time of day without a date: what setObject(LocalTime) stores and SQLite's time() returns. */
+    private static final Pattern TIME_ONLY = Pattern.compile("\\s*\\d\\d:\\d\\d(:\\d\\d(\\.\\d+)?)?\\s*");
     private int fetchSize;
 
     // ------------------------------------------------------------------ the core, per subclass
@@ -158,6 +160,10 @@ abstract class AbstractResultSet implements ResultSet {
                 try {
                     yield LocalDateTime.parse(s.strip(), c.dateFormatter).atZone(zone(cal)).toInstant().toEpochMilli();
                 } catch (DateTimeParseException e) {
+                    if (TIME_ONLY.matcher(s).matches()) {
+                        // 'HH:MM[:SS[.fff]]' (setObject(LocalTime), SQLite's time()): on 1970-01-01, as Time.valueOf
+                        yield LocalDate.EPOCH.atTime(typed(columnIndex, LocalTime.class)).atZone(zone(cal)).toInstant().toEpochMilli();
+                    }
                     yield TRAILING_OFFSET.matcher(s).matches()
                             ? typed(columnIndex, OffsetDateTime.class).toInstant().toEpochMilli()
                             : typed(columnIndex, LocalDateTime.class).atZone(zone(cal)).toInstant().toEpochMilli();
