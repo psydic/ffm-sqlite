@@ -137,8 +137,18 @@ class ReviewFixes2JdbcTest {
         try (Connection c = DriverManager.getConnection("jdbc:ffmsqlite:" + file)) {
             assertFalse(c.isReadOnly());
             c.setReadOnly(true);
-            try (Statement st = c.createStatement()) {
+            try (Statement st = c.createStatement(); PreparedStatement ps = c.prepareStatement("INSERT INTO t VALUES (?)")) {
                 assertThrows(SQLException.class, () -> st.executeUpdate("INSERT INTO t VALUES (1)"));
+                ps.setInt(1, 1);
+                assertThrows(SQLException.class, ps::executeUpdate);
+                ps.addBatch();
+                assertThrows(SQLException.class, ps::executeBatch);
+                c.setAutoCommit(false);   // a read-only transaction, as frameworks run it
+                try (ResultSet rs = st.executeQuery("SELECT count(*) FROM t")) {
+                    assertTrue(rs.next());
+                }
+                c.commit();
+                c.setAutoCommit(true);
             }
             c.setReadOnly(false);
             try (Statement st = c.createStatement()) {

@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.4
+
+A performance fix for frameworks that switch connections to read-only around every read (Micronaut Data, Spring
+`@Transactional(readOnly = true)`).
+
+### ffm-sqlite-jdbc
+
+- **`setReadOnly` no longer empties the statement cache.** It ran `PRAGMA query_only`, and changing that PRAGMA
+  makes SQLite expire every prepared statement, so the next execution of each cached statement was compiled again.
+  Micronaut Data calls `setReadOnly(true)` and `setReadOnly(false)` around every repository read, which made a
+  `findById` take 12–15 µs instead of about 6. Read-only is now checked per statement before it runs, with the
+  same result for writes (SQLITE_READONLY) and no change to SQLite's state. Connections configured read-only
+  (`readonly`, `query_only=true`) still use SQLite's own enforcement.
+
+### ffm-sqlite
+
+- `Connection.setReadOnly(boolean)` / `isReadOnly()`: reject statements that would write, checked with
+  `sqlite3_stmt_readonly` before each statement runs; queries, transaction control, `ATTACH` and `DETACH` still run.
+
+### micronaut-starter-ffm-sqlite
+
+- Picks up the driver fix: `@Transactional(readOnly = true)` stays enforced at no cost per transaction.
+
 ## 0.2.3
 
 A new Micronaut starter, a JVM crash fix from a security review, and small additions to the core and the driver.

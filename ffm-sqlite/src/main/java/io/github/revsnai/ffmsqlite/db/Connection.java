@@ -72,6 +72,8 @@ public final class Connection implements AutoCloseable {
     private volatile boolean closed;
     /** Statements inside sqlite3_step; non-zero only while a function or collation runs (or on misuse from another thread). */
     private int running;
+    /** {@link #setReadOnly}: statements that would write are rejected before they run. */
+    private boolean readOnly;
     /** Orders {@link #interrupt()} against {@link #close()}, so sqlite3_interrupt never sees a freed handle. */
     private final Object interruptLock = new Object();
 
@@ -252,6 +254,24 @@ public final class Connection implements AutoCloseable {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    /**
+     * {@code true} rejects every statement that would change the database ({@code INSERT}, {@code UPDATE},
+     * {@code DELETE}, DDL, writing PRAGMAs) with SQLITE_READONLY before it runs; queries, transaction control,
+     * {@code ATTACH} and {@code DETACH} still run. It is checked per statement with {@code sqlite3_stmt_readonly}
+     * and changes no SQLite state, so it is cheap to switch per transaction. ({@code PRAGMA query_only} does the
+     * same inside SQLite, but switching it expires every prepared statement, emptying the statement cache.)
+     * For a connection that must never write, open it read-only ({@link SQLite.Config#withReadOnly}) instead.
+     */
+    public void setReadOnly(boolean readOnly) throws SQLiteException {
+        checkOpen();
+        this.readOnly = readOnly;
+    }
+
+    public boolean isReadOnly() throws SQLiteException {
+        checkOpen();
+        return readOnly;
     }
 
     /**
@@ -963,6 +983,10 @@ public final class Connection implements AutoCloseable {
      */
     int step(Stmt s) throws SQLiteException {
         checkNotRunning(s);
+        if (readOnly && !Native.stmt_readonly(s.ptr)) {
+            throw new SQLiteException("[" + Native.errstr(Native.SQLITE_READONLY) + "] the connection is read-only (setReadOnly): "
+                    + s.sql, Native.SQLITE_READONLY, Native.SQLITE_READONLY);
+        }
         s.running = true;
         running++;
         try {

@@ -10,7 +10,7 @@ ffm-sqlite:
 # Micronaut Data reads its per-datasource settings from datasources.<name>; the DataSource itself is the starter's.
 datasources:
   default:
-    dialect: ANSI
+    dialect: SQLITE
 
 endpoints:
   health:

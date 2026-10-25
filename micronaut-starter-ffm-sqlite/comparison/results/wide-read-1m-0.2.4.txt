@@ -1,0 +1,25 @@
+ 00:35:53 up 2 days,  3:02,  1 user,  load average: 5.59, 6.37, 7.94
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	SETUP	sqlite=3.50.3	journal=wal	synchronous=2	rows=1000000	warmup_s=10	seconds=30
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	point	threads=1	ops=894476	ops/s=29816	mean_us=33.0	p50_us=33	p99_us=40	p999_us=51	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	point	threads=2	ops=1559007	ops/s=51967	mean_us=37.9	p50_us=37	p99_us=59	p999_us=81	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	point	threads=4	ops=2463964	ops/s=82132	mean_us=48.2	p50_us=47	p99_us=80	p999_us=105	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	point	threads=8	ops=3321119	ops/s=110704	mean_us=71.7	p50_us=64	p99_us=121	p999_us=159	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	point	threads=16	ops=3609697	ops/s=120323	mean_us=132.4	p50_us=132	p99_us=169	p999_us=3132	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range100	threads=1	ops=56384	ops/s=1879	mean_us=531.5	p50_us=509	p99_us=775	p999_us=1041	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range100	threads=2	ops=105242	ops/s=3508	mean_us=569.6	p50_us=537	p99_us=869	p999_us=1385	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range100	threads=4	ops=151272	ops/s=5042	mean_us=792.7	p50_us=748	p99_us=1475	p999_us=2254	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range100	threads=8	ops=218007	ops/s=7267	mean_us=1100.3	p50_us=1003	p99_us=2218	p999_us=3613	errors=0
+WIDE	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range100	threads=16	ops=219162	ops/s=7305	mean_us=2189.4	p50_us=2274	p99_us=5447	p999_us=8528	errors=0
+ 00:42:39 up 2 days,  3:09,  1 user,  load average: 18.02, 11.61, 9.56
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	SETUP	sqlite=3.50.3	journal=wal	synchronous=2	rows=1000000	warmup_s=10	seconds=30
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	point	threads=1	ops=2925742	ops/s=97524	mean_us=9.7	p50_us=9	p99_us=14	p999_us=20	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	point	threads=2	ops=4837850	ops/s=161261	mean_us=11.9	p50_us=11	p99_us=22	p999_us=30	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	point	threads=4	ops=8410526	ops/s=280349	mean_us=13.7	p50_us=13	p99_us=28	p999_us=39	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	point	threads=8	ops=9948207	ops/s=331606	mean_us=23.6	p50_us=20	p99_us=44	p999_us=96	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	point	threads=16	ops=11419216	ops/s=380639	mean_us=41.4	p50_us=40	p99_us=59	p999_us=134	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	range100	threads=1	ops=124719	ops/s=4157	mean_us=240.0	p50_us=233	p99_us=306	p999_us=501	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	range100	threads=2	ops=219895	ops/s=7330	mean_us=272.3	p50_us=262	p99_us=422	p999_us=1142	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	range100	threads=4	ops=338166	ops/s=11272	mean_us=354.3	p50_us=332	p99_us=635	p999_us=1507	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	range100	threads=8	ops=443175	ops/s=14772	mean_us=540.9	p50_us=486	p99_us=1015	p999_us=2563	errors=0
+WIDE	starter (micronaut-starter-ffm-sqlite 0.2.4)	range100	threads=16	ops=446243	ops/s=14875	mean_us=1074.9	p50_us=1043	p99_us=4088	p999_us=7150	errors=0
+ 00:49:25 up 2 days,  3:16,  1 user,  load average: 19.06, 13.60, 10.91

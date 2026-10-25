@@ -1,0 +1,15 @@
+ 22:33:26 up 2 days,  1:00,  1 user,  load average: 6.90, 4.92, 4.31
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	SQLITE	version=3.50.3	source_id=2025-07-17 13:25:10 3ce993b865	threads=8	warmup_s=30	seconds=300
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	findById	ops=4103947	ops/s=13680	mean_us=40.8	p50_us=36	p99_us=95	p999_us=137	max_us=>=200000	errors=0
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	range20	ops=586508	ops/s=1955	mean_us=399.9	p50_us=376	p99_us=841	p999_us=1082	max_us=>=200000	errors=0
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	insert	ops=880154	ops/s=2934	mean_us=1017.0	p50_us=51	p99_us=18397	p999_us=129530	max_us=>=200000	errors=4
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	txUpdate	ops=292741	ops/s=976	mean_us=1123.2	p50_us=98	p99_us=18526	p999_us=179234	max_us=>=200000	errors=0
+PERF	official (micronaut-jdbc-hikari + micronaut-jdbc-sqlite + xerial)	ALL	ops=5863350	ops/s=19544	mean_us=277.3	p50_us=42	p99_us=3263	p999_us=33412	max_us=>=200000	errors=4	cpu_s=490.8	cpu_us_per_op=83.7	gc_count=259	gc_ms=190	seconds=300
+ 22:39:31 up 2 days,  1:06,  1 user,  load average: 12.36, 10.50, 7.04
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	SQLITE	version=3.50.3	source_id=2025-07-17 13:25:10 3ce993b865	threads=8	warmup_s=30	seconds=300
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	findById	ops=4922062	ops/s=16407	mean_us=32.2	p50_us=29	p99_us=79	p999_us=115	max_us=>=200000	errors=0
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	range20	ops=703651	ops/s=2346	mean_us=304.2	p50_us=288	p99_us=584	p999_us=719	max_us=>=200000	errors=0
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	insert	ops=1056194	ops/s=3521	mean_us=828.1	p50_us=37	p99_us=13730	p999_us=104257	max_us=>=200000	errors=0
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	txUpdate	ops=351476	ops/s=1172	mean_us=892.6	p50_us=75	p99_us=15858	p999_us=104219	max_us=>=200000	errors=0
+PERF	starter (micronaut-starter-ffm-sqlite + ffm-sqlite-jdbc)	ALL	ops=7033383	ops/s=23445	mean_us=221.9	p50_us=33	p99_us=3201	p999_us=18757	max_us=>=200000	errors=0	cpu_s=452.9	cpu_us_per_op=64.4	gc_count=213	gc_ms=143	seconds=300
+ 22:45:17 up 2 days,  1:12,  1 user,  load average: 12.06, 13.14, 9.43

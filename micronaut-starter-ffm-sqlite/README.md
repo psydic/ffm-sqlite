@@ -9,7 +9,7 @@ indicator. Built and tested with Micronaut 5.2 (platform 5.2.3).
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>micronaut-starter-ffm-sqlite</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4</version>
 </dependency>
 ```
 
@@ -69,29 +69,35 @@ In-memory databases have no WAL: while one connection has a write transaction op
 
 ## Micronaut Data JDBC
 
-Add `micronaut-data-jdbc`, and `micronaut-data-processor` as an annotation processor. Use the ANSI dialect.
-Micronaut Data reads its own settings from `datasources.<name>`, so name the dialect there; the DataSource
-itself still comes from the starter:
+Add `micronaut-data-jdbc`, and `micronaut-data-processor` as an annotation processor. Use the SQLite dialect
+(Micronaut Data 5.1+). Micronaut Data reads its own settings from `datasources.<name>`, so name the dialect
+there; the DataSource itself still comes from the starter:
 
 ```yaml
 datasources:
   default:
-    dialect: ANSI
+    dialect: SQLITE
+    schema-generate: CREATE_DROP   # optional: Micronaut Data's SQLite DDL; use migrations in production
 ```
 
 ```java
-@JdbcRepository(dialect = Dialect.ANSI)
+@JdbcRepository(dialect = Dialect.SQLITE)
 public interface BookRepository extends CrudRepository<Book, Long> {
     List<Book> findByPriceLessThanOrderByTitle(BigDecimal price);
 }
 ```
 
-Do not also add `micronaut-jdbc-hikari` (Micronaut Launch adds it with data-jdbc). It would try to create a
-second `DataSource` from the same `datasources.default` entry.
+The tests cover these on SQLite: CRUD, derived finders, counts, `BigDecimal`, `LocalDate`, `UUID` and `Instant`
+columns, `@Transactional` commit and rollback, and `schema-generate`. `@Transactional(readOnly = true)` is
+enforced: a write inside one fails, because the driver checks each statement before running it on a read-only
+connection (since 0.2.4; switching costs nothing and keeps the statement cache). The generated
+DDL declares `BigDecimal` columns as `DECIMAL`, which SQLite stores as `REAL` (about 15 significant digits);
+for exact money, store integer cents or a TEXT column.
 
-The tests cover these on SQLite: CRUD, derived finders, counts, `BigDecimal` and `LocalDate` columns, and
-`@Transactional` commit and rollback. Create the schema yourself, with SQL or a migration tool;
-`schema-generate` would emit ANSI DDL, not SQLite DDL.
+Do not add `micronaut-jdbc-hikari`: it would try to create a second `DataSource` from the same
+`datasources.default` entry. Do not add `micronaut-jdbc-sqlite` either: it tells Micronaut Data that SQLite
+connections cannot be made read-only, which turns off the read-only enforcement above.
+[COMPARISON.md](COMPARISON.md) compares the starter with that official stack.
 
 With Micronaut Data on the class path, the `DataSource` bean's `getConnection()` returns the current
 transaction's connection. Outside `@Transactional` or `@Connectable`, the first use of that connection fails with
@@ -121,7 +127,8 @@ connection with `openConnection()`.
 
 ## Health
 
-With `micronaut-management`, `/health` includes `ffm-sqlite`. For each database it runs a query on the
+With `micronaut-management`, `/health` includes `ffm-sqlite`. (With Micronaut Data, Micronaut's generic `jdbc`
+indicator appears too; it only runs a validity check.) For each database it runs a query on the
 blocking executor and reports the journal mode, the SQLite version and pool usage (active, idle, total,
 waiting). If callers are already queued for a connection, it skips the query and reports UP with
 `"check": "skipped: all connections in use"` instead of joining the queue. Set

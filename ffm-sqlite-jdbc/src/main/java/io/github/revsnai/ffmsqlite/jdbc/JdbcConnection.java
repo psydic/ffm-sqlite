@@ -289,17 +289,24 @@ final class JdbcConnection implements Connection {
     }
 
     /**
-     * {@code PRAGMA query_only}: rejects writes on this connection. A connection configured read-only (the
-     * {@code readonly} open flag, or {@code query_only=true} in the URL/properties) stays read-only:
-     * {@code setReadOnly(false)} is then ignored, as JDBC allows for this hint. Frameworks call it after every
-     * read-only transaction (Spring does so unconditionally), which must not make a reader pool writable.
+     * Rejects writes on this connection: each statement is checked before it runs
+     * ({@link io.github.revsnai.ffmsqlite.db.Connection#setReadOnly}), so switching costs nothing and keeps the
+     * statement cache. (Earlier versions ran {@code PRAGMA query_only}, which made SQLite expire every prepared
+     * statement on each switch; Micronaut Data and Spring switch around every read-only transaction.) A connection
+     * configured read-only (the {@code readonly} open flag, or {@code query_only=true} in the URL/properties) stays
+     * read-only: {@code setReadOnly(false)} is then ignored, as JDBC allows for this hint, so a framework resetting
+     * the flag cannot make a reader pool writable.
      */
     @Override
     public synchronized void setReadOnly(boolean readOnly) throws SQLException {
         checkOpen();
         boolean effective = readOnly || configuredReadOnly;
-        if (effective != this.readOnly && !config.sqlite.readOnly()) {
-            run("PRAGMA query_only = " + (effective ? 1 : 0));
+        if (effective != this.readOnly) {
+            try {
+                db.setReadOnly(effective);
+            } catch (SQLiteException e) {
+                throw Errors.of(e);
+            }
         }
         this.readOnly = effective;
     }

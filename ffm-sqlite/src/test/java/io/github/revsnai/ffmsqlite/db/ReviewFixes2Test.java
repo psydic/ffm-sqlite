@@ -310,4 +310,36 @@ class ReviewFixes2Test {
             assertThrows(SQLiteException.class, c::inTransaction);
         }
     }
+
+    @Test
+    void setReadOnlyRejectsWritesPerStatement() throws SQLiteException {
+        try (Connection c = SQLite.getConnection(":memory:"); Statement st = c.createStatement()) {
+            st.executeUpdate("CREATE TABLE t (v); INSERT INTO t VALUES (1)");
+            PreparedStatement select = c.prepareStatement("SELECT count(*) FROM t");
+            c.setReadOnly(true);
+            assertTrue(c.isReadOnly());
+            for (String write : new String[]{"INSERT INTO t VALUES (2)", "UPDATE t SET v = 3", "DELETE FROM t",
+                    "CREATE TABLE u (x)", "DROP TABLE t", "PRAGMA user_version = 7", "CREATE TEMP TABLE tmp (x)"}) {
+                SQLiteException e = assertThrows(SQLiteException.class, () -> st.executeUpdate(write), write);
+                assertEquals(8, e.getErrorCode(), write);   // SQLITE_READONLY
+            }
+            // a write in the middle of a script stops it there
+            assertThrows(SQLiteException.class, () -> st.executeUpdate("SELECT 1; INSERT INTO t VALUES (9)"));
+            // reads and transaction control still run
+            c.setAutoCommit(false);
+            try (ResultSet rs = select.executeQuery()) {
+                assertTrue(rs.next());
+                assertEquals(1, rs.getInt(1));
+            }
+            c.commit();
+            c.setAutoCommit(true);
+            c.setReadOnly(false);
+            assertEquals(1, st.executeUpdate("INSERT INTO t VALUES (2)"));
+            try (ResultSet rs = select.executeQuery()) {   // the cached statement still works after switching
+                assertTrue(rs.next());
+                assertEquals(2, rs.getInt(1));
+            }
+            select.close();
+        }
+    }
 }

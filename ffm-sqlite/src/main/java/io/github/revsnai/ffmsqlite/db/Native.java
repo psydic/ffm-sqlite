@@ -90,6 +90,7 @@ final class Native {
     private static final MethodHandle TOTAL_CHANGES64 = downcall("sqlite3_total_changes64", FunctionDescriptor.of(JAVA_LONG, ADDRESS), CRITICAL);
     private static final MethodHandle LAST_INSERT_ROWID = downcall("sqlite3_last_insert_rowid", FunctionDescriptor.of(JAVA_LONG, ADDRESS), CRITICAL);
     private static final MethodHandle GET_AUTOCOMMIT = downcall("sqlite3_get_autocommit", FunctionDescriptor.of(JAVA_INT, ADDRESS), CRITICAL);
+    private static final MethodHandle STMT_READONLY = downcall("sqlite3_stmt_readonly", FunctionDescriptor.of(JAVA_INT, ADDRESS), CRITICAL);
 
     private static final MethodHandle PREPARE_V2 = downcall("sqlite3_prepare_v2", FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_INT, ADDRESS, ADDRESS));
     private static final MethodHandle FINALIZE = downcall("sqlite3_finalize", FunctionDescriptor.of(JAVA_INT, ADDRESS));
@@ -145,6 +146,7 @@ final class Native {
     static final FunctionDescriptor X_COMPARE = FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, JAVA_INT, ADDRESS);
     static final int SQLITE_BUSY = 5;
     static final int SQLITE_NOMEM = 7;
+    static final int SQLITE_READONLY = 8;
     static final int SQLITE_MISMATCH = 20;
     static final int SQLITE_INTERRUPT = 9;
 
@@ -637,6 +639,15 @@ final class Native {
     static boolean get_autocommit(MemorySegment db) {
         try {
             return (int) GET_AUTOCOMMIT.invokeExact(db) != 0;
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    /** Whether the statement makes no direct change to the database file (transaction control counts as read-only). */
+    static boolean stmt_readonly(MemorySegment stmt) {
+        try {
+            return (int) STMT_READONLY.invokeExact(stmt) != 0;
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
