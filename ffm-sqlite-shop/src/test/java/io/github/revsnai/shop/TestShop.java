@@ -1,26 +1,45 @@
 package io.github.revsnai.shop;
 
 import io.github.revsnai.shop.db.Database;
-import io.github.revsnai.shop.db.Migrations;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.runtime.server.EmbeddedServer;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.time.Clock;
 import java.time.Instant;
-import java.time.ZoneOffset;
+import java.util.Map;
 
-/** A migrated database in a temporary directory, and a Shop on it with a fixed clock. */
+/**
+ * The application on a database in a temporary directory, with a fixed clock: a fresh Micronaut context per test
+ * (startup migrates the schema), optionally with the HTTP server on a random port.
+ */
 final class TestShop implements AutoCloseable {
     static final Instant NOW = Instant.parse("2026-01-15T10:30:00.123Z");
     final Path file;
+    final ApplicationContext ctx;
+    final EmbeddedServer server;
     final Database db;
     final Shop shop;
 
-    TestShop(Path dir) throws SQLException {
+    TestShop(Path dir) {
+        this(dir, false);
+    }
+
+    TestShop(Path dir, boolean http) {
         file = dir.resolve("shop.db");
-        db = new Database(file, 4);
-        Migrations.migrate(db);
-        shop = new Shop(db, Clock.fixed(NOW, ZoneOffset.UTC));
+        Map<String, Object> props = Map.of(
+                "shop.db", file.toString(),
+                "shop.fixed-time", NOW.toString(),
+                "micronaut.server.port", -1);
+        if (http) {
+            server = ApplicationContext.run(EmbeddedServer.class, props);
+            ctx = server.getApplicationContext();
+        } else {
+            server = null;
+            ctx = ApplicationContext.run(props);
+        }
+        db = ctx.getBean(Database.class);
+        shop = ctx.getBean(Shop.class);
     }
 
     /** Runs one SQL statement on the writer, for test setup. */
@@ -43,6 +62,6 @@ final class TestShop implements AutoCloseable {
 
     @Override
     public void close() {
-        db.close();
+        ctx.close();
     }
 }

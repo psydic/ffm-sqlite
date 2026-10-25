@@ -15,7 +15,7 @@ class MigrationsTest {
     @Test
     void migratesOnceAndIsIdempotent(@TempDir Path dir) throws Exception {
         try (TestShop t = new TestShop(dir)) {
-            assertEquals(3, Migrations.migrate(t.db));   // second run: nothing pending
+            assertEquals(3, t.ctx.getBean(Migrations.class).migrate());   // second run: nothing pending
             assertEquals(3, t.count("PRAGMA user_version"));
             assertEquals(24, t.count("SELECT count(*) FROM product"));
             assertEquals(1, t.count("SELECT count(*) FROM pragma_journal_mode WHERE journal_mode = 'wal'"));

@@ -1,0 +1,589 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.businessTransaction",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 13.39993918892666,
+            "scoreError" : 0.4222842722419344,
+            "scoreConfidence" : [
+                12.977654916684726,
+                13.822223461168596
+            ],
+            "scorePercentiles" : {
+                "0.0" : 13.05169680163898,
+                "50.0" : 13.35598875519953,
+                "90.0" : 13.833497571704847,
+                "95.0" : 13.844479681098438,
+                "99.0" : 13.844479681098438,
+                "99.9" : 13.844479681098438,
+                "99.99" : 13.844479681098438,
+                "99.999" : 13.844479681098438,
+                "99.9999" : 13.844479681098438,
+                "100.0" : 13.844479681098438
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    13.17588969184799,
+                    13.05169680163898,
+                    13.2718232921068,
+                    13.133719756264117,
+                    13.476477186977847
+                ],
+                [
+                    13.440154218292257,
+                    13.734658587162516,
+                    13.68401539156132,
+                    13.186477282316334,
+                    13.844479681098438
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.connectQueryClose",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 42.45761721061436,
+            "scoreError" : 1.4439948840036976,
+            "scoreConfidence" : [
+                41.01362232661066,
+                43.90161209461806
+            ],
+            "scorePercentiles" : {
+                "0.0" : 41.106531623720876,
+                "50.0" : 42.20351654215089,
+                "90.0" : 44.093595803140246,
+                "95.0" : 44.13846030274946,
+                "99.0" : 44.13846030274946,
+                "99.9" : 44.13846030274946,
+                "99.99" : 44.13846030274946,
+                "99.999" : 44.13846030274946,
+                "99.9999" : 44.13846030274946,
+                "100.0" : 44.13846030274946
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    42.12907245155855,
+                    41.95210620805369,
+                    41.57737543130327,
+                    43.314703118233,
+                    42.26107457956562
+                ],
+                [
+                    42.219719785554474,
+                    43.689815306657344,
+                    44.13846030274946,
+                    41.106531623720876,
+                    42.18731329874731
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.insertAutoCommit",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 4.160801624920461,
+            "scoreError" : 0.36172009101754055,
+            "scoreConfidence" : [
+                3.7990815339029207,
+                4.522521715938002
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3.8682157579414347,
+                "50.0" : 4.190843149480367,
+                "90.0" : 4.572259874139466,
+                "95.0" : 4.596088505620353,
+                "99.0" : 4.596088505620353,
+                "99.9" : 4.596088505620353,
+                "99.99" : 4.596088505620353,
+                "99.999" : 4.596088505620353,
+                "99.9999" : 4.596088505620353,
+                "100.0" : 4.596088505620353
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    4.137865825958519,
+                    4.357802190811489,
+                    4.266569460086687,
+                    4.327956046095991,
+                    4.243820473002215
+                ],
+                [
+                    3.8682157579414347,
+                    3.9225870879939757,
+                    3.9860674760067596,
+                    3.901043425687193,
+                    4.596088505620353
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.joinGroupBy50Users",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 76.35254076944332,
+            "scoreError" : 6.382782753187773,
+            "scoreConfidence" : [
+                69.96975801625555,
+                82.73532352263109
+            ],
+            "scorePercentiles" : {
+                "0.0" : 70.30921469244288,
+                "50.0" : 75.93268406407032,
+                "90.0" : 84.12978989616082,
+                "95.0" : 84.54604201183432,
+                "99.0" : 84.54604201183432,
+                "99.9" : 84.54604201183432,
+                "99.99" : 84.54604201183432,
+                "99.999" : 84.54604201183432,
+                "99.9999" : 84.54604201183432,
+                "100.0" : 84.54604201183432
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    76.84594145666871,
+                    70.30921469244288,
+                    73.78188262633715,
+                    76.75713284727551,
+                    80.38352085509925
+                ],
+                [
+                    84.54604201183432,
+                    79.40646284534773,
+                    75.10823528086513,
+                    74.34676460532184,
+                    72.04021047324065
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.pointSelectById",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 2.2772305600588845,
+            "scoreError" : 0.3258169435631096,
+            "scoreConfidence" : [
+                1.951413616495775,
+                2.603047503621994
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2.064140595686013,
+                "50.0" : 2.183662863699311,
+                "90.0" : 2.6310244095415127,
+                "95.0" : 2.634510485126425,
+                "99.0" : 2.634510485126425,
+                "99.9" : 2.634510485126425,
+                "99.99" : 2.634510485126425,
+                "99.999" : 2.634510485126425,
+                "99.9999" : 2.634510485126425,
+                "100.0" : 2.634510485126425
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    2.20253075303765,
+                    2.4920903971694823,
+                    2.5996497292773015,
+                    2.2509997996848976,
+                    2.1647949743609725
+                ],
+                [
+                    2.064140595686013,
+                    2.1613519586274266,
+                    2.1160923125420488,
+                    2.0861445950766293,
+                    2.634510485126425
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.pointSelectByIndexedEmail",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 3.244105418119928,
+            "scoreError" : 0.19514918669693235,
+            "scoreConfidence" : [
+                3.0489562314229954,
+                3.43925460481686
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2.967557095509802,
+                "50.0" : 3.2645861801186746,
+                "90.0" : 3.4319132367353924,
+                "95.0" : 3.439938099119829,
+                "99.0" : 3.439938099119829,
+                "99.9" : 3.439938099119829,
+                "99.99" : 3.439938099119829,
+                "99.999" : 3.439938099119829,
+                "99.9999" : 3.439938099119829,
+                "100.0" : 3.439938099119829
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    3.20756571144502,
+                    3.2481523649614177,
+                    3.1377696748365396,
+                    2.967557095509802,
+                    3.3085720684066025
+                ],
+                [
+                    3.359689475275464,
+                    3.2810199952759316,
+                    3.2877201930315354,
+                    3.203069503337134,
+                    3.439938099119829
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.prepareInsideLoop",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 2.4874058315613463,
+            "scoreError" : 0.22935631811031962,
+            "scoreConfidence" : [
+                2.258049513451027,
+                2.716762149671666
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2.311745517120232,
+                "50.0" : 2.478030864490226,
+                "90.0" : 2.744941965988587,
+                "95.0" : 2.748045455294829,
+                "99.0" : 2.748045455294829,
+                "99.9" : 2.748045455294829,
+                "99.99" : 2.748045455294829,
+                "99.999" : 2.748045455294829,
+                "99.9999" : 2.748045455294829,
+                "100.0" : 2.748045455294829
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    2.5430825130762247,
+                    2.7170105622324128,
+                    2.3866164763100244,
+                    2.311745517120232,
+                    2.4565178544234465
+                ],
+                [
+                    2.3267238105430175,
+                    2.3669217792608896,
+                    2.4995438745570056,
+                    2.748045455294829,
+                    2.517850472795384
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.rangeScan100Rows",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 36.70335759939421,
+            "scoreError" : 2.051654231824612,
+            "scoreConfidence" : [
+                34.651703367569596,
+                38.75501183121882
+            ],
+            "scorePercentiles" : {
+                "0.0" : 35.048650898770106,
+                "50.0" : 36.537314694100516,
+                "90.0" : 39.79383469343148,
+                "95.0" : 40.084178036072146,
+                "99.0" : 40.084178036072146,
+                "99.9" : 40.084178036072146,
+                "99.99" : 40.084178036072146,
+                "99.999" : 40.084178036072146,
+                "99.9999" : 40.084178036072146,
+                "100.0" : 40.084178036072146
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    35.585095463440666,
+                    37.08252302387661,
+                    36.426299377208,
+                    35.048650898770106,
+                    36.648330010993035
+                ],
+                [
+                    37.180744609665425,
+                    36.23645764492753,
+                    36.73446242562257,
+                    40.084178036072146,
+                    36.00683450336609
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "ffmsqlite.WorkloadBenchmark.updateAutoCommit",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 2,
+        "jvm" : "/usr/lib/jvm/java-25-openjdk-amd64/bin/java",
+        "jvmArgs" : [
+            "-Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so",
+            "-Djava.io.tmpdir=/dev/shm",
+            "-Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data"
+        ],
+        "jdkVersion" : "25.0.4.1",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "25.0.4.1+1-1-24.04.4-Ubuntu",
+        "warmupIterations" : 3,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 5,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "params" : {
+            "lib" : "ffm-sqlite",
+            "synchronous" : "NORMAL"
+        },
+        "primaryMetric" : {
+            "score" : 5.843519363162145,
+            "scoreError" : 0.7890617622971887,
+            "scoreConfidence" : [
+                5.054457600864957,
+                6.632581125459334
+            ],
+            "scorePercentiles" : {
+                "0.0" : 5.372198459505624,
+                "50.0" : 5.562948109279285,
+                "90.0" : 6.841750671375555,
+                "95.0" : 6.899206900357296,
+                "99.0" : 6.899206900357296,
+                "99.9" : 6.899206900357296,
+                "99.99" : 6.899206900357296,
+                "99.999" : 6.899206900357296,
+                "99.9999" : 6.899206900357296,
+                "100.0" : 6.899206900357296
+            },
+            "scoreUnit" : "us/op",
+            "rawData" : [
+                [
+                    6.899206900357296,
+                    6.324644610539894,
+                    6.158758993780405,
+                    5.441751050054407,
+                    5.644547880858934
+                ],
+                [
+                    5.372198459505624,
+                    6.216121326201614,
+                    5.481348337699635,
+                    5.466929479610801,
+                    5.42968659301284
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

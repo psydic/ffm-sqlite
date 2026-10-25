@@ -157,7 +157,7 @@ class CheckoutTest {
             Cart cart = t.shop.createCart(1L);
             t.shop.setCartItem(cart.id(), 5, 1);
             t.shop.checkout(cart.id(), 1);
-            Path copy = t.shop.backup(t.file);
+            Path copy = t.shop.backup();
             try (var c = java.sql.DriverManager.getConnection("jdbc:ffmsqlite:" + copy);
                  var st = c.createStatement(); var rs = st.executeQuery("SELECT count(*) FROM orders")) {
                 rs.next();

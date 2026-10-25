@@ -11,6 +11,7 @@ import io.github.revsnai.shop.db.Database;
 import io.github.revsnai.shop.order.Order;
 import io.github.revsnai.shop.order.OrderRepository;
 import io.github.revsnai.shop.report.ReportRepository;
+import jakarta.inject.Singleton;
 
 import java.sql.SQLException;
 import java.time.Clock;
@@ -20,8 +21,10 @@ import java.util.UUID;
 /**
  * The service layer: decides where each transaction begins and ends. Repositories take a {@code Connection}
  * and never manage transactions themselves, so several of them can take part in one unit of work.
- * Reads go to {@link Database#read}, writes to {@link Database#write}.
+ * Reads go to {@link Database#read}, writes to {@link Database#write}. A Micronaut singleton; the repositories are
+ * plain classes with no framework dependency.
  */
+@Singleton
 public final class Shop {
     private final Database db;
     private final Clock clock;
@@ -98,6 +101,9 @@ public final class Shop {
 
     public Order changeStatus(long orderId, Order.Status from, Order.Status to) throws SQLException {
         return db.write(c -> {
+            if (orders.find(c, orderId).isEmpty()) {
+                throw ShopException.notFound("order", orderId);   // 404, not the 409 of a wrong state
+            }
             orders.changeStatus(c, orderId, from, to);
             return orders.find(c, orderId).orElseThrow();
         });
@@ -112,7 +118,8 @@ public final class Shop {
     }
 
     /** An online backup next to the database file: {@code <name>-backup-<epoch-second>.db}. */
-    public java.nio.file.Path backup(java.nio.file.Path databaseFile) throws SQLException {
+    public java.nio.file.Path backup() throws SQLException {
+        java.nio.file.Path databaseFile = db.file();
         String name = databaseFile.getFileName().toString().replaceFirst("\\.db$", "");
         java.nio.file.Path target = databaseFile.toAbsolutePath().resolveSibling(
                 name + "-backup-" + clock.instant().getEpochSecond() + ".db");

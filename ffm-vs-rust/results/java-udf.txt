@@ -1,0 +1,631 @@
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.aggregate
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 0.00% complete, ETA 00:02:40
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+57.607 ns/op
+# Warmup Iteration   2: 47.701 ns/op
+# Warmup Iteration   3: 46.261 ns/op
+Iteration   1: 45.509 ns/op
+Iteration   2: 49.145 ns/op
+Iteration   3: 46.116 ns/op
+Iteration   4: 45.305 ns/op
+Iteration   5: 44.009 ns/op
+
+# Run progress: 5.00% complete, ETA 00:02:38
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+52.651 ns/op
+# Warmup Iteration   2: 45.177 ns/op
+# Warmup Iteration   3: 45.219 ns/op
+Iteration   1: 46.742 ns/op
+Iteration   2: 47.547 ns/op
+Iteration   3: 44.964 ns/op
+Iteration   4: 45.614 ns/op
+Iteration   5: 47.904 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.aggregate":
+  46.286 ±(99.9%) 2.340 ns/op [Average]
+  (min, avg, max) = (44.009, 46.286, 49.145), stdev = 1.548
+  CI (99.9%): [43.945, 48.626] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.builtin
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 10.00% complete, ETA 00:02:29
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+28.741 ns/op
+# Warmup Iteration   2: 26.604 ns/op
+# Warmup Iteration   3: 25.637 ns/op
+Iteration   1: 24.789 ns/op
+Iteration   2: 26.571 ns/op
+Iteration   3: 25.258 ns/op
+Iteration   4: 24.721 ns/op
+Iteration   5: 27.256 ns/op
+
+# Run progress: 15.00% complete, ETA 00:02:21
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+31.230 ns/op
+# Warmup Iteration   2: 28.855 ns/op
+# Warmup Iteration   3: 27.530 ns/op
+Iteration   1: 26.031 ns/op
+Iteration   2: 28.360 ns/op
+Iteration   3: 25.210 ns/op
+Iteration   4: 25.393 ns/op
+Iteration   5: 28.484 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.builtin":
+  26.207 ±(99.9%) 2.130 ns/op [Average]
+  (min, avg, max) = (24.721, 26.207, 28.484), stdev = 1.409
+  CI (99.9%): [24.078, 28.337] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMax
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 20.00% complete, ETA 00:02:13
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+98.155 ns/op
+# Warmup Iteration   2: 89.641 ns/op
+# Warmup Iteration   3: 84.467 ns/op
+Iteration   1: 82.695 ns/op
+Iteration   2: 93.966 ns/op
+Iteration   3: 83.558 ns/op
+Iteration   4: 89.588 ns/op
+Iteration   5: 85.905 ns/op
+
+# Run progress: 25.00% complete, ETA 00:02:05
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+102.158 ns/op
+# Warmup Iteration   2: 84.715 ns/op
+# Warmup Iteration   3: 85.751 ns/op
+Iteration   1: 89.665 ns/op
+Iteration   2: 86.199 ns/op
+Iteration   3: 89.110 ns/op
+Iteration   4: 88.733 ns/op
+Iteration   5: 95.329 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.collationMax":
+  88.475 ±(99.9%) 6.164 ns/op [Average]
+  (min, avg, max) = (82.695, 88.475, 95.329), stdev = 4.077
+  CI (99.9%): [82.310, 94.639] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationMaxBuiltin
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 30.00% complete, ETA 00:01:56
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+37.565 ns/op
+# Warmup Iteration   2: 35.457 ns/op
+# Warmup Iteration   3: 35.841 ns/op
+Iteration   1: 34.414 ns/op
+Iteration   2: 35.527 ns/op
+Iteration   3: 36.877 ns/op
+Iteration   4: 35.178 ns/op
+Iteration   5: 36.617 ns/op
+
+# Run progress: 35.00% complete, ETA 00:01:48
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+38.099 ns/op
+# Warmup Iteration   2: 39.897 ns/op
+# Warmup Iteration   3: 38.065 ns/op
+Iteration   1: 35.446 ns/op
+Iteration   2: 49.668 ns/op
+Iteration   3: 86.459 ns/op
+Iteration   4: 44.231 ns/op
+Iteration   5: 44.143 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.collationMaxBuiltin":
+  43.856 ±(99.9%) 23.929 ns/op [Average]
+  (min, avg, max) = (34.414, 43.856, 86.459), stdev = 15.828
+  CI (99.9%): [19.927, 67.785] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.collationOrderBy
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 40.00% complete, ETA 00:01:39
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+1053.725 ns/op
+# Warmup Iteration   2: 746.890 ns/op
+# Warmup Iteration   3: 790.099 ns/op
+Iteration   1: 791.934 ns/op
+Iteration   2: 748.271 ns/op
+Iteration   3: 735.836 ns/op
+Iteration   4: 736.071 ns/op
+Iteration   5: 755.691 ns/op
+
+# Run progress: 45.00% complete, ETA 00:01:31
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+1047.802 ns/op
+# Warmup Iteration   2: 1539.570 ns/op
+# Warmup Iteration   3: 1168.671 ns/op
+Iteration   1: 806.793 ns/op
+Iteration   2: 767.672 ns/op
+Iteration   3: 790.318 ns/op
+Iteration   4: 933.537 ns/op
+Iteration   5: 807.332 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.collationOrderBy":
+  787.346 ±(99.9%) 87.835 ns/op [Average]
+  (min, avg, max) = (735.836, 787.346, 933.537), stdev = 58.097
+  CI (99.9%): [699.511, 875.180] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.scalarLong
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 50.00% complete, ETA 00:01:23
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+77.969 ns/op
+# Warmup Iteration   2: 74.353 ns/op
+# Warmup Iteration   3: 67.911 ns/op
+Iteration   1: 74.195 ns/op
+Iteration   2: 67.023 ns/op
+Iteration   3: 82.332 ns/op
+Iteration   4: 67.908 ns/op
+Iteration   5: 90.244 ns/op
+
+# Run progress: 55.00% complete, ETA 00:01:15
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+102.615 ns/op
+# Warmup Iteration   2: 73.461 ns/op
+# Warmup Iteration   3: 79.932 ns/op
+Iteration   1: 73.104 ns/op
+Iteration   2: 73.514 ns/op
+Iteration   3: 73.040 ns/op
+Iteration   4: 69.277 ns/op
+Iteration   5: 68.335 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.scalarLong":
+  73.897 ±(99.9%) 10.988 ns/op [Average]
+  (min, avg, max) = (67.023, 73.897, 90.244), stdev = 7.268
+  CI (99.9%): [62.909, 84.885] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.scalarPerRowResult
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 60.00% complete, ETA 00:01:07
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+127.599 ns/op
+# Warmup Iteration   2: 117.214 ns/op
+# Warmup Iteration   3: 116.798 ns/op
+Iteration   1: 130.716 ns/op
+Iteration   2: 121.626 ns/op
+Iteration   3: 124.723 ns/op
+Iteration   4: 116.056 ns/op
+Iteration   5: 123.851 ns/op
+
+# Run progress: 65.00% complete, ETA 00:00:59
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+178.608 ns/op
+# Warmup Iteration   2: 139.754 ns/op
+# Warmup Iteration   3: 122.814 ns/op
+Iteration   1: 116.362 ns/op
+Iteration   2: 121.065 ns/op
+Iteration   3: 126.838 ns/op
+Iteration   4: 127.842 ns/op
+Iteration   5: 122.003 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.scalarPerRowResult":
+  123.108 ±(99.9%) 7.130 ns/op [Average]
+  (min, avg, max) = (116.056, 123.108, 130.716), stdev = 4.716
+  CI (99.9%): [115.978, 130.239] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.scalarText
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 70.00% complete, ETA 00:00:50
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+314.074 ns/op
+# Warmup Iteration   2: 217.959 ns/op
+# Warmup Iteration   3: 202.765 ns/op
+Iteration   1: 217.486 ns/op
+Iteration   2: 194.324 ns/op
+Iteration   3: 222.629 ns/op
+Iteration   4: 242.608 ns/op
+Iteration   5: 214.733 ns/op
+
+# Run progress: 75.00% complete, ETA 00:00:42
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+280.756 ns/op
+# Warmup Iteration   2: 179.123 ns/op
+# Warmup Iteration   3: 182.148 ns/op
+Iteration   1: 181.281 ns/op
+Iteration   2: 191.951 ns/op
+Iteration   3: 183.714 ns/op
+Iteration   4: 179.885 ns/op
+Iteration   5: 165.469 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.scalarText":
+  199.408 ±(99.9%) 36.188 ns/op [Average]
+  (min, avg, max) = (165.469, 199.408, 242.608), stdev = 23.936
+  CI (99.9%): [163.220, 235.596] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.windowSliding
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 80.00% complete, ETA 00:00:33
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+835.365 ns/op
+# Warmup Iteration   2: 805.575 ns/op
+# Warmup Iteration   3: 853.738 ns/op
+Iteration   1: 766.238 ns/op
+Iteration   2: 669.230 ns/op
+Iteration   3: 712.858 ns/op
+Iteration   4: 725.705 ns/op
+Iteration   5: 784.872 ns/op
+
+# Run progress: 85.00% complete, ETA 00:00:25
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+931.669 ns/op
+# Warmup Iteration   2: 732.240 ns/op
+# Warmup Iteration   3: 778.244 ns/op
+Iteration   1: 790.726 ns/op
+Iteration   2: 738.828 ns/op
+Iteration   3: 747.274 ns/op
+Iteration   4: 814.066 ns/op
+Iteration   5: 738.563 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.windowSliding":
+  748.836 ±(99.9%) 63.717 ns/op [Average]
+  (min, avg, max) = (669.230, 748.836, 814.066), stdev = 42.145
+  CI (99.9%): [685.119, 812.554] (assumes normal distribution)
+
+
+# JMH version: 1.37
+# VM version: JDK 25.0.4.1, OpenJDK 64-Bit Server VM, 25.0.4.1+1-1-24.04.4-Ubuntu
+# VM invoker: /usr/lib/jvm/java-25-openjdk-amd64/bin/java
+# VM options: -Dffmsqlite.lib=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/native/libsqlite3.so -Djava.io.tmpdir=/dev/shm -Dwide.dir=/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-rust/../ffm-vs-jdbc/data
+# Blackhole mode: compiler (auto-detected, use -Djmh.blackhole.autoDetect=false to disable)
+# Warmup: 3 iterations, 1 s each
+# Measurement: 5 iterations, 1 s each
+# Timeout: 10 min per iteration
+# Threads: 1 thread, will synchronize iterations
+# Benchmark mode: Average time, time/op
+# Benchmark: ffmsqlite.UdfBenchmark.windowSlidingBuiltin
+# Parameters: (lib = ffm-sqlite)
+
+# Run progress: 90.00% complete, ETA 00:00:16
+# Fork: 1 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+588.637 ns/op
+# Warmup Iteration   2: 614.047 ns/op
+# Warmup Iteration   3: 611.235 ns/op
+Iteration   1: 640.594 ns/op
+Iteration   2: 574.105 ns/op
+Iteration   3: 563.117 ns/op
+Iteration   4: 609.056 ns/op
+Iteration   5: 635.226 ns/op
+
+# Run progress: 95.00% complete, ETA 00:00:08
+# Fork: 2 of 2
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::objectFieldOffset has been called by org.openjdk.jmh.util.Utils (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Please consider reporting this to the maintainers of class org.openjdk.jmh.util.Utils
+WARNING: sun.misc.Unsafe::objectFieldOffset will be removed in a future release
+# Warmup Iteration   1: WARNING: A restricted method in java.lang.foreign.SymbolLookup has been called
+WARNING: java.lang.foreign.SymbolLookup::libraryLookup has been called by io.github.revsnai.ffmsqlite.db.Native in an unnamed module (file:/home/siddharth/IdeaProjects/ffmsqlite/ffm-vs-jdbc/target/benchmarks.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+621.276 ns/op
+# Warmup Iteration   2: 594.869 ns/op
+# Warmup Iteration   3: 603.701 ns/op
+Iteration   1: 579.432 ns/op
+Iteration   2: 586.557 ns/op
+Iteration   3: 586.010 ns/op
+Iteration   4: 553.124 ns/op
+Iteration   5: 597.399 ns/op
+
+
+Result "ffmsqlite.UdfBenchmark.windowSlidingBuiltin":
+  592.462 ±(99.9%) 43.460 ns/op [Average]
+  (min, avg, max) = (553.124, 592.462, 640.594), stdev = 28.746
+  CI (99.9%): [549.002, 635.922] (assumes normal distribution)
+
+
+# Run complete. Total time: 00:02:49
+
+REMEMBER: The numbers below are just data. To gain reusable insights, you need to follow up on
+why the numbers are the way they are. Use profilers (see -prof, -lprof), design factorial
+experiments, perform baseline and negative tests that provide experimental control, make sure
+the benchmarking environment is safe on JVM/OS/HW level, ask for reviews from the domain experts.
+Do not assume the numbers tell you what you want them to tell.
+
+NOTE: Current JVM experimentally supports Compiler Blackholes, and they are in use. Please exercise
+extra caution when trusting the results, look into the generated code to check the benchmark still
+works, and factor in a small probability of new VM bugs. Additionally, while comparisons between
+different JVMs are already problematic, the performance difference caused by different Blackhole
+modes can be very significant. Please make sure you use the consistent Blackhole mode for comparisons.
+
+Benchmark                               (lib)  Mode  Cnt    Score    Error  Units
+UdfBenchmark.aggregate             ffm-sqlite  avgt   10   46.286 ±  2.340  ns/op
+UdfBenchmark.builtin               ffm-sqlite  avgt   10   26.207 ±  2.130  ns/op
+UdfBenchmark.collationMax          ffm-sqlite  avgt   10   88.475 ±  6.164  ns/op
+UdfBenchmark.collationMaxBuiltin   ffm-sqlite  avgt   10   43.856 ± 23.929  ns/op
+UdfBenchmark.collationOrderBy      ffm-sqlite  avgt   10  787.346 ± 87.835  ns/op
+UdfBenchmark.scalarLong            ffm-sqlite  avgt   10   73.897 ± 10.988  ns/op
+UdfBenchmark.scalarPerRowResult    ffm-sqlite  avgt   10  123.108 ±  7.130  ns/op
+UdfBenchmark.scalarText            ffm-sqlite  avgt   10  199.408 ± 36.188  ns/op
+UdfBenchmark.windowSliding         ffm-sqlite  avgt   10  748.836 ± 63.717  ns/op
+UdfBenchmark.windowSlidingBuiltin  ffm-sqlite  avgt   10  592.462 ± 43.460  ns/op
+
+Benchmark result is saved to results/java-udf.json

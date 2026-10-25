@@ -1,0 +1,17 @@
+ffm-sqlite:
+  datasources:
+    default:
+      path: ":memory:"
+      maximum-pool-size: 4
+      pragmas:
+        cache_size: -4000
+        temp-store: MEMORY
+
+# Micronaut Data reads its per-datasource settings from datasources.<name>; the DataSource itself is the starter's.
+datasources:
+  default:
+    dialect: ANSI
+
+endpoints:
+  health:
+    details-visible: ANONYMOUS

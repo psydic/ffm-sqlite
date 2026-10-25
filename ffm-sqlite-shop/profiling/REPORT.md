@@ -1,5 +1,8 @@
 # Profiling the shop under load: findings
 
+> Measured on shop 0.1.0, the version before the Micronaut port (plain JDK HTTP server and two hand-built HikariCP
+> pools; the database code was the same). `run.sh` profiles the current version.
+
 The sample shop (ffm-sqlite-jdbc 0.2.1 on SQLite 3.45.1) ran in a container under sustained HTTP load. It was
 profiled with async-profiler 4.1 (CPU, Java allocation, lock contention and native memory, with leak tracking),
 JVM Native Memory Tracking and `/proc` memory maps. The focus was native memory.

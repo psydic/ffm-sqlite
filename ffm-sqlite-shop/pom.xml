@@ -5,56 +5,83 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!--
-      Sample e-commerce application on ffm-sqlite-jdbc: a training project for integrating the driver.
+      Sample e-commerce application on Micronaut, micronaut-starter-ffm-sqlite and ffm-sqlite-jdbc: a training
+      project for integrating the library.
       Standalone on purpose (no parent): copy this pom as the starting point of your own application.
     -->
     <groupId>io.github.revsnai.samples</groupId>
     <artifactId>ffm-sqlite-shop</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <name>ffm-sqlite shop (sample)</name>
 
     <properties>
         <maven.compiler.release>25</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <ffm-sqlite.version>0.2.2</ffm-sqlite.version>
-        <jackson.version>2.19.2</jackson.version>
+        <ffm-sqlite.version>0.2.3</ffm-sqlite.version>
+        <micronaut.platform.version>5.2.3</micronaut.platform.version>
+        <micronaut.core.version>5.2.17</micronaut.core.version>
+        <micronaut.serde.version>3.2.5</micronaut.serde.version>
         <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so (empty = the system library). -->
         <ffmsqlite.lib></ffmsqlite.lib>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.micronaut.platform</groupId>
+                <artifactId>micronaut-platform</artifactId>
+                <version>${micronaut.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <!-- The driver: jdbc:ffmsqlite: URLs, registered through ServiceLoader. Brings in ffm-sqlite. -->
+        <!--
+          The starter: ffm-sqlite.datasources.* in application.yml become pooled DataSource / FfmSqliteDatabase
+          beans, plus a /health indicator. Brings in ffm-sqlite-jdbc, ffm-sqlite and HikariCP.
+        -->
         <dependency>
             <groupId>io.github.revsnai</groupId>
-            <artifactId>ffm-sqlite-jdbc</artifactId>
+            <artifactId>micronaut-starter-ffm-sqlite</artifactId>
             <version>${ffm-sqlite.version}</version>
         </dependency>
-        <!-- Connection pool: one for writes (size 1) and one for reads. -->
         <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>7.0.2</version>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-runtime</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-http-server-netty</artifactId>
+        </dependency>
+        <!-- JSON for the HTTP API, generated at compile time (no reflection). -->
+        <dependency>
+            <groupId>io.micronaut.serde</groupId>
+            <artifactId>micronaut-serde-jackson</artifactId>
+        </dependency>
+        <!-- /health, which then includes the starter's ffm-sqlite indicator. -->
+        <dependency>
+            <groupId>io.micronaut</groupId>
+            <artifactId>micronaut-management</artifactId>
+        </dependency>
+        <!-- application.yml -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.17</version>
-        </dependency>
-        <!-- JSON for the HTTP API. -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>io.micronaut.test</groupId>
+            <artifactId>micronaut-test-junit5</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.12.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -65,6 +92,21 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
+                <configuration>
+                    <!-- Micronaut wires beans and JSON at compile time. -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>io.micronaut</groupId>
+                            <artifactId>micronaut-inject-java</artifactId>
+                            <version>${micronaut.core.version}</version>
+                        </path>
+                        <path>
+                            <groupId>io.micronaut.serde</groupId>
+                            <artifactId>micronaut-serde-processor</artifactId>
+                            <version>${micronaut.serde.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -91,7 +133,7 @@
                             <finalName>ffm-sqlite-shop</finalName>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
-                                <!-- Merges META-INF/services/java.sql.Driver so DriverManager finds jdbc:ffmsqlite:. -->
+                                <!-- Merges META-INF/services files (java.sql.Driver, Micronaut's service files). -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>

@@ -1,6 +1,5 @@
 package io.github.revsnai.shop;
 
-import io.github.revsnai.shop.web.HttpApi;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,25 +16,22 @@ import java.util.regex.Pattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/** The API end to end, over real HTTP on a random port. */
+/** The API end to end, over real HTTP: the Micronaut server on a random port. */
 class HttpApiTest {
     @TempDir
     Path dir;
     TestShop t;
-    HttpApi api;
     String base;
     final HttpClient http = HttpClient.newHttpClient();
 
     @BeforeEach
     void start() throws Exception {
-        t = new TestShop(dir);
-        api = new HttpApi(t.shop, t.file);
-        base = "http://localhost:" + api.start(0) + "/api";
+        t = new TestShop(dir, true);
+        base = "http://localhost:" + t.server.getPort() + "/api";
     }
 
     @AfterEach
     void stop() {
-        api.stop();
         t.close();
     }
 
@@ -88,9 +84,20 @@ class HttpApiTest {
     @Test
     void errorsMapToHttpStatuses() throws Exception {
         assertEquals(404, call("GET", "/products/9999", null).statusCode());
+        assertEquals(404, call("POST", "/orders/9999/pay", null).statusCode());
         assertEquals(400, call("POST", "/customers", "{\"email\":\"x@example.com\"}").statusCode());
         assertEquals(400, call("POST", "/customers", "not json").statusCode());
         assertEquals(404, call("POST", "/carts", "{\"customerId\":9999}").statusCode());
-        assertEquals(404, call("DELETE", "/products", null).statusCode());
+        assertEquals(405, call("DELETE", "/products", null).statusCode());   // the path exists, the method does not
+    }
+
+    @Test
+    void healthShowsBothPools() throws Exception {
+        HttpResponse<String> health = http.send(HttpRequest.newBuilder(URI.create(base.replace("/api", "/health"))).build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, health.statusCode());
+        assertTrue(health.body().contains("\"ffm-sqlite\""), health.body());
+        assertTrue(health.body().contains("\"writer\"") && health.body().contains("\"reader\""), health.body());
+        assertEquals("wal", field(health.body(), "journalMode"));
     }
 }

@@ -1,0 +1,4 @@
+rusqlite 0.41 on SQLite 3.50.3 (COMPILER=gcc-13.3.0)
+RESULT	bulkLoad1M	s	5.7177,5.6042,5.1780
+rusqlite 0.41 on SQLite 3.50.3 (COMPILER=gcc-13.3.0)
+RESULT	bulkLoad1M	s	5.3148,5.1261,4.9973

@@ -1,6 +1,6 @@
 name: Publish to GitHub Packages
 
-# Publishes io.github.revsnai:ffm-sqlite-parent, ffm-sqlite and ffm-sqlite-jdbc to
+# Publishes io.github.revsnai:ffm-sqlite-parent, ffm-sqlite, ffm-sqlite-jdbc and micronaut-starter-ffm-sqlite to
 # https://github.com/revsnai/ffm-sqlite/packages, authenticated with the workflow's GITHUB_TOKEN.
 # Runs when a version tag (v*) is pushed, or manually from the Actions tab.
 # The project version in the POMs is what gets published; a version cannot be re-published.

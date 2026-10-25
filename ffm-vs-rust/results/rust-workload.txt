@@ -1,0 +1,22 @@
+rusqlite 0.41 on SQLite 3.50.3 (COMPILER=gcc-13.3.0)
+RESULT	pointSelectById	us/op	2.1928,2.0843,2.1211,2.3295,2.1996
+RESULT	pointSelectByIndexedEmail	us/op	3.0922,3.2769,3.2413,3.1624,3.1489
+RESULT	insertAutoCommit	us/op	3.6772,3.6614,3.8739,4.0108,3.7896
+RESULT	updateAutoCommit	us/op	5.3468,5.6919,5.5185,5.3601,5.7933
+RESULT	businessTransaction	us/op	14.1343,13.3227,13.3351,14.6607,13.7492
+RESULT	rangeScan100Rows	us/op	39.5510,39.4418,43.3397,39.8670,39.0305
+RESULT	joinGroupBy50Users	us/op	77.6024,72.0928,82.0663,72.1122,76.2680
+RESULT	prepareInsideLoop	us/op	4.5863,4.4306,4.2383,4.0299,4.3366
+RESULT	prepareInsideLoop_cached	us/op	2.1221,2.1620,2.1434,2.5489,2.2245
+RESULT	connectQueryClose	us/op	40.9944,39.9061,39.1194,38.3115,39.7134
+rusqlite 0.41 on SQLite 3.50.3 (COMPILER=gcc-13.3.0)
+RESULT	pointSelectById	us/op	2.0057,2.0315,2.0820,2.1537,2.1275
+RESULT	pointSelectByIndexedEmail	us/op	3.3926,3.1915,3.0985,3.1194,3.2415
+RESULT	insertAutoCommit	us/op	3.7549,3.8475,3.7573,3.8167,3.6867
+RESULT	updateAutoCommit	us/op	5.0674,5.4865,5.3322,5.1511,5.0973
+RESULT	businessTransaction	us/op	12.6373,12.8121,12.6558,13.4565,13.9713
+RESULT	rangeScan100Rows	us/op	43.7641,40.0296,39.4936,39.2712,42.1057
+RESULT	joinGroupBy50Users	us/op	71.1863,83.1729,82.4438,77.1245,77.0785
+RESULT	prepareInsideLoop	us/op	4.2571,4.0995,4.1491,4.0674,4.1814
+RESULT	prepareInsideLoop_cached	us/op	2.2054,2.1613,2.2627,2.2060,2.1225
+RESULT	connectQueryClose	us/op	39.8736,38.4534,39.1046,39.1554,40.9716

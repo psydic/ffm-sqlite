@@ -70,6 +70,8 @@ public final class Connection implements AutoCloseable {
     private boolean busyCapped;
     /** Volatile and set under {@link #interruptLock}: {@link #interrupt()} runs on other threads. */
     private volatile boolean closed;
+    /** Statements inside sqlite3_step; non-zero only while a function or collation runs (or on misuse from another thread). */
+    private int running;
     /** Orders {@link #interrupt()} against {@link #close()}, so sqlite3_interrupt never sees a freed handle. */
     private final Object interruptLock = new Object();
 
@@ -252,6 +254,16 @@ public final class Connection implements AutoCloseable {
         return closed;
     }
 
+    /**
+     * Whether SQLite has a transaction open on this connection, however it was started: by
+     * {@link #setAutoCommit(boolean) setAutoCommit(false)}, or by SQL such as {@code BEGIN} or {@code SAVEPOINT},
+     * which {@link #getAutoCommit()} does not see.
+     */
+    public boolean inTransaction() throws SQLiteException {
+        checkOpen();
+        return !Native.get_autocommit(db);
+    }
+
     /** PRAGMAs that set the file format: they only take effect before the database file is first written. */
     private static final Set<String> FILE_FORMAT_PRAGMAS = Set.of("page_size", "auto_vacuum", "encoding");
 
@@ -274,6 +286,9 @@ public final class Connection implements AutoCloseable {
             return;
         }
         checkNotInHook();
+        if (running > 0) {
+            throw new IllegalStateException(RUNNING_CLOSE);
+        }
         for (Child child : new ArrayList<>(children)) {
             child.closeFromConnection();
         }
@@ -937,6 +952,40 @@ public final class Connection implements AutoCloseable {
     private static final String HOOK_REENTRY = "the connection cannot be used inside its own update, commit, rollback "
             + "or busy hook (SQLite forbids it); defer the work until the statement has returned";
 
+    private static final String RUNNING_CLOSE = "the connection cannot be closed from inside one of its functions or "
+            + "collations: SQLite is still executing the statement that called it";
+    private static final String RUNNING_STMT = "a statement cannot be closed, reset or run again from inside a function "
+            + "or collation it called: SQLite is still executing it";
+
+    /**
+     * Steps {@code s}, marking it as running: a function or collation it calls may use the connection (other
+     * statements), but closing the connection or touching this statement would free memory SQLite is using.
+     */
+    int step(Stmt s) throws SQLiteException {
+        checkNotRunning(s);
+        s.running = true;
+        running++;
+        try {
+            return Native.step(s.ptr);
+        } finally {
+            running--;
+            s.running = false;
+        }
+    }
+
+    void checkNotRunning(Stmt s) throws SQLiteException {
+        if (s.running) {
+            throw new SQLiteException(RUNNING_STMT);
+        }
+    }
+
+    /** For close() methods, which cannot throw a checked exception. */
+    void checkNotRunningOnClose(Stmt s) {
+        if (s.running) {
+            throw new IllegalStateException(RUNNING_STMT);
+        }
+    }
+
     /** For close() methods, which cannot throw a checked exception. */
     void checkNotInHook() {
         if (hooks.depth > 0) {
@@ -1091,7 +1140,7 @@ public final class Connection implements AutoCloseable {
         long totalBefore = Native.total_changes(db);
         clearCallbackFailure();
         int rc;
-        while ((rc = Native.step(s.ptr)) == Native.SQLITE_ROW && callbackFailure == null) {
+        while ((rc = step(s)) == Native.SQLITE_ROW && callbackFailure == null) {
             // e.g. INSERT ... RETURNING via executeUpdate: rows are discarded, as in JDBC drivers
         }
         if (rc != Native.SQLITE_DONE || callbackFailure != null) {

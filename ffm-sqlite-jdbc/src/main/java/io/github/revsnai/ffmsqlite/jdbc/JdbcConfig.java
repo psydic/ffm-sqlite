@@ -6,6 +6,8 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -30,6 +32,9 @@ final class JdbcConfig {
             "locking_mode", "max_page_count", "mmap_size", "page_size", "query_only", "read_uncommitted", "recursive_triggers",
             "reverse_unordered_selects", "secure_delete", "soft_heap_limit", "synchronous", "temp_store", "threads",
             "trusted_schema", "user_version", "wal_autocheckpoint");
+
+    /** Prefix of properties naming any PRAGMA: {@code pragma.analysis_limit=1000}. */
+    static final String PRAGMA_PREFIX = "pragma.";
 
     final String path;
     final SQLite.Config sqlite;
@@ -58,10 +63,25 @@ final class JdbcConfig {
         if (p.containsKey("statement_cache_size")) {
             c = c.withStatementCacheSize(Integer.parseInt(p.get("statement_cache_size")));
         }
+        // Bare names first, then pragma.<name> (which sets any PRAGMA, including ones sqlite-jdbc has no property
+        // for): when both name the same PRAGMA, pragma.<name> wins, whatever the order of the keys.
+        List<Map.Entry<String, String>> ordered = new ArrayList<>();
         for (Map.Entry<String, String> e : p.entrySet()) {
             if (PRAGMAS.contains(e.getKey())) {
-                String v = e.getValue();
+                ordered.add(Map.entry(e.getKey(), e.getValue()));
+            }
+        }
+        for (Map.Entry<String, String> e : p.entrySet()) {
+            if (e.getKey().startsWith(PRAGMA_PREFIX)) {
+                ordered.add(Map.entry(e.getKey().substring(PRAGMA_PREFIX.length()), e.getValue()));
+            }
+        }
+        for (Map.Entry<String, String> e : ordered) {
+            String v = e.getValue();
+            try {
                 c = c.withPragma(e.getKey(), v.equalsIgnoreCase("true") ? (Object) true : v.equalsIgnoreCase("false") ? (Object) false : v);
+            } catch (IllegalArgumentException ex) {
+                throw new SQLException(ex.getMessage(), "HY024");
             }
         }
         this.sqlite = c;

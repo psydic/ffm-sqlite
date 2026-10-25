@@ -47,13 +47,13 @@ public final class ResultSet implements AutoCloseable {
                 int previousMillis = conn.deadlineMillis();
                 long previous = conn.pushDeadline(timeoutMillis);
                 try {
-                    rc = Native.step(stmt.ptr);
+                    rc = conn.step(stmt);
                     capped = conn.busyCapped();
                 } finally {
                     conn.popDeadline(previous, previousMillis);
                 }
             } else {
-                rc = Native.step(stmt.ptr);
+                rc = conn.step(stmt);
             }
             if (first) {
                 stmt.refreshIfReprepared();
@@ -225,6 +225,7 @@ public final class ResultSet implements AutoCloseable {
     public void close() {
         if (state != CLOSED) {
             conn.checkNotInHook();
+            conn.checkNotRunningOnClose(stmt);
             state = CLOSED;
             owner.resultSetClosed(this, stmt);
         }

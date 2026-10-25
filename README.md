@@ -6,6 +6,7 @@ SQLite for Java 25+ through the **Foreign Function & Memory API**: no JNI, no bu
 |---|---|---|
 | [`ffm-sqlite`](ffm-sqlite) | `io.github.revsnai:ffm-sqlite` | the library: a JDBC-like API (`Connection`, `PreparedStatement`, `ResultSet`, …) plus UDFs, window functions, collations, hooks, backup, serialize, extensions, metadata |
 | [`ffm-sqlite-jdbc`](ffm-sqlite-jdbc) | `io.github.revsnai:ffm-sqlite-jdbc` | a `java.sql` driver on top of it (`jdbc:ffmsqlite:`), drop-in for sqlite-jdbc in most applications; tested with HikariCP, Spring JDBC and jOOQ |
+| [`micronaut-starter-ffm-sqlite`](micronaut-starter-ffm-sqlite) | `io.github.revsnai:micronaut-starter-ffm-sqlite` | Micronaut integration: pooled `DataSource` beans from `application.yml` (Micronaut Data JDBC, `@Transactional`), ffm-sqlite API connections, a health indicator |
 | [`ffm-sqlite-parent`](ffm-sqlite-parent) | `io.github.revsnai:ffm-sqlite-parent` | build and release configuration ([RELEASING.md](ffm-sqlite-parent/RELEASING.md)) |
 | [`ffm-sqlite-shop`](ffm-sqlite-shop) | not published | a sample e-commerce backend on ffm-sqlite-jdbc, written as a training guide for integrating the driver: pools, transactions, migrations, search, checkout, error handling |
 | [`ffm-vs-jdbc`](ffm-vs-jdbc) | not published | JMH benchmarks against sqlite-jdbc: [PERFORMANCE.md](ffm-vs-jdbc/PERFORMANCE.md), [INTERFACE-COMPARISON.md](ffm-vs-jdbc/INTERFACE-COMPARISON.md) |
@@ -14,7 +15,7 @@ SQLite for Java 25+ through the **Foreign Function & Memory API**: no JNI, no bu
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>   <!-- or ffm-sqlite for the library API -->
-    <version>0.2.2</version>
+    <version>0.2.3</version>
 </dependency>
 ```
 

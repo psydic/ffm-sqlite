@@ -1,5 +1,7 @@
 package io.github.revsnai.shop.db;
 
+import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -10,33 +12,37 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * Lesson 3: schema migrations without a framework. The schema version lives in the database header
- * ({@code PRAGMA user_version}); each script in {@code db/migration} runs once, in order. All pending scripts and
- * the version bump run in one transaction, so a failed migration leaves the database exactly as it was.
+ * Lesson 3: schema migrations without a framework, run by {@code ShopStartup} before the HTTP server accepts
+ * requests. The schema version lives in the database header ({@code PRAGMA user_version}); each script in
+ * {@code db/migration} runs once, in order. All pending scripts and the version bump run in one transaction, so
+ * a failed migration leaves the database exactly as it was, and stops the application.
  *
  * <p>ffm-sqlite-jdbc's {@code Statement.executeUpdate} runs every statement of a multi-statement script
- * (including triggers with {@code BEGIN ... END}), so a script needs no splitting. Flyway and Liquibase work too:
- * point them at the {@code jdbc:ffmsqlite:} URL.
+ * (including triggers with {@code BEGIN ... END}), so a script needs no splitting. Flyway and Liquibase work too.
  */
+@Singleton
 public final class Migrations {
     static final List<String> SCRIPTS = List.of(
             "V1__schema.sql",
             "V2__product_search.sql",
             "V3__catalog_seed.sql");
 
-    private Migrations() {
+    private final Database db;
+
+    public Migrations(Database db) {
+        this.db = db;
     }
 
     /** Applies the pending scripts; returns the schema version afterwards. */
-    public static int migrate(Database db) throws SQLException {
+    public int migrate() throws SQLException {
         return db.write(c -> {
             try (Statement st = c.createStatement()) {
-                int version;
+                int current;
                 try (ResultSet rs = st.executeQuery("PRAGMA user_version")) {
                     rs.next();
-                    version = rs.getInt(1);
+                    current = rs.getInt(1);
                 }
-                for (int v = version + 1; v <= SCRIPTS.size(); v++) {
+                for (int v = current + 1; v <= SCRIPTS.size(); v++) {
                     st.executeUpdate(load(SCRIPTS.get(v - 1)));
                     st.executeUpdate("PRAGMA user_version = " + v);   // transactional: rolled back with the script
                 }

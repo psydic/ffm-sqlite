@@ -9,4 +9,4 @@ WORKDIR /data
 EXPOSE 8080
 # Native Memory Tracking (JVM's own view); async-profiler is attached at runtime with asprof.
 ENTRYPOINT ["java", "-XX:NativeMemoryTracking=detail", "-XX:+UnlockDiagnosticVMOptions", "-XX:+DebugNonSafepoints", \
-            "-Xms256m", "-Xmx256m", "-XX:MaxDirectMemorySize=64m", "-jar", "/app/ffm-sqlite-shop.jar", "--db", "/data/shop.db"]
+            "-Xms256m", "-Xmx256m", "-XX:MaxDirectMemorySize=64m", "-jar", "/app/ffm-sqlite-shop.jar", "--shop.db=/data/shop.db"]

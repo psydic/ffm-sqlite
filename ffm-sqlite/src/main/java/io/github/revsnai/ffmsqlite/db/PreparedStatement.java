@@ -228,6 +228,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
      */
     public int[] executeBatch() throws SQLiteException {
         checkOpen();
+        conn.checkNotRunning(stmt);
         closeCurrent();
         int[] counts = new int[batch.size()];
         try {
@@ -304,6 +305,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
     public void close() {
         if (!closed) {
             conn.checkNotInHook();
+            conn.checkNotRunningOnClose(stmt);
             closeFromConnection();
             conn.unregister(this);
         }
@@ -328,6 +330,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
 
     private void startExecution(Params p) throws SQLiteException {
         checkOpen();
+        conn.checkNotRunning(stmt);
         closeCurrent();
         bind(p);
     }

@@ -290,4 +290,24 @@ class ReviewFixes2Test {
             assertThrows(SQLiteException.class, () -> st.executeQuery("SELECT as_int(3000000000)").next());
         }
     }
+
+    @Test
+    void inTransactionSeesSqlStartedTransactions() throws SQLiteException {
+        try (Connection c = SQLite.getConnection(":memory:"); Statement st = c.createStatement()) {
+            assertFalse(c.inTransaction());
+            st.executeUpdate("BEGIN");
+            assertTrue(c.inTransaction());
+            assertTrue(c.getAutoCommit(), "getAutoCommit is the API's mode, not SQLite's state");
+            st.executeUpdate("ROLLBACK");
+            st.executeUpdate("SAVEPOINT s");
+            assertTrue(c.inTransaction());
+            st.executeUpdate("RELEASE s");
+            c.setAutoCommit(false);
+            assertTrue(c.inTransaction());
+            c.setAutoCommit(true);
+            assertFalse(c.inTransaction());
+            c.close();
+            assertThrows(SQLiteException.class, c::inTransaction);
+        }
+    }
 }

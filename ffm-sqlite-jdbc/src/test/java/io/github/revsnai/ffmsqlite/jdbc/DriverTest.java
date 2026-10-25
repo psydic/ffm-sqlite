@@ -65,6 +65,38 @@ class DriverTest {
     }
 
     @Test
+    void pragmaPrefixSetsAnyPragma() throws SQLException {
+        Properties p = new Properties();
+        p.setProperty("pragma.analysis_limit", "400");
+        p.setProperty("pragma.cache_spill", "false");
+        try (Connection c = DriverManager.getConnection("jdbc:ffmsqlite::memory:?pragma.cache_size=-1234", p)) {
+            assertEquals("400", one(c, "PRAGMA analysis_limit"));
+            assertEquals("0", one(c, "PRAGMA cache_spill"));
+            assertEquals("-1234", one(c, "PRAGMA cache_size"));
+        }
+        // pragma.<name> wins over the bare name whatever the key order ("foreign_keys" sorts before "pragma.",
+        // "synchronous" after it).
+        Properties both = new Properties();
+        both.setProperty("foreign_keys", "true");
+        both.setProperty("pragma.foreign_keys", "false");
+        both.setProperty("synchronous", "FULL");
+        both.setProperty("pragma.synchronous", "OFF");
+        try (Connection c = DriverManager.getConnection("jdbc:ffmsqlite::memory:", both)) {
+            assertEquals("0", one(c, "PRAGMA foreign_keys"));
+            assertEquals("0", one(c, "PRAGMA synchronous"));
+        }
+        FfmSqliteDataSource ds = new FfmSqliteDataSource("jdbc:ffmsqlite:" + dir.resolve("b.db") + "?busy_timeout=1234");
+        ds.setProperties(both);
+        assertEquals(dir.resolve("b.db").toString(), ds.getDatabasePath());
+        assertEquals(1234, ds.getSqliteConfig().busyTimeoutMillis());
+        assertEquals("OFF", ds.getSqliteConfig().pragmas().get("foreign_keys"));
+
+        p.setProperty("pragma.1st", "1");
+        SQLException e = assertThrows(SQLException.class, () -> DriverManager.getConnection("jdbc:ffmsqlite::memory:", p));
+        assertTrue(e.getMessage().contains("not a PRAGMA name"), e.getMessage());
+    }
+
+    @Test
     void canTakeOverSqliteUrlsWhenAskedTo() throws SQLException {
         System.setProperty("ffmsqlite.jdbc.acceptSqliteUrls", "true");
         try (Connection c = new FfmSqliteDriver().connect("jdbc:sqlite:" + dir.resolve("b.db"), new Properties())) {

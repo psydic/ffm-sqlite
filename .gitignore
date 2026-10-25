@@ -24,3 +24,4 @@ ffm-sqlite/target/test-ext/
 ffm-sqlite-shop/profiling/out/
 ffm-sqlite-shop/profiling/data*/
 ffm-sqlite-shop/profiling/*.jar
+ffm-vs-rust/target/

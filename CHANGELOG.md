@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.2.3
+
+A new Micronaut starter, a JVM crash fix from a security review, and small additions to the core and the driver.
+Upgrading is recommended for #1.
+
+### ffm-sqlite
+
+1. **Closing or re-running a statement from inside a callback crashed the JVM.** A user-defined function or
+   collation that closed its connection, or closed, reset or re-ran the statement that called it, freed memory
+   SQLite was still executing. These now fail the running statement with an exception (`IllegalStateException`
+   as its cause for close). Other statements on the connection still work inside callbacks.
+2. `Connection.inTransaction()`: whether SQLite has a transaction open, including one started by `BEGIN` or
+   `SAVEPOINT` in SQL, which `getAutoCommit()` does not see.
+
+### micronaut-starter-ffm-sqlite (new)
+
+Micronaut 5 integration: `ffm-sqlite.datasources.<name>` settings become HikariCP-pooled `DataSource` beans
+(Micronaut Data JDBC and `@Transactional` work unchanged), `FfmSqliteDatabase` beans for the ffm-sqlite API,
+a shared in-memory database for `:memory:`, and a `/health` indicator.
+
+### ffm-sqlite-jdbc
+
+- `pragma.<name>` properties set any PRAGMA, including ones sqlite-jdbc has no property for. When a bare name
+  and `pragma.<name>` name the same PRAGMA, `pragma.<name>` wins.
+- `FfmSqliteDataSource.getSqliteConfig()` and `getDatabasePath()`: the settings its connections open with, for
+  opening an ffm-sqlite `Connection` configured the same way.
+
+### Samples
+
+- ffm-sqlite-shop now runs on Micronaut with micronaut-starter-ffm-sqlite (JDBC repositories unchanged).
+- ffm-vs-rust: a benchmark comparison with rusqlite.
+
 ## 0.2.2
 
 Fixes found by testing every connection-level PRAGMA with a range of values (`PragmaMatrixTest`). Upgrading is

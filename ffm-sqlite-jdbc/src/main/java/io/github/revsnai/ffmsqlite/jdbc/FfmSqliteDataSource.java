@@ -1,5 +1,7 @@
 package io.github.revsnai.ffmsqlite.jdbc;
 
+import io.github.revsnai.ffmsqlite.db.SQLite;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -40,6 +42,27 @@ public class FfmSqliteDataSource implements DataSource {
 
     public void setProperties(Properties properties) {
         this.properties = properties == null ? new Properties() : properties;
+    }
+
+    /** The file, {@code :memory:} or URI that connections open, after removing the URL's driver options. */
+    public String getDatabasePath() throws SQLException {
+        return config().path;
+    }
+
+    /**
+     * The ffm-sqlite settings connections open with (read-only, busy timeout, statement cache, PRAGMAs), from the
+     * URL and the properties: for opening an {@code io.github.revsnai.ffmsqlite.db.Connection} configured exactly
+     * like this DataSource's connections.
+     */
+    public SQLite.Config getSqliteConfig() throws SQLException {
+        return config().sqlite;
+    }
+
+    private JdbcConfig config() throws SQLException {
+        if (url == null) {
+            throw new SQLException("FfmSqliteDataSource: no url set", "08001");
+        }
+        return JdbcConfig.parse(url, properties);
     }
 
     @Override

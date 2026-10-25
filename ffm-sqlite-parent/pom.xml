@@ -8,12 +8,13 @@
       Parent and aggregator for the published artifacts:
         io.github.revsnai:ffm-sqlite       the FFM SQLite library (io.github.revsnai.ffmsqlite.db)
         io.github.revsnai:ffm-sqlite-jdbc  the java.sql driver on top of it (io.github.revsnai.ffmsqlite.jdbc)
+        io.github.revsnai:micronaut-starter-ffm-sqlite  Micronaut integration (io.github.revsnai.ffmsqlite.micronaut)
       Release steps: RELEASING.md. The groupId must match a namespace you own on Maven Central
       (io.github.<github-username>, or a reversed domain you control).
     -->
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-parent</artifactId>
-    <version>0.2.2</version>
+    <version>0.2.3</version>
     <packaging>pom</packaging>
 
     <name>ffm-sqlite parent</name>
@@ -57,6 +58,7 @@
     <modules>
         <module>../ffm-sqlite</module>
         <module>../ffm-sqlite-jdbc</module>
+        <module>../micronaut-starter-ffm-sqlite</module>
     </modules>
 
     <properties>
@@ -64,7 +66,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- Reproducible builds: fixed timestamp in archives (update on release). -->
-        <project.build.outputTimestamp>2026-10-24T18:45:12Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-10-25T16:20:00Z</project.build.outputTimestamp>
         <junit.version>5.12.2</junit.version>
         <!-- Tests: -Dffmsqlite.lib=/path/to/libsqlite3.so runs them against that SQLite (empty = system library). -->
         <ffmsqlite.lib></ffmsqlite.lib>
@@ -77,6 +79,11 @@
             <dependency>
                 <groupId>io.github.revsnai</groupId>
                 <artifactId>ffm-sqlite</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.revsnai</groupId>
+                <artifactId>ffm-sqlite-jdbc</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

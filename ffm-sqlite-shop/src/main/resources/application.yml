@@ -1,0 +1,29 @@
+# Override any of these on the command line (--shop.db=/data/shop.db) or with environment variables (SHOP_DB=...).
+micronaut:
+  application:
+    name: ffm-sqlite-shop
+  server:
+    port: 8080
+
+shop:
+  db: shop.db               # the database file
+  readers: 4                # reader pool size
+  demo-orders: 0            # place N random orders at startup, so the reports have data
+
+# Lesson 1: connecting. Two pools on the same file (see db/Database.java for why).
+ffm-sqlite:
+  datasources:
+    writer:
+      path: ${shop.db}
+      maximum-pool-size: 1  # SQLite has one writer at a time: writes queue here instead of failing with SQLITE_BUSY
+      # The starter's defaults are what this application wants:
+      #   journal-mode: WAL, synchronous: NORMAL, foreign-keys: true, busy-timeout: 5s
+    reader:
+      path: ${shop.db}
+      maximum-pool-size: ${shop.readers}
+      pragmas:
+        query_only: true    # a write sent here by mistake fails at once instead of competing with the writer
+
+endpoints:
+  health:
+    details-visible: ANONYMOUS   # a sample: show the ffm-sqlite details on /health without authentication

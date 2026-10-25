@@ -15,6 +15,8 @@ final class Stmt {
     private String[] names;
     private Map<String, Integer> indexByLabel;
     private int reprepares;
+    /** Inside sqlite3_step: SQLite is executing it, so it must not be stepped, reset or finalized re-entrantly. */
+    boolean running;
 
     Stmt(String sql, MemorySegment ptr) {
         this.sql = sql;

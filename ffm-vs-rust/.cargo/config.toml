@@ -1,0 +1,7 @@
+# Link against the same SQLite build as the Java benchmarks (ffm-vs-jdbc/native/libsqlite3.so, 3.50.3);
+# run with LD_LIBRARY_PATH=../ffm-vs-jdbc/native (run.sh does this).
+[env]
+SQLITE3_LIB_DIR = { value = "../ffm-vs-jdbc/native", relative = true }
+
+[build]
+rustflags = ["-C", "target-cpu=native"]
