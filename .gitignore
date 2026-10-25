@@ -21,3 +21,6 @@ ffm-sqlite/target/test-ext/
 /ggogle/
 /goo
 /SqliteBechmark.java
+ffm-sqlite-shop/profiling/out/
+ffm-sqlite-shop/profiling/data*/
+ffm-sqlite-shop/profiling/*.jar

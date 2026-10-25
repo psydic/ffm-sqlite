@@ -1,0 +1,12 @@
+FROM docker.io/library/eclipse-temurin:25-jdk-noble
+RUN apt-get update && apt-get install -y --no-install-recommends libsqlite3-0 curl procps \
+    && rm -rf /var/lib/apt/lists/*
+ARG AP_VERSION=4.1
+RUN curl -fsSL https://github.com/async-profiler/async-profiler/releases/download/v${AP_VERSION}/async-profiler-${AP_VERSION}-linux-x64.tar.gz \
+      | tar -xz -C /opt && ln -s /opt/async-profiler-${AP_VERSION}-linux-x64 /opt/async-profiler
+COPY ffm-sqlite-shop.jar /app/ffm-sqlite-shop.jar
+WORKDIR /data
+EXPOSE 8080
+# Native Memory Tracking (JVM's own view); async-profiler is attached at runtime with asprof.
+ENTRYPOINT ["java", "-XX:NativeMemoryTracking=detail", "-XX:+UnlockDiagnosticVMOptions", "-XX:+DebugNonSafepoints", \
+            "-Xms256m", "-Xmx256m", "-XX:MaxDirectMemorySize=64m", "-jar", "/app/ffm-sqlite-shop.jar", "--db", "/data/shop.db"]
