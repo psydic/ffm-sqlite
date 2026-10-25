@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A connection to one SQLite database, in the role of {@code java.sql.Connection}.
@@ -260,7 +262,8 @@ public final class Connection implements AutoCloseable {
     private static List<Map.Entry<String, String>> inApplyOrder(Map<String, String> pragmas) {
         List<Map.Entry<String, String>> ordered = new ArrayList<>(pragmas.entrySet());
         ordered.sort(Comparator.comparing(
-                (Map.Entry<String, String> e) -> !FILE_FORMAT_PRAGMAS.contains(e.getKey().toLowerCase(Locale.ROOT))));
+                (Map.Entry<String, String> e) -> !FILE_FORMAT_PRAGMAS.contains(
+                        e.getKey().substring(e.getKey().indexOf('.') + 1).toLowerCase(Locale.ROOT))));
         return ordered;   // List.sort is stable: the order within each group is kept
     }
 
@@ -764,6 +767,33 @@ public final class Connection implements AutoCloseable {
         Native.busy_timeout(db, wait);
     }
 
+    private static final Pattern MENTIONS_BUSY_TIMEOUT = Pattern.compile("busy_timeout", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SETS_BUSY_TIMEOUT = Pattern.compile(
+            "^\\s*PRAGMA\\s+(?:\\w+\\s*\\.\\s*)?busy_timeout\\s*[=(]", Pattern.CASE_INSENSITIVE);
+
+    static boolean setsBusyTimeout(String sql) {
+        return MENTIONS_BUSY_TIMEOUT.matcher(sql).find() && SETS_BUSY_TIMEOUT.matcher(sql).find();
+    }
+
+    /**
+     * Call right after preparing {@code PRAGMA busy_timeout = N}, which SQLite applies while preparing: it has replaced
+     * any busy handler with its own timeout. Adopt N, so restoring the timeout after a query timeout keeps it.
+     */
+    private void adoptBusyTimeout() {
+        hooks.busyHandler = null;
+        try (Arena arena = Arena.ofConfined()) {
+            MemorySegment text = arena.allocateFrom("PRAGMA busy_timeout");
+            MemorySegment ppStmt = arena.allocate(ADDRESS);
+            if (Native.prepare_v2(db, text, (int) text.byteSize(), ppStmt, MemorySegment.NULL) == Native.SQLITE_OK) {
+                MemorySegment p = ppStmt.get(ADDRESS, 0);
+                if (Native.step(p) == Native.SQLITE_ROW) {
+                    busyTimeoutMillis = Native.column_int(p, 0);
+                }
+                Native.finalize(p);
+            }
+        }
+    }
+
     boolean busyCapped() {
         return busyCapped;
     }
@@ -974,6 +1004,9 @@ public final class Connection implements AutoCloseable {
                 Native.finalize(ptr);
                 throw new SQLiteException("prepareStatement accepts a single statement; use Statement.execute for scripts: " + sql);
             }
+            if (setsBusyTimeout(sql)) {
+                adoptBusyTimeout();
+            }
             return new Stmt(sql, ptr);
         }
     }
@@ -1002,6 +1035,12 @@ public final class Connection implements AutoCloseable {
                 offset = pzTail.get(ADDRESS, 0).address() - text.address();
                 if (ptr.equals(MemorySegment.NULL)) {
                     continue; // only whitespace or a comment
+                }
+                if (MENTIONS_BUSY_TIMEOUT.matcher(script).find()) {
+                    long start = at.address() - text.address();
+                    if (setsBusyTimeout(new String(text.asSlice(start, offset - start).toArray(JAVA_BYTE), UTF_8))) {
+                        adoptBusyTimeout();
+                    }
                 }
                 Stmt s = new Stmt(script, ptr);
                 if (keepFinalQuery && s.columnCount > 0 && isBlank(text, offset)) {

@@ -40,7 +40,8 @@ public final class SQLite {
         /** Read-write, 3 s busy timeout (as sqlite-jdbc), 64 cached statements, no PRAGMAs. */
         public static final Config DEFAULT = new Config(false, 3_000, 64);
 
-        private static final Pattern NAME = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
+        /** A PRAGMA name, optionally schema-qualified ({@code main.cache_size}). */
+        private static final Pattern NAME = Pattern.compile("([A-Za-z_][A-Za-z0-9_]*\\.)?[A-Za-z_][A-Za-z0-9_]*");
         private static final Pattern PLAIN_VALUE = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*|[+-]?[0-9]+(\\.[0-9]+)?");
 
         public Config(boolean readOnly, int busyTimeoutMillis, int statementCacheSize) {

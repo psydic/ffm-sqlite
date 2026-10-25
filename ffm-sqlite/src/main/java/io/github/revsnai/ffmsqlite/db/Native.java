@@ -144,6 +144,7 @@ final class Native {
     /** {@code int xCompare(void *pArg, int len1, const void *s1, int len2, const void *s2)}: UTF-8, not NUL-terminated. */
     static final FunctionDescriptor X_COMPARE = FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, JAVA_INT, ADDRESS);
     static final int SQLITE_BUSY = 5;
+    static final int SQLITE_NOMEM = 7;
     static final int SQLITE_MISMATCH = 20;
     static final int SQLITE_INTERRUPT = 9;
 
@@ -476,24 +477,30 @@ final class Native {
     }
 
     /** Returns null for SQL NULL. */
-    static byte[] value_text(MemorySegment v) {
+    /** Returns null for SQL NULL; fails with SQLITE_NOMEM when SQLite cannot allocate the converted text. */
+    static byte[] value_text(MemorySegment v) throws SQLiteException {
+        MemorySegment p;
+        int n;
         try {
-            MemorySegment p = (MemorySegment) VALUE_TEXT.invokeExact(v);
-            return copyOut(p, (int) VALUE_BYTES.invokeExact(v));
+            p = (MemorySegment) VALUE_TEXT.invokeExact(v);
+            n = (int) VALUE_BYTES.invokeExact(v);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
+        return p.equals(MemorySegment.NULL) ? nullUnlessOutOfMemory(value_type(v)) : copyOut(p, n);
     }
 
     /** Returns null for SQL NULL; an empty array for a zero-length blob. */
-    static byte[] value_blob(MemorySegment v, boolean isNull) {
+    static byte[] value_blob(MemorySegment v, boolean isNull) throws SQLiteException {
+        MemorySegment p;
+        int n;
         try {
-            MemorySegment p = (MemorySegment) VALUE_BLOB.invokeExact(v);
-            int n = (int) VALUE_BYTES.invokeExact(v);
-            return isNull ? null : n == 0 ? new byte[0] : copyOut(p, n);
+            p = (MemorySegment) VALUE_BLOB.invokeExact(v);
+            n = (int) VALUE_BYTES.invokeExact(v);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
+        return isNull ? null : n == 0 ? new byte[0] : p.equals(MemorySegment.NULL) ? nullUnlessOutOfMemory(SQLITE_BLOB) : copyOut(p, n);
     }
 
     static void result_null(MemorySegment ctx) {
@@ -801,31 +808,44 @@ final class Native {
         }
     }
 
-    /** Returns null for SQL NULL. Reads exactly {@code column_bytes} bytes: no strlen. */
-    static byte[] column_text(MemorySegment stmt, int col) {
+    /**
+     * Returns null for SQL NULL. Reads exactly {@code column_bytes} bytes: no strlen. Fails with SQLITE_NOMEM when
+     * SQLite cannot allocate the converted text (e.g. UTF-8 from a UTF-16 database), which it reports as a NULL pointer.
+     */
+    static byte[] column_text(MemorySegment stmt, int col) throws SQLiteException {
+        MemorySegment p;
+        int n;
         try {
-            MemorySegment p = (MemorySegment) COLUMN_TEXT.invokeExact(stmt, col);
-            return copyOut(p, (int) COLUMN_BYTES.invokeExact(stmt, col));
+            p = (MemorySegment) COLUMN_TEXT.invokeExact(stmt, col);
+            n = (int) COLUMN_BYTES.invokeExact(stmt, col);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
+        return p.equals(MemorySegment.NULL) ? nullUnlessOutOfMemory(column_type(stmt, col)) : copyOut(p, n);
     }
 
     /** Returns null for SQL NULL; an empty array for a zero-length blob. */
-    static byte[] column_blob(MemorySegment stmt, int col, boolean isNull) {
+    static byte[] column_blob(MemorySegment stmt, int col, boolean isNull) throws SQLiteException {
+        MemorySegment p;
+        int n;
         try {
-            MemorySegment p = (MemorySegment) COLUMN_BLOB.invokeExact(stmt, col);
-            int n = (int) COLUMN_BYTES.invokeExact(stmt, col);
-            return isNull ? null : n == 0 ? new byte[0] : copyOut(p, n);
+            p = (MemorySegment) COLUMN_BLOB.invokeExact(stmt, col);
+            n = (int) COLUMN_BYTES.invokeExact(stmt, col);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
+        return isNull ? null : n == 0 ? new byte[0] : p.equals(MemorySegment.NULL) ? nullUnlessOutOfMemory(SQLITE_BLOB) : copyOut(p, n);
+    }
+
+    /** A NULL pointer for a value that is not SQL NULL: SQLite ran out of memory converting it. */
+    private static byte[] nullUnlessOutOfMemory(int type) throws SQLiteException {
+        if (type == SQLITE_NULL) {
+            return null;
+        }
+        throw new SQLiteException("[out of memory] out of memory reading a value", SQLITE_NOMEM, SQLITE_NOMEM);
     }
 
     private static byte[] copyOut(MemorySegment p, int n) {
-        if (p.equals(MemorySegment.NULL)) {
-            return null;
-        }
         byte[] out = new byte[n];
         MemorySegment.copy(p.reinterpret(n), java.lang.foreign.ValueLayout.JAVA_BYTE, 0, out, 0, n);
         return out;

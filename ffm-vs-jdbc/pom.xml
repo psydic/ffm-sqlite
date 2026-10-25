@@ -26,13 +26,13 @@
             <!-- The JDBC-style FFM library in ../ffm-sqlite (run `mvn install` there first). -->
             <groupId>io.github.revsnai</groupId>
             <artifactId>ffm-sqlite</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <!-- The JDBC driver over ffm-sqlite, in ../ffm-sqlite-jdbc (run `mvn install` there first). -->
             <groupId>io.github.revsnai</groupId>
             <artifactId>ffm-sqlite-jdbc</artifactId>
-            <version>0.2.1</version>
+            <version>0.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

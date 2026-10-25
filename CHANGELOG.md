@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.2.2
+
+Fixes found by testing every connection-level PRAGMA with a range of values (`PragmaMatrixTest`). Upgrading is
+recommended: #1 can return wrong data silently.
+
+### ffm-sqlite
+
+1. **Running out of memory while reading a value returned SQL NULL.** When SQLite could not allocate the converted
+   value (e.g. UTF-8 text from a UTF-16 database, under `hard_heap_limit` or a real shortage), `getString`,
+   `getBytes` and function arguments returned `null` with no error, and `getObject` threw `NullPointerException`.
+   They now fail with SQLITE_NOMEM.
+2. **A busy timeout set by `PRAGMA busy_timeout` was lost.** After any statement with a query timeout, the
+   connection went back to the configured busy timeout (3 s by default), whether the PRAGMA came from
+   `Config.withPragma`, a script or a prepared statement. The value set by the PRAGMA is now kept.
+3. `Config.withPragma` accepts schema-qualified names such as `main.cache_size`.
+
+### ffm-sqlite-jdbc
+
+- Picks up all of the above: out-of-memory reads fail with `SQLException` instead of returning `null`, and a
+  `busy_timeout` URL parameter or PRAGMA survives `setQueryTimeout`.
+
 ## 0.2.1
 
 Fixes from a second, deeper code review. Upgrading is recommended: #1 can lose data silently and #3 can crash the

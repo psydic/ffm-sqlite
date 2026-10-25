@@ -234,12 +234,12 @@ final class Conversions {
         return c == VALUE ? Native.value_double(p) : Native.column_double(p, c);
     }
 
-    private static byte[] text(MemorySegment p, int c) {
+    private static byte[] text(MemorySegment p, int c) throws SQLiteException {
         return c == VALUE ? Native.value_text(p) : Native.column_text(p, c);
     }
 
     /** The value as a BLOB; only called for non-NULL values. */
-    private static byte[] blob(MemorySegment p, int c) {
+    private static byte[] blob(MemorySegment p, int c) throws SQLiteException {
         return c == VALUE ? Native.value_blob(p, false) : Native.column_blob(p, c, false);
     }
 
@@ -291,7 +291,7 @@ final class Conversions {
     }
 
     /** By storage class: Long, Double, String, byte[]; never called for NULL. */
-    static Object readAny(MemorySegment stmt, int c, int storage) {
+    static Object readAny(MemorySegment stmt, int c, int storage) throws SQLiteException {
         return switch (storage) {
             case Native.SQLITE_INTEGER -> int64(stmt, c);
             case Native.SQLITE_FLOAT -> float64(stmt, c);
