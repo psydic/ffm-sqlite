@@ -15,7 +15,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * <p>SQLite's comparison callback has no way to report an error, and an exception must not escape an
  * upcall. So a throwing comparator is recorded on the connection, the running statement is aborted
  * with {@code sqlite3_interrupt}, and 0 is returned; the statement then fails with SQLITE_INTERRUPT
- * and the exception attached as the cause.
+ * and the exception attached as the cause. SQLite checks the interrupt only at certain points, so a write
+ * may still complete with the 0 in an index; the transaction is therefore made rollback-only
+ * ({@link Hooks#collationFailed}), and its commit is vetoed.
  */
 final class CollationCallback {
     static final MethodHandle X_COMPARE;
@@ -60,6 +62,7 @@ final class CollationCallback {
             try {
                 String detail = t.getMessage() != null ? t.getMessage() : t.getClass().getName();
                 conn.recordCallbackFailure(t, "collation " + name + ": " + detail);
+                conn.hooks.collationFailed();
                 Native.interrupt(conn.db);
             } catch (Throwable ignored) {
                 // nothing may escape an upcall

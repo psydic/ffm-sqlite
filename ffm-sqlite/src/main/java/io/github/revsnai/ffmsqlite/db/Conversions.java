@@ -276,7 +276,7 @@ final class Conversions {
         } else if (type == BigInteger.class) {
             v = storage == Native.SQLITE_INTEGER
                     ? BigInteger.valueOf(int64(stmt, c))
-                    : readDecimal(stmt, c, storage).toBigInteger();
+                    : toBigInteger(readDecimal(stmt, c, storage));
         } else if (type == LocalDate.class || type == LocalTime.class || type == LocalDateTime.class
                 || type == Instant.class || type == OffsetDateTime.class || type == ZonedDateTime.class) {
             v = readTemporal(stmt, c, storage, type);
@@ -301,11 +301,32 @@ final class Conversions {
         };
     }
 
+    /** Integer digits allowed in a BigInteger read from TEXT: "1e600000000" is short but has 600 million. */
+    static final int MAX_BIG_INTEGER_DIGITS = 100_000;
+
+    private static BigInteger toBigInteger(BigDecimal d) throws SQLiteException {
+        long digits = (long) d.precision() - d.scale();   // digits before the decimal point
+        if (digits <= 0) {
+            return BigInteger.ZERO;   // |d| < 1; toBigInteger() would first compute 10^scale, which may be huge
+        }
+        if (digits > MAX_BIG_INTEGER_DIGITS) {
+            throw new SQLiteException("cannot convert a " + digits + "-digit number to BigInteger (limit "
+                    + MAX_BIG_INTEGER_DIGITS + ")");
+        }
+        return d.toBigInteger();
+    }
+
     private static BigDecimal readDecimal(MemorySegment stmt, int c, int storage) throws SQLiteException {
         return switch (storage) {
             case Native.SQLITE_INTEGER -> BigDecimal.valueOf(int64(stmt, c));
             // valueOf(double) uses the shortest decimal that round-trips: 0.1 -> 0.1, not 0.1000000000000000055...
-            case Native.SQLITE_FLOAT -> BigDecimal.valueOf(float64(stmt, c));
+            case Native.SQLITE_FLOAT -> {
+                double d = float64(stmt, c);
+                if (!Double.isFinite(d)) {   // SQLite stores 9e999 as Inf
+                    throw new SQLiteException("cannot convert " + d + " to BigDecimal");
+                }
+                yield BigDecimal.valueOf(d);
+            }
             default -> {
                 String text = new String(text(stmt, c), UTF_8).strip();
                 try {

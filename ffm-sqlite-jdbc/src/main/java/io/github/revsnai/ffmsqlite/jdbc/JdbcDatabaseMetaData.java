@@ -501,7 +501,7 @@ final class JdbcDatabaseMetaData implements DatabaseMetaData {
 
     @Override
     public String getDriverVersion() {
-        return FfmSqliteDriver.MAJOR + "." + FfmSqliteDriver.MINOR;
+        return FfmSqliteDriver.VERSION;
     }
 
     @Override

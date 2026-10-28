@@ -71,8 +71,13 @@ final class Errors {
         return new SQLNonTransientException(what + " is closed", "HY010");
     }
 
+    /**
+     * SQLState 0A500, not the generic 0A000: HikariCP treats 0A000 as a broken connection and evicts it (with
+     * its statement cache and functions), so a framework probing an optional feature churned the pool. Class
+     * 0A still says "feature not supported"; subclass 5xx is implementation-defined.
+     */
     static SQLFeatureNotSupportedException unsupported(String feature) {
-        return new SQLFeatureNotSupportedException(feature + " is not supported by ffm-sqlite-jdbc", "0A000");
+        return new SQLFeatureNotSupportedException(feature + " is not supported by ffm-sqlite-jdbc", "0A500");
     }
 
     static SQLException forwardOnly() {

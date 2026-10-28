@@ -16,7 +16,10 @@ import java.util.Objects;
  */
 public record BackupOptions(String schema, int pagesPerStep, Duration pause, Progress progress) {
 
-    /** Reports progress after each step; return {@code false} to cancel the copy (it is then rolled back). */
+    /**
+     * Reports progress after each step; return {@code false} to cancel the copy (it is then rolled back).
+     * Closing either connection, or deserializing into it, from here throws: the backup is still using it.
+     */
     @FunctionalInterface
     public interface Progress {
         boolean onProgress(int remainingPages, int totalPages);

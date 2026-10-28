@@ -62,35 +62,44 @@ final class Udf {
     }
 
     void xFunc(MemorySegment ctx, int argc, MemorySegment argv) {
-        FunctionArgs args = new FunctionArgs(argv, argc);
+        FunctionArgs args = null;
         try {
+            args = new FunctionArgs(argv, argc);   // inside the try: even an OutOfMemoryError must not escape
             setResult(ctx, scalar.apply(args));
         } catch (Throwable t) {
             fail(ctx, t);
         } finally {
-            args.invalidate();
+            if (args != null) {
+                args.invalidate();
+            }
         }
     }
 
     void xStep(MemorySegment ctx, int argc, MemorySegment argv) {
-        FunctionArgs args = new FunctionArgs(argv, argc);
+        FunctionArgs args = null;
         try {
+            args = new FunctionArgs(argv, argc);   // inside the try: even an OutOfMemoryError must not escape
             accumulator(ctx).step(args);
         } catch (Throwable t) {
             fail(ctx, t);
         } finally {
-            args.invalidate();
+            if (args != null) {
+                args.invalidate();
+            }
         }
     }
 
     void xInverse(MemorySegment ctx, int argc, MemorySegment argv) {
-        FunctionArgs args = new FunctionArgs(argv, argc);
+        FunctionArgs args = null;
         try {
+            args = new FunctionArgs(argv, argc);   // inside the try: even an OutOfMemoryError must not escape
             ((WindowFunction) accumulator(ctx)).inverse(args);
         } catch (Throwable t) {
             fail(ctx, t);
         } finally {
-            args.invalidate();
+            if (args != null) {
+                args.invalidate();
+            }
         }
     }
 

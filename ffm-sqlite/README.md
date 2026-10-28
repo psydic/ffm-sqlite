@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.5</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ functions such as `date()`, `datetime()`, `unixepoch()`, and plain string compar
 | `Instant` | UTC, no suffix: `2024-02-29 13:45:30.5`, the same format as `CURRENT_TIMESTAMP` |
 | `OffsetDateTime`, `ZonedDateTime` | `2024-02-29 13:45:30+02:00` (a zone ID is reduced to its offset) |
 | `BigDecimal` | exact decimal text, `1.50` (exponent form only for extreme scales, e.g. `1E+500`) |
-| `BigInteger` | INTEGER if it fits in 64 bits, else TEXT |
+| `BigInteger` | INTEGER if it fits in 64 bits, else TEXT (read back with at most 100,000 integer digits) |
 | `UUID` | canonical lower-case TEXT `123e4567-e89b-12d3-a456-426614174000`; reading also accepts upper case and 16-byte BLOBs |
 
 Reading is lenient:
@@ -242,7 +242,8 @@ conn.backup("aux.db", BackupOptions.DEFAULT.withSchema("aux"));   // an ATTACHed
   Prepared statements on the connection stay valid; SQLite re-prepares them for the new schema. Restore is
   refused while a statement is running on the connection: SQLITE_ERROR, "destination database is in use".
 - **Errors** carry SQLite's codes, e.g. 14 (CANTOPEN) for a bad path and 26 (NOTADB) for a file that is not
-  a database. An exception thrown by the progress callback propagates, after the copy is rolled back.
+  a database. An exception thrown by the progress callback propagates, after the copy is rolled back. Closing
+  either connection (or deserializing into it) from the callback throws, since the backup is still using it.
 - **Alternative:** `VACUUM INTO 'file.db'` (plain SQL) writes a compacted copy, but copy-out only.
 
 ## Serialize and deserialize

@@ -9,7 +9,7 @@ indicator. Built and tested with Micronaut 5.2 (platform 5.2.3).
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>micronaut-starter-ffm-sqlite</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.5</version>
 </dependency>
 ```
 
@@ -130,7 +130,7 @@ connection with `openConnection()`.
 With `micronaut-management`, `/health` includes `ffm-sqlite`. (With Micronaut Data, Micronaut's generic `jdbc`
 indicator appears too; it only runs a validity check.) For each database it runs a query on the
 blocking executor and reports the journal mode, the SQLite version and pool usage (active, idle, total,
-waiting). If callers are already queued for a connection, it skips the query and reports UP with
+waiting). If no connection is free (all are in use and the pool is full, or callers are queued), it skips the query and reports UP with
 `"check": "skipped: all connections in use"` instead of joining the queue. Set
 `endpoints.health.ffm-sqlite.enabled: false` to turn it off. The details include the database path, which
 Micronaut shows only to authenticated users by default (`endpoints.health.details-visible`).

@@ -18,7 +18,11 @@ import java.util.List;
  *       check) and makes the transaction <em>rollback-only</em>: the commit hook vetoes any commit until the
  *       transaction has rolled back. So a statement whose listener failed is never committed, even if it
  *       completed before SQLite noticed the interrupt. The commit hook is therefore installed whenever
- *       update listeners are.</li>
+ *       update listeners are, and stays installed until that transaction ends, even if the listener is
+ *       removed first.</li>
+ *   <li>A failing collation does the same while a write transaction is open: its fallback answer (0, "equal")
+ *       may have put an index entry out of order. So the commit hook is also installed while collations
+ *       are registered.</li>
  *   <li>Exceptions never escape an upcall; they are recorded as the failing statement's cause.</li>
  * </ul>
  */
@@ -39,6 +43,8 @@ final class Hooks {
 
     /** Non-zero while a hook is running; the connection is unusable then. */
     int depth;
+    /** Whether {@link Connection#createCollation} functions are registered. */
+    boolean collations;
     private boolean rollbackOnly;
     private MemorySegment updateStub, commitStub, rollbackStub, busyStub, progressStub;
 
@@ -52,7 +58,8 @@ final class Hooks {
     /** Installs or removes the native hooks to match the registered listeners. */
     void sync() {
         boolean updates = !updateListeners.isEmpty();
-        boolean transactions = updates || !commitListeners.isEmpty();
+        // rollbackOnly: removing the listener that failed must not lift the veto before the transaction ends
+        boolean transactions = updates || !commitListeners.isEmpty() || collations || rollbackOnly;
         if (updates && updateStub == null) {
             updateStub = stub("xUpdate", Native.X_UPDATE_HOOK,
                     MethodType.methodType(void.class, MemorySegment.class, int.class, MemorySegment.class, MemorySegment.class, long.class));
@@ -64,8 +71,16 @@ final class Hooks {
         Native.update_hook(conn.db, updates ? updateStub : MemorySegment.NULL);
         Native.commit_hook(conn.db, transactions ? commitStub : MemorySegment.NULL);
         Native.rollback_hook(conn.db, transactions ? rollbackStub : MemorySegment.NULL);
-        if (!transactions) {
-            rollbackOnly = false;
+    }
+
+    /**
+     * Called from a collation upcall that threw. If the transaction has written, the comparator's wrong
+     * answer may be in an index, so the transaction must not commit; a read transaction cannot be harmed
+     * (and would never reach the commit hook that clears the flag).
+     */
+    void collationFailed() {
+        if (Native.txn_state(conn.db, MemorySegment.NULL) == Native.SQLITE_TXN_WRITE) {
+            rollbackOnly = true;
         }
     }
 
@@ -153,7 +168,7 @@ final class Hooks {
         depth++;
         try {
             if (rollbackOnly) {
-                return 1; // an update listener failed in this transaction: never commit it
+                return 1; // an update listener or collation failed in this transaction: never commit it
             }
             for (CommitListener l : commitListeners) {
                 l.onCommit();

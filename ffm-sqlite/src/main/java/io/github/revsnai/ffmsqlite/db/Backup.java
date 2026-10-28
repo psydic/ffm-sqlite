@@ -24,6 +24,8 @@ final class Backup {
         }
         int rc = Native.SQLITE_OK;
         String abort = null;
+        dest.beginBackup();
+        source.beginBackup();
         try {
             do {
                 rc = Native.backup_step(backup, options.pagesPerStep());
@@ -47,6 +49,8 @@ final class Backup {
             } while (rc == Native.SQLITE_OK);
         } finally {
             int finish = Native.backup_finish(backup); // also runs if the progress callback threw
+            source.endBackup();
+            dest.endBackup();
             if (finish != Native.SQLITE_OK && abort == null && rc == Native.SQLITE_DONE) {
                 rc = finish;
             }

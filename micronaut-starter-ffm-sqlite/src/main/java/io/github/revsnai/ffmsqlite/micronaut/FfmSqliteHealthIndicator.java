@@ -49,6 +49,12 @@ public class FfmSqliteHealthIndicator implements HealthIndicator {
         return Publishers.fromCompletableFuture(() -> CompletableFuture.supplyAsync(this::check, blocking));
     }
 
+    /** No connection to borrow without waiting: callers are queued, or all are in use and the pool is full. */
+    static boolean saturated(HikariPoolMXBean pool, int maximumPoolSize) {
+        return pool.getThreadsAwaitingConnection() > 0
+                || (pool.getIdleConnections() == 0 && pool.getTotalConnections() >= maximumPoolSize);
+    }
+
     HealthResult check() {
         HealthStatus status = HealthStatus.UP;
         Map<String, Object> details = new LinkedHashMap<>();
@@ -56,9 +62,9 @@ public class FfmSqliteHealthIndicator implements HealthIndicator {
             Map<String, Object> d = new LinkedHashMap<>();
             d.put("path", db.getPath());
             HikariPoolMXBean pool = db.getDataSource().getHikariPoolMXBean();
-            if (pool != null && pool.getThreadsAwaitingConnection() > 0) {
-                // Every connection is busy and callers are queued: answering beats joining the queue for up to
-                // connection-timeout. A saturated pool is working, so this is not DOWN.
+            if (pool != null && saturated(pool, db.getDataSource().getMaximumPoolSize())) {
+                // Every connection is busy: answering beats joining the queue for up to connection-timeout and
+                // then reporting DOWN. A saturated pool is working, so this is not DOWN.
                 d.put("status", HealthStatus.NAME_UP);
                 d.put("check", "skipped: all connections in use");
             } else if (!probe(db, d)) {

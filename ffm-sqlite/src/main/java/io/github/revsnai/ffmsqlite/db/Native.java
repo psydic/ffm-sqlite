@@ -268,6 +268,8 @@ final class Native {
 
     // --- Serialize / deserialize (copy whole databases: never critical) ---
 
+    static final int SQLITE_TXN_WRITE = 2;
+
     static final int SQLITE_DESERIALIZE_FREEONCLOSE = 1;
     static final int SQLITE_DESERIALIZE_RESIZEABLE = 2;
     static final int SQLITE_DESERIALIZE_READONLY = 4;

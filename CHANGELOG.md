@@ -1,5 +1,48 @@
 # Changelog
 
+## 0.2.5
+
+Fixes from a review of hot paths, resilience, resource lifecycle and security. Upgrading is recommended for #1–#4;
+each has a regression test that fails on 0.2.4.
+
+### ffm-sqlite
+
+1. **Reading one stored value could take minutes or exhaust the heap.** `getObject(i, BigInteger.class)` on TEXT
+   such as `'1e600000000'` built a 600-million-digit number (10+ minutes of CPU on 0.2.4). Integer parts above
+   100,000 digits are now rejected with `SQLiteException`, and values below 1 return 0 without computing
+   10^scale. Applies to result sets and function arguments. A stored ±Infinity read as `BigDecimal` now fails
+   with `SQLiteException` instead of a raw `NumberFormatException`.
+2. **A transaction whose update listener failed could still commit.** Removing that listener before `commit()`
+   (the usual `finally` block) lifted the veto, committing the row the listener had failed on. The veto now
+   lasts until the transaction ends.
+3. **A failing custom collation could commit an out-of-order index entry.** A comparator that throws answers
+   "equal"; when SQLite completed the statement before noticing the interrupt, the write committed. A
+   collation failure inside a write transaction now makes it rollback-only, as a failed update listener
+   does (reads are unaffected).
+4. **Closing a connection from a backup's progress callback freed it under the backup.** Closing either
+   connection, or deserializing into it, from `BackupOptions.Progress` now throws `IllegalStateException`
+   (or `SQLiteException`), and the backup is finished cleanly.
+5. **Long scripts ran in quadratic time.** `Statement.execute` searched and copied the whole script once per
+   statement: a 20,000-statement script took 79 s, now well under a second.
+6. `Config` PRAGMA values run as a single statement, so a value cannot add a second statement
+   (`"1; ATTACH ..."`). The driver and the starter already quoted values.
+7. An `OutOfMemoryError` while preparing a function's arguments can no longer escape the native callback.
+
+### ffm-sqlite-jdbc
+
+- **Unsupported features no longer make HikariCP evict the connection.** They used SQLState `0A000`, which
+  Hikari treats as a broken connection: after Hibernate `scroll()`, `ResultSet.isLast()` or `prepareCall`,
+  Hikari closed the connection while the application still held it (its next call failed with "Connection
+  is closed", mid-transaction) and discarded its statement cache and functions. They now use `0A500` (still
+  class 0A, feature not supported).
+- `getDriverVersion()` reports the release version from the jar manifest (it said 0.1).
+
+### micronaut-starter-ffm-sqlite
+
+- **`/health` no longer blocks for `connection-timeout` and reports DOWN on a busy pool.** The check was skipped
+  only when callers were queued; with every connection held and nobody waiting, it joined the queue itself.
+  It now also skips when no connection is idle and the pool is full.
+
 ## 0.2.4
 
 A performance fix for frameworks that switch connections to read-only around every read (Micronaut Data, Spring

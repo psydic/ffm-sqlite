@@ -21,8 +21,20 @@ import java.util.logging.Logger;
 public final class FfmSqliteDriver implements Driver {
     public static final String PREFIX = "jdbc:ffmsqlite:";
     static final String SQLITE_PREFIX = "jdbc:sqlite:";
-    static final int MAJOR = 0;
-    static final int MINOR = 1;
+    /** The jar's Implementation-Version (the Maven version), so it cannot go stale; "0.2" when run from classes. */
+    static final String VERSION = java.util.Objects.requireNonNullElse(
+            FfmSqliteDriver.class.getPackage().getImplementationVersion(), "0.2");
+    static final int MAJOR = versionPart(0);
+    static final int MINOR = versionPart(1);
+
+    private static int versionPart(int i) {
+        String[] parts = VERSION.split("[.-]");
+        try {
+            return i < parts.length ? Integer.parseInt(parts[i]) : 0;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
 
     static {
         try {

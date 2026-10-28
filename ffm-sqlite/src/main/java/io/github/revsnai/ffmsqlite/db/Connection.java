@@ -55,7 +55,7 @@ public final class Connection implements AutoCloseable {
      */
     private final Map<String, Arena> functionStubs = new HashMap<>();
     private final Map<String, Arena> collationStubs = new HashMap<>();
-    private final Hooks hooks = new Hooks(this);
+    final Hooks hooks = new Hooks(this);
     private Throwable callbackFailure;
     private String callbackFailureMessage;
     private boolean autoCommit = true;
@@ -115,7 +115,13 @@ public final class Connection implements AutoCloseable {
         for (Map.Entry<String, String> pragma : inApplyOrder(config.pragmas())) {
             String sql = "PRAGMA " + pragma.getKey() + " = " + pragma.getValue();
             try {
-                conn.runScript(sql, false);
+                // One statement only: a value such as "1; ATTACH ..." is rejected, not run as a second statement.
+                Stmt s = conn.prepareSingle(sql);
+                try {
+                    conn.stepToEnd(s, sql);
+                } finally {
+                    s.finalizeQuietly();
+                }
             } catch (SQLiteException e) {
                 conn.close();
                 throw e;
@@ -484,6 +490,8 @@ public final class Connection implements AutoCloseable {
         if (previous != null) {
             previous.close();
         }
+        hooks.collations = true;   // a failing comparator must be able to veto the commit
+        hooks.sync();
     }
 
     /** Removes a collation registered with {@link #createCollation}. */
@@ -495,6 +503,8 @@ public final class Connection implements AutoCloseable {
         if (previous != null) {
             previous.close();
         }
+        hooks.collations = !collations.isEmpty();
+        hooks.sync();
     }
 
     private void registerCollation(String name, MemorySegment xCompare, String action) throws SQLiteException {
@@ -627,7 +637,7 @@ public final class Connection implements AutoCloseable {
         checkOpen();
         // sqlite3_deserialize does not check this itself: it re-attaches the schema, freeing the B-tree that a
         // running statement's cursors still point into, and the next step of that statement crashes the process.
-        if (Native.anyStatementBusy(db)) {
+        if (running > 0 || Native.anyStatementBusy(db)) {   // running: also a backup, from its progress callback
             throw new SQLiteException("deserialize into " + schema + ": statements are running on this connection; "
                     + "close their result sets first", 5, 5); // SQLITE_BUSY
         }
@@ -973,7 +983,7 @@ public final class Connection implements AutoCloseable {
             + "or busy hook (SQLite forbids it); defer the work until the statement has returned";
 
     private static final String RUNNING_CLOSE = "the connection cannot be closed from inside one of its functions or "
-            + "collations: SQLite is still executing the statement that called it";
+            + "collations, or from a backup's progress callback: SQLite is still using it";
     private static final String RUNNING_STMT = "a statement cannot be closed, reset or run again from inside a function "
             + "or collation it called: SQLite is still executing it";
 
@@ -995,6 +1005,18 @@ public final class Connection implements AutoCloseable {
             running--;
             s.running = false;
         }
+    }
+
+    /**
+     * Marks a backup as using this connection (source or destination) until {@link #endBackup}: closing it, or
+     * deserializing into it, from the progress callback would free the B-tree sqlite3_backup_step works on.
+     */
+    void beginBackup() {
+        running++;
+    }
+
+    void endBackup() {
+        running--;
     }
 
     void checkNotRunning(Stmt s) throws SQLiteException {
@@ -1097,6 +1119,9 @@ public final class Connection implements AutoCloseable {
             MemorySegment pzTail = arena.allocate(ADDRESS);
             long offset = 0;
             long updateCount = -1;
+            // Both computed once: per statement they made a long script (a .dump) quadratic in its length.
+            boolean mentionsBusyTimeout = MENTIONS_BUSY_TIMEOUT.matcher(script).find();
+            String context = "execute: " + script;
             while (offset < end) {
                 MemorySegment at = text.asSlice(offset);
                 clearCallbackFailure();
@@ -1109,7 +1134,7 @@ public final class Connection implements AutoCloseable {
                 if (ptr.equals(MemorySegment.NULL)) {
                     continue; // only whitespace or a comment
                 }
-                if (MENTIONS_BUSY_TIMEOUT.matcher(script).find()) {
+                if (mentionsBusyTimeout) {
                     long start = at.address() - text.address();
                     if (setsBusyTimeout(new String(text.asSlice(start, offset - start).toArray(JAVA_BYTE), UTF_8))) {
                         adoptBusyTimeout();
@@ -1120,7 +1145,7 @@ public final class Connection implements AutoCloseable {
                     return new ScriptResult(s, -1);
                 }
                 try {
-                    updateCount = stepToEnd(s, "execute: " + script, timeoutMillis);
+                    updateCount = stepToEnd(s, context, timeoutMillis);
                 } finally {
                     s.finalizeQuietly();
                 }

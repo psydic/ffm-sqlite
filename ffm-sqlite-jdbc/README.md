@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>
-    <version>0.2.4</version>
+    <version>0.2.5</version>
 </dependency>
 ```
 
