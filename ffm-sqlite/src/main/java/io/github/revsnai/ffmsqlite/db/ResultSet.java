@@ -68,7 +68,7 @@ public final class ResultSet implements AutoCloseable {
             SQLiteException e = ok ? conn.callbackError(context) : conn.stepFailure(rc, context, capped);
             // Stop the statement now: a pending sqlite3_interrupt (from a failed collation) stays in
             // effect, failing other statements too, until no statement is running.
-            Native.reset(stmt.ptr);
+            stmt.reset();
             conn.afterStatementFailure(e);
             throw e;
         }

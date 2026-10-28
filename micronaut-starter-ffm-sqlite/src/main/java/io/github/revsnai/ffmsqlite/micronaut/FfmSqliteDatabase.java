@@ -222,7 +222,10 @@ public class FfmSqliteDatabase implements AutoCloseable {
      * changes. A transaction it leaves open (auto-commit off, or a {@code BEGIN} or {@code SAVEPOINT}) is rolled
      * back and the call fails; a connection it closes is dropped from the pool; functions, listeners and handlers it
      * registers stay on that pooled connection. This runs outside Micronaut transactions; within
-     * {@code @Transactional}, unwrap the transaction's {@code java.sql.Connection} instead.
+     * {@code @Transactional}, unwrap the transaction's {@code java.sql.Connection} instead, and use the core
+     * connection inside {@code synchronized (core) { ... }}, as this method does: closing the pool (on shutdown)
+     * closes in-use connections from another thread, and that lock makes it wait instead of freeing native
+     * memory the callback is using.
      */
     public <T> T withConnection(ConnectionCallback<T> callback) throws SQLException, SQLiteException {
         java.sql.Connection jdbc = pool.getConnection();
@@ -230,19 +233,22 @@ public class FfmSqliteDatabase implements AutoCloseable {
         try {
             Connection conn = jdbc.unwrap(Connection.class);
             T result;
-            try {
-                result = callback.apply(conn);
-            } catch (SQLException | SQLiteException | RuntimeException | Error e) {
+            boolean leftOpen;
+            synchronized (conn) {   // the lock ffm-sqlite-jdbc's close() takes: a pool shutdown waits for the callback
                 try {
-                    endTransaction(conn);
-                    evict = conn.isClosed();
-                } catch (SQLiteException | RuntimeException cleanup) {
-                    e.addSuppressed(cleanup);
+                    result = callback.apply(conn);
+                } catch (SQLException | SQLiteException | RuntimeException | Error e) {
+                    try {
+                        endTransaction(conn);
+                        evict = conn.isClosed();
+                    } catch (SQLiteException | RuntimeException cleanup) {
+                        e.addSuppressed(cleanup);
+                    }
+                    throw e;
                 }
-                throw e;
+                leftOpen = endTransaction(conn);
+                evict = conn.isClosed();
             }
-            boolean leftOpen = endTransaction(conn);
-            evict = conn.isClosed();
             if (leftOpen) {
                 throw new IllegalStateException("withConnection: the callback left a transaction open (auto-commit off, "
                         + "or BEGIN/SAVEPOINT); its uncommitted work was rolled back");

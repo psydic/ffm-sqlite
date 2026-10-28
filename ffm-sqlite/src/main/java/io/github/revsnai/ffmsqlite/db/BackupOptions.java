@@ -18,7 +18,8 @@ public record BackupOptions(String schema, int pagesPerStep, Duration pause, Pro
 
     /**
      * Reports progress after each step; return {@code false} to cancel the copy (it is then rolled back).
-     * Closing either connection, or deserializing into it, from here throws: the backup is still using it.
+     * Closing either connection, or deserializing into it, from here throws: the backup is still using it. The
+     * destination cannot be used at all until the backup finishes; the source can, and its changes are copied.
      */
     @FunctionalInterface
     public interface Progress {

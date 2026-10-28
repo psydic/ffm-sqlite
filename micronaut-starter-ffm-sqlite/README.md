@@ -9,7 +9,7 @@ indicator. Built and tested with Micronaut 5.2 (platform 5.2.3).
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>micronaut-starter-ffm-sqlite</artifactId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
 </dependency>
 ```
 
@@ -124,6 +124,11 @@ The connection goes back to the pool, so a callback must undo what it changes. I
 throws. If it closes the connection, the connection is dropped from the pool. Functions, listeners and handlers
 it registers stay on that one pooled connection. For per-connection setup on every connection, use `pragmas`, or open your own
 connection with `openConnection()`.
+
+`withConnection` holds the core connection's lock while the callback runs, and ffm-sqlite-jdbc's `close()` takes
+it too, so closing the pool on shutdown waits for the callback (interrupting its statement) instead of freeing the
+connection under it. If you unwrap the core connection yourself (inside `@Transactional`), do the same:
+`synchronized (core) { ... }`.
 
 ## Health
 

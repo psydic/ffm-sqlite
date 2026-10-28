@@ -80,6 +80,22 @@ final class Native {
     }
 
     private static final MethodHandle LIBVERSION = downcall("sqlite3_libversion", FunctionDescriptor.of(ADDRESS));
+    private static final MethodHandle THREADSAFE = downcall("sqlite3_threadsafe", FunctionDescriptor.of(JAVA_INT));
+
+    static {
+        // Connections are opened NOMUTEX, so SQLite's global state (allocator, page cache) still needs its mutexes.
+        // A SQLITE_THREADSAFE=0 build has none: pooled connections on different threads would corrupt its heap.
+        int threadsafe;
+        try {
+            threadsafe = (int) THREADSAFE.invokeExact();
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+        if (threadsafe == 0) {
+            throw new UnsatisfiedLinkError("the loaded SQLite was built with SQLITE_THREADSAFE=0, which is unsafe with "
+                    + "connections on more than one thread; use a build with SQLITE_THREADSAFE=1 or 2");
+        }
+    }
     private static final MethodHandle OPEN_V2 = downcall("sqlite3_open_v2", FunctionDescriptor.of(JAVA_INT, ADDRESS, ADDRESS, JAVA_INT, ADDRESS));
     private static final MethodHandle CLOSE_V2 = downcall("sqlite3_close_v2", FunctionDescriptor.of(JAVA_INT, ADDRESS));
     private static final MethodHandle BUSY_TIMEOUT = downcall("sqlite3_busy_timeout", FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT));
@@ -234,6 +250,7 @@ final class Native {
 
     // --- Extensions ---
 
+    static final int SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER = 1004;
     static final int SQLITE_DBCONFIG_ENABLE_LOAD_EXTENSION = 1005;
 
     /**

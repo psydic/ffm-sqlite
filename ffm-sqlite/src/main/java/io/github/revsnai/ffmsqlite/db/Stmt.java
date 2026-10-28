@@ -17,8 +17,10 @@ final class Stmt {
     private int reprepares;
     /** Inside sqlite3_step: SQLite is executing it, so it must not be stepped, reset or finalized re-entrantly. */
     boolean running;
+    private final Connection conn;
 
-    Stmt(String sql, MemorySegment ptr) {
+    Stmt(Connection conn, String sql, MemorySegment ptr) {
+        this.conn = conn;
         this.sql = sql;
         this.ptr = ptr;
         this.paramCount = Native.bind_parameter_count(ptr);
@@ -66,7 +68,26 @@ final class Stmt {
         return idx == null ? -1 : idx;
     }
 
+    /**
+     * sqlite3_reset. Like step, it can run user code: halting a statement finalizes its pending aggregates
+     * (an aggregate or window function's result()), so it is marked running in the same way.
+     */
+    void reset() {
+        conn.enterRunning(this);
+        try {
+            Native.reset(ptr);
+        } finally {
+            conn.exitRunning(this);
+        }
+    }
+
+    /** sqlite3_finalize, marked running as {@link #reset}. */
     void finalizeQuietly() {
-        Native.finalize(ptr);
+        conn.enterRunning(this);
+        try {
+            Native.finalize(ptr);
+        } finally {
+            conn.exitRunning(this);
+        }
     }
 }

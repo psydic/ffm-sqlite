@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.2.6
+
+Fixes from a memory-safety review, each reproduced under AddressSanitizer on 0.2.5 and clean on 0.2.6 (all test
+suites also pass under ASan with SQLite's debug assertions). Upgrading is recommended, especially for #1 and #2.
+
+### ffm-sqlite
+
+1. **`fts3_tokenizer()` let plain SQL crash the JVM or run native code.** On SQLite builds with
+   `SQLITE_ENABLE_FTS3_TOKENIZER`, which include Debian's and Ubuntu's system library that ffm-sqlite loads by
+   default, `fts3_tokenizer(name, address)` installs any address as a tokenizer that SQLite then calls, and the
+   one-argument form leaks a native address. Two statements crashed the JVM; with a chosen address, code
+   execution. It is now disabled on every connection (`SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER`).
+2. **An aggregate or window function's `result()` could free memory SQLite was using.** SQLite also calls it while
+   resetting or finalizing a statement (closing its result set, a timeout, an error), where the 0.2.3 re-entry
+   guard did not apply: closing the connection there was a use-after-free, and closing or re-running the
+   statement corrupted SQLite's state. Reset, finalize and prepare are now guarded like step.
+3. **A backup's progress callback could write to the destination**, which SQLite forbids; the copy was corrupted
+   ("database disk image is malformed"). The destination now refuses statements until the backup finishes; the
+   source stays usable.
+4. Registering or removing a function or collation from inside a function, collation or hook now throws. With
+   `SQLITE_ENABLE_STAT4`, SQLite runs functions while preparing a query, and one replacing itself freed the code
+   SQLite was running.
+5. A SQLite build without thread safety (`SQLITE_THREADSAFE=0`) is refused when the library loads.
+
+### ffm-sqlite-jdbc
+
+- `close()` also takes the core connection's lock, so a pool closing an in-use connection from another thread
+  waits for code using the unwrapped core connection under that lock (see the starter).
+
+### micronaut-starter-ffm-sqlite
+
+- **Shutting down during a `withConnection` call no longer frees the connection under it.** Micronaut's shutdown
+  closes the pool, and HikariCP closes in-use connections from its own threads: a use-after-free in 3 of 3 runs
+  under AddressSanitizer. `withConnection` now holds the core connection's lock, so the close waits; the
+  callback's statement is interrupted and fails with an exception. Code that unwraps the core connection itself
+  should use `synchronized (core) { ... }` too.
+
 ## 0.2.5
 
 Fixes from a review of hot paths, resilience, resource lifecycle and security. Upgrading is recommended for #1–#4;

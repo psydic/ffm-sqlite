@@ -184,7 +184,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
         try {
             updateCount = conn.stepToEnd(stmt, stmt.sql, queryTimeoutMillis);
         } finally {
-            Native.reset(stmt.ptr);
+            stmt.reset();
         }
         return updateCount;
     }
@@ -249,7 +249,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
                     failure.setStackTrace(e.getStackTrace());
                     throw failure;
                 } finally {
-                    Native.reset(stmt.ptr);
+                    stmt.reset();
                 }
             }
         } finally {
@@ -320,7 +320,7 @@ public final class PreparedStatement implements AutoCloseable, Connection.Child,
 
     @Override
     public void resultSetClosed(ResultSet rs, Stmt s) {
-        Native.reset(s.ptr);
+        s.reset();
         if (rs == current) {
             current = null;
         }

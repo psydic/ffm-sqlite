@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite</artifactId>
-    <version>0.2.5</version>
+    <version>0.2.6</version>
 </dependency>
 ```
 
@@ -243,7 +243,8 @@ conn.backup("aux.db", BackupOptions.DEFAULT.withSchema("aux"));   // an ATTACHed
   refused while a statement is running on the connection: SQLITE_ERROR, "destination database is in use".
 - **Errors** carry SQLite's codes, e.g. 14 (CANTOPEN) for a bad path and 26 (NOTADB) for a file that is not
   a database. An exception thrown by the progress callback propagates, after the copy is rolled back. Closing
-  either connection (or deserializing into it) from the callback throws, since the backup is still using it.
+  either connection (or deserializing into it) from the callback throws, since the backup is still using it. The
+  destination cannot run statements until the backup finishes; the source can, and its changes are copied.
 - **Alternative:** `VACUUM INTO 'file.db'` (plain SQL) writes a compacted copy, but copy-out only.
 
 ## Serialize and deserialize

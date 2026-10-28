@@ -72,6 +72,11 @@ public final class Connection implements AutoCloseable {
     private volatile boolean closed;
     /** Statements inside sqlite3_step; non-zero only while a function or collation runs (or on misuse from another thread). */
     private int running;
+    /**
+     * Non-zero while this connection is the destination of a backup: SQLite forbids using it then (a write through
+     * it releases the transaction sqlite3_backup_step writes in, corrupting the copy).
+     */
+    private int backupDestination;
     /** {@link #setReadOnly}: statements that would write are rejected before they run. */
     private boolean readOnly;
     /** Orders {@link #interrupt()} against {@link #close()}, so sqlite3_interrupt never sees a freed handle. */
@@ -107,6 +112,10 @@ public final class Connection implements AutoCloseable {
             Native.close_v2(db);
             throw e;
         }
+        // fts3_tokenizer(name, ptr) installs any address as a tokenizer module that SQLite then calls: plain SQL
+        // (an injection, or a "run this query" feature) could jump to arbitrary native code, and the one-argument
+        // form leaks a heap address. It is on by default in builds with SQLITE_ENABLE_FTS3_TOKENIZER (e.g. Debian/Ubuntu's).
+        Native.db_config(db, Native.SQLITE_DBCONFIG_ENABLE_FTS3_TOKENIZER, 0);
         if (config.busyTimeoutMillis() > 0) {
             Native.busy_timeout(db, config.busyTimeoutMillis());
         }
@@ -324,6 +333,8 @@ public final class Connection implements AutoCloseable {
         }
         cache.clear();
         hooks.detachAll();
+        // Not here: finalizing every statement sqlite3_next_stmt still lists. That list includes statements virtual
+        // table modules own (FTS5 keeps its own); close_v2 finalizes those again, a use-after-free.
         synchronized (interruptLock) {
             closed = true;   // from here on interrupt() is a no-op, and none is still running
         }
@@ -394,6 +405,7 @@ public final class Connection implements AutoCloseable {
     private void register(String name, int nArgs, FunctionFlag[] flags, MethodHandle xFunc, MethodHandle xStep,
                           MethodHandle xFinal, MethodHandle xValue, MethodHandle xInverse, Udf udf) throws SQLiteException {
         checkOpen();
+        checkNotRunningForRegistration((udf == null ? "removing" : "registering") + " function " + name);
         int textRep = Native.SQLITE_UTF8;
         for (FunctionFlag f : flags) {
             textRep |= f.bit;
@@ -475,6 +487,7 @@ public final class Connection implements AutoCloseable {
     public void createCollation(String name, Comparator<? super String> comparator) throws SQLiteException {
         Objects.requireNonNull(comparator, "comparator");
         checkOpen();
+        checkNotRunningForRegistration("registering collation " + name);
         CollationCallback callback = new CollationCallback(this, name, comparator);
         Arena stubs = Arena.ofShared();
         try {
@@ -497,6 +510,7 @@ public final class Connection implements AutoCloseable {
     /** Removes a collation registered with {@link #createCollation}. */
     public void removeCollation(String name) throws SQLiteException {
         checkOpen();
+        checkNotRunningForRegistration("removing collation " + name);
         registerCollation(name, MemorySegment.NULL, "remove");
         collations.remove(sqliteFold(name));
         Arena previous = collationStubs.remove(sqliteFold(name));
@@ -974,6 +988,10 @@ public final class Connection implements AutoCloseable {
         if (closed) {
             throw new SQLiteException("connection is closed");
         }
+        if (backupDestination > 0) {
+            throw new SQLiteException("the connection is the destination of a running backup and cannot be used "
+                    + "until the backup finishes");
+        }
         if (hooks.depth > 0) {
             throw new SQLiteException(HOOK_REENTRY);
         }
@@ -1011,12 +1029,57 @@ public final class Connection implements AutoCloseable {
      * Marks a backup as using this connection (source or destination) until {@link #endBackup}: closing it, or
      * deserializing into it, from the progress callback would free the B-tree sqlite3_backup_step works on.
      */
-    void beginBackup() {
+    void beginBackup(boolean destination) {
+        running++;
+        if (destination) {
+            backupDestination++;
+        }
+    }
+
+    void endBackup(boolean destination) {
+        running--;
+        if (destination) {
+            backupDestination--;
+        }
+    }
+
+    /**
+     * Marks {@code s} as running around a native call other than step that can run user code (reset and finalize
+     * run an aggregate's result()). Throws if it is already running: that call comes from user code SQLite is
+     * still executing for this very statement (closing or resetting it there would free memory in use).
+     */
+    void enterRunning(Stmt s) {
+        if (s.running) {
+            throw new IllegalStateException(RUNNING_STMT);
+        }
+        s.running = true;
         running++;
     }
 
-    void endBackup() {
+    void exitRunning(Stmt s) {
         running--;
+        s.running = false;
+    }
+
+    /**
+     * sqlite3_prepare_v2, counted as running: with SQLITE_ENABLE_STAT4, planning a query calls DETERMINISTIC
+     * functions and collations, which must not close the connection or replace themselves while SQLite runs them.
+     */
+    private int prepare(MemorySegment text, int nByte, MemorySegment ppStmt, MemorySegment pzTail) {
+        running++;
+        try {
+            return Native.prepare_v2(db, text, nByte, ppStmt, pzTail);
+        } finally {
+            running--;
+        }
+    }
+
+    /** For function and collation (re)registration: SQLite may still be running the code being replaced. */
+    private void checkNotRunningForRegistration(String what) throws SQLiteException {
+        if (running > 0) {
+            throw new SQLiteException(what + " is not possible from inside a function, collation or hook of this "
+                    + "connection: SQLite is still executing the statement that called it");
+        }
     }
 
     void checkNotRunning(Stmt s) throws SQLiteException {
@@ -1071,7 +1134,7 @@ public final class Connection implements AutoCloseable {
 
     /** Resets {@code s} and returns it to the cache, or finalizes it when the cache already holds one. */
     void release(Stmt s) {
-        Native.reset(s.ptr);
+        s.reset();
         Native.clear_bindings(s.ptr);
         if (closed || cache.containsKey(s.sql)) {
             s.finalizeQuietly();
@@ -1086,7 +1149,7 @@ public final class Connection implements AutoCloseable {
             MemorySegment ppStmt = arena.allocate(ADDRESS);
             MemorySegment pzTail = arena.allocate(ADDRESS);
             clearCallbackFailure();
-            int rc = Native.prepare_v2(db, text, (int) text.byteSize(), ppStmt, pzTail); // may wait in the busy handler
+            int rc = prepare(text, (int) text.byteSize(), ppStmt, pzTail); // may wait in the busy handler
             MemorySegment ptr = ppStmt.get(ADDRESS, 0);
             if (rc != Native.SQLITE_OK) {
                 throw withCallbackCause(SQLiteException.of(db, rc, "prepare: " + sql));
@@ -1102,7 +1165,7 @@ public final class Connection implements AutoCloseable {
             if (setsBusyTimeout(sql)) {
                 adoptBusyTimeout();
             }
-            return new Stmt(sql, ptr);
+            return new Stmt(this, sql, ptr);
         }
     }
 
@@ -1125,7 +1188,7 @@ public final class Connection implements AutoCloseable {
             while (offset < end) {
                 MemorySegment at = text.asSlice(offset);
                 clearCallbackFailure();
-                int rc = Native.prepare_v2(db, at, (int) (text.byteSize() - offset), ppStmt, pzTail);
+                int rc = prepare(at, (int) (text.byteSize() - offset), ppStmt, pzTail);
                 if (rc != Native.SQLITE_OK) {
                     throw withCallbackCause(SQLiteException.of(db, rc, "prepare: " + script));
                 }
@@ -1140,7 +1203,7 @@ public final class Connection implements AutoCloseable {
                         adoptBusyTimeout();
                     }
                 }
-                Stmt s = new Stmt(script, ptr);
+                Stmt s = new Stmt(this, script, ptr);
                 if (keepFinalQuery && s.columnCount > 0 && isBlank(text, offset)) {
                     return new ScriptResult(s, -1);
                 }
@@ -1196,7 +1259,7 @@ public final class Connection implements AutoCloseable {
             SQLiteException e = rc == Native.SQLITE_ROW || rc == Native.SQLITE_DONE
                     ? callbackError(context)
                     : stepFailure(rc, context, busyCapped);
-            Native.reset(s.ptr);
+            s.reset();
             throw e;
         }
         return Native.total_changes(db) == totalBefore ? 0 : Native.changes(db);

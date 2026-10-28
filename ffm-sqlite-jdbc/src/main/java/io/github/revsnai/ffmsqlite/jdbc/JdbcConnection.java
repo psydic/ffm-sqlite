@@ -272,9 +272,16 @@ final class JdbcConnection implements Connection {
 
     // ------------------------------------------------------------------ connection state
 
+    /**
+     * Also locks the core connection: code that uses it directly ({@code unwrap(io.github.revsnai.ffmsqlite.db
+     * .Connection.class)}) holds that lock while it does, so a pool closing or aborting this connection from another
+     * thread (HikariCP on shutdown) waits instead of freeing native memory under it.
+     */
     @Override
     public synchronized void close() {
-        db.close();
+        synchronized (db) {
+            db.close();
+        }
     }
 
     @Override
