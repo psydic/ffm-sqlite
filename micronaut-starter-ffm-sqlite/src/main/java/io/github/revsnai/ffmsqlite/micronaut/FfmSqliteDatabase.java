@@ -106,11 +106,12 @@ public class FfmSqliteDatabase implements AutoCloseable {
         props.setProperty("pragma.synchronous", c.getSynchronous().name());
         props.setProperty("pragma.foreign_keys", c.isForeignKeys() ? "ON" : "OFF");
         c.getPragmas().forEach((k, v) -> props.setProperty("pragma." + k.replace('-', '_').toLowerCase(Locale.ROOT), v));
+        c.getLimits().forEach((k, v) -> props.setProperty("limit." + k.replace('-', '_').toLowerCase(Locale.ROOT), String.valueOf(v)));
         c.getProperties().forEach((k, v) -> {
             String key = k.replace('-', '_').toLowerCase(Locale.ROOT);
-            if (OWNED_PROPERTIES.contains(key) || key.startsWith("pragma.")) {
+            if (OWNED_PROPERTIES.contains(key) || key.startsWith("pragma.") || key.startsWith("limit.")) {
                 throw new ConfigurationException(prefix + "properties." + k + ": set it with the typed setting or under "
-                        + prefix + "pragmas instead");
+                        + prefix + "pragmas or " + prefix + "limits instead");
             }
             props.setProperty(key, v);
         });
@@ -121,7 +122,7 @@ public class FfmSqliteDatabase implements AutoCloseable {
             // The settings the driver derives from the properties, so that openConnection() matches the pool.
             this.config = driver.getSqliteConfig();
         } catch (SQLException e) {
-            throw new ConfigurationException(prefix + "pragmas or properties: " + e.getMessage(), e);
+            throw new ConfigurationException(prefix + "pragmas, limits or properties: " + e.getMessage(), e);
         }
 
         HikariConfig hc = new HikariConfig();

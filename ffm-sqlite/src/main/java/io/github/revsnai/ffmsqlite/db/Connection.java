@@ -97,6 +97,7 @@ public final class Connection implements AutoCloseable {
     }
 
     static Connection open(String path, SQLite.Config config) throws SQLiteException {
+        checkHeapLimitPragmas(config);
         int flags = (config.readOnly() ? Native.SQLITE_OPEN_READONLY
                 : Native.SQLITE_OPEN_READWRITE | Native.SQLITE_OPEN_CREATE)
                 | Native.SQLITE_OPEN_URI | Native.SQLITE_OPEN_NOMUTEX;
@@ -119,6 +120,9 @@ public final class Connection implements AutoCloseable {
         if (config.busyTimeoutMillis() > 0) {
             Native.busy_timeout(db, config.busyTimeoutMillis());
         }
+        for (Map.Entry<SQLite.Limit, Integer> limit : config.limits().entrySet()) {
+            Native.limit(db, limit.getKey().id, limit.getValue());
+        }
         Connection conn = new Connection(db, config.statementCacheSize());
         conn.busyTimeoutMillis = config.busyTimeoutMillis();
         for (Map.Entry<String, String> pragma : inApplyOrder(config.pragmas())) {
@@ -137,6 +141,30 @@ public final class Connection implements AutoCloseable {
             }
         }
         return conn;
+    }
+
+    /**
+     * PRAGMA hard_heap_limit / soft_heap_limit set process-wide limits that SQLite silently ignores when it does not
+     * track memory use. Checked before opening: tracking can still be switched on if this is the first connection.
+     */
+    private static void checkHeapLimitPragmas(SQLite.Config config) throws SQLiteException {
+        for (Map.Entry<String, String> pragma : config.pragmas().entrySet()) {
+            String name = pragma.getKey().substring(pragma.getKey().indexOf('.') + 1).toLowerCase(Locale.ROOT);
+            if (name.equals("hard_heap_limit") || name.equals("soft_heap_limit")) {
+                long bytes;
+                try {
+                    bytes = Long.parseLong(pragma.getValue());
+                } catch (NumberFormatException e) {
+                    throw new SQLiteException("PRAGMA " + name + " needs a number of bytes, not " + pragma.getValue(),
+                            Native.SQLITE_MISUSE, Native.SQLITE_MISUSE);
+                }
+                try {
+                    SQLite.requireMemoryStatistics(Math.max(bytes, 0), name.substring(0, 4));
+                } catch (IllegalStateException e) {
+                    throw new SQLiteException(e.getMessage(), Native.SQLITE_MISUSE, Native.SQLITE_MISUSE);
+                }
+            }
+        }
     }
 
     // ------------------------------------------------------------------ JDBC-style API
@@ -751,6 +779,60 @@ public final class Connection implements AutoCloseable {
         hooks.busyHandler = null;
         busyTimeoutMillis = millis;
         Native.busy_timeout(db, millis);
+    }
+
+    // ------------------------------------------------------------------ memory
+
+    /** The current value of a run-time limit (see {@link SQLite.Config#withLimit}). */
+    public int getLimit(SQLite.Limit limit) throws SQLiteException {
+        checkOpen();
+        return Native.limit(db, limit.id, -1);
+    }
+
+    /**
+     * Changes a run-time limit for this connection; values above the library's compile-time maximum are lowered to it.
+     * Statements prepared before the change may keep the old limit.
+     *
+     * @return the previous value
+     */
+    public int setLimit(SQLite.Limit limit, int value) throws SQLiteException {
+        checkOpen();
+        if (value < 0) {
+            throw new IllegalArgumentException("value must be >= 0");
+        }
+        return Native.limit(db, limit.id, value);
+    }
+
+    /**
+     * Heap memory this connection holds, in bytes.
+     *
+     * @param pageCache  page cache of all its attached databases
+     * @param schema     parsed schemas (shared schemas are split among the connections sharing them)
+     * @param statements prepared statements, including the statement cache
+     */
+    public record MemoryUsage(long pageCache, long schema, long statements) {
+        public long total() {
+            return pageCache + schema + statements;
+        }
+    }
+
+    public MemoryUsage memoryUsage() throws SQLiteException {
+        checkOpen();
+        return new MemoryUsage(Native.db_status(db, Native.SQLITE_DBSTATUS_CACHE_USED),
+                Native.db_status(db, Native.SQLITE_DBSTATUS_SCHEMA_USED),
+                Native.db_status(db, Native.SQLITE_DBSTATUS_STMT_USED));
+    }
+
+    /**
+     * Frees as much of this connection's page cache as it can ({@code sqlite3_db_release_memory}); pages that a
+     * running statement or an in-memory database needs stay. The cache refills as queries read pages again.
+     */
+    public void releaseMemory() throws SQLiteException {
+        checkOpen();
+        int rc = Native.db_release_memory(db);
+        if (rc != Native.SQLITE_OK) {
+            throw SQLiteException.of(db, rc, "release memory");
+        }
     }
 
     // ------------------------------------------------------------------ progress, timeouts, cancellation

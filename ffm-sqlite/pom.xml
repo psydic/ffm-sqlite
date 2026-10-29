@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.github.revsnai</groupId>
         <artifactId>ffm-sqlite-parent</artifactId>
-        <version>0.2.6</version>
+        <version>0.2.7</version>
         <relativePath>../ffm-sqlite-parent/pom.xml</relativePath>
     </parent>
 
@@ -37,6 +37,8 @@
                     <systemPropertyVariables>
                         <!-- Built by scripts/build-test-extension.sh; extension tests that need it skip without it. -->
                         <ffmsqlite.test.extension>${project.build.directory}/test-ext/libffmtest.so</ffmsqlite.test.extension>
+                        <!-- Heap-limit tests need SQLite's memory statistics, which sqlite-jdbc-style builds switch off. -->
+                        <ffmsqlite.memstatus>true</ffmsqlite.memstatus>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

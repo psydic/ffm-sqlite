@@ -9,7 +9,7 @@ indicator. Built and tested with Micronaut 5.2 (platform 5.2.3).
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>micronaut-starter-ffm-sqlite</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
 </dependency>
 ```
 
@@ -39,6 +39,10 @@ ffm-sqlite:
       pragmas:                   # any other PRAGMA, on every new connection
         cache_size: -20000
         temp_store: MEMORY
+        hard_heap_limit: 268435456 # caps SQLite's native heap for the whole process
+      limits:                    # sqlite3_limit on every new connection (SQLite.Limit names, - for _)
+        length: 10000000         # no string or BLOB over 10 MB
+        sql-length: 1000000
       properties:                # other ffm-sqlite-jdbc driver properties (not the settings above or PRAGMAs)
         date_class: TEXT
     reports:
@@ -62,6 +66,11 @@ and `openConnection()` always get the same settings.
 the application context, and each context gets its own. A plain SQLite `:memory:` would give every pooled
 connection its own empty database; the starter opens a uniquely named `memdb` database instead and keeps one
 connection open. Other in-memory URIs (`file::memory:`, `mode=memory`) are rejected for the same reason.
+
+SQLite's memory is native, outside `-Xmx`. To bound it, set `hard_heap_limit` (and optionally `soft_heap_limit`,
+lower) under `pragmas`, `length` under `limits`, and keep `cache_size × maximum-pool-size` within budget. With a
+SQLite build that does not track memory use (`SQLITE_DEFAULT_MEMSTATUS=0`), startup fails rather than ignore the
+limit, unless this is the first database opened or the JVM runs with `-Dffmsqlite.memstatus=true`.
 
 In-memory databases have no WAL: while one connection has a write transaction open, reads on the others wait
 (up to `busy-timeout`) and then fail with "database is locked". Keep write transactions short, or use a file

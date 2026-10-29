@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite-jdbc</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
 </dependency>
 ```
 
@@ -36,6 +36,7 @@ exists, so existing configurations carry over:
 |---|---|
 | any PRAGMA from sqlite-jdbc's list: `journal_mode`, `synchronous`, `foreign_keys`, `cache_size`, `temp_store`, `mmap_size`, `page_size`, `busy_timeout`, … | applied on every open (`true`/`false` become ON/OFF) |
 | `pragma.<name>` | any other PRAGMA, e.g. `pragma.analysis_limit=1000` (names are validated; values are quoted unless numbers or identifiers) |
+| `limit.<name>` | a run-time limit (`sqlite3_limit`), e.g. `limit.length=10000000`; names as in `SQLite.Limit` |
 | `readonly=true` or `open_mode` with bit 1 | open read-only |
 | `statement_cache_size` | ffm-sqlite's per-connection statement cache (default 64) |
 | `date_class` = `INTEGER` (default) / `TEXT` / `REAL` | how `java.sql.Date/Time/Timestamp` are stored: epoch ms, text, Julian day (sqlite-jdbc's option and default) |

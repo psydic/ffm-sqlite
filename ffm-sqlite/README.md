@@ -4,7 +4,7 @@
 <dependency>
     <groupId>io.github.revsnai</groupId>
     <artifactId>ffm-sqlite</artifactId>
-    <version>0.2.6</version>
+    <version>0.2.7</version>
 </dependency>
 ```
 
@@ -395,6 +395,37 @@ Connection conn = SQLite.getConnection("app.db", config);   // applied, in order
 
 PRAGMA names are validated as identifiers. Numbers, booleans, enums and identifiers are used as-is; any other
 string is quoted as an SQL literal, so a value cannot inject SQL.
+
+## Bounding native memory
+
+SQLite allocates outside the Java heap, so `-Xmx` does not bound it. Three layers do:
+
+```java
+// 1. Process-wide cap on SQLite's heap (all connections). Over it, the statement fails with SQLITE_NOMEM
+//    and the connection stays usable. The soft limit makes page caches reuse pages before the hard limit is reached.
+SQLite.setHardHeapLimit(256L << 20);
+SQLite.setSoftHeapLimit(192L << 20);
+
+// 2. Per-connection run-time limits: a value over 10 MB fails with SQLITE_TOOBIG before it is allocated.
+//    Page cache per connection (and so per pooled connection).
+Config config = Config.DEFAULT
+        .withLimit(Limit.LENGTH, 10_000_000)
+        .withLimit(Limit.SQL_LENGTH, 1_000_000)
+        .withCacheSizeKib(8 * 1024);
+
+// 3. Watching it.
+SQLite.memoryUsed();           // bytes SQLite holds across the process
+conn.memoryUsage();            // MemoryUsage[pageCache, schema, statements] for one connection
+conn.releaseMemory();          // drop this connection's page cache
+```
+
+SQLite enforces heap limits only while it tracks memory use. Builds with `SQLITE_DEFAULT_MEMSTATUS=0` (sqlite-jdbc's
+settings) turn tracking off. `setHardHeapLimit`/`setSoftHeapLimit` switch it on if no connection is open yet.
+Otherwise they throw instead of setting a limit SQLite would ignore. `-Dffmsqlite.memstatus=true` switches it on at
+startup. A `hard_heap_limit` or `soft_heap_limit` PRAGMA in a `Config` gets the same check.
+`SQLite.memoryStatisticsEnabled()` tells you whether tracking is on. The heap limit does not cover memory that
+loaded extensions allocate with plain `malloc`, or values copied into Java (those are on the Java heap, bounded
+per value by `Limit.LENGTH`).
 
 ## Design choices (why it is fast)
 

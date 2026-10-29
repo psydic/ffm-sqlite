@@ -23,6 +23,9 @@ import java.util.Map;
  *       maximum-pool-size: 10
  *       pragmas:
  *         cache_size: -20000       # any PRAGMA, run on every new connection
+ *         hard_heap_limit: 268435456   # caps SQLite's native heap for the whole process (bytes)
+ *       limits:
+ *         length: 10000000         # sqlite3_limit: no string or BLOB over 10 MB
  *       properties:
  *         date_class: TEXT         # other ffm-sqlite-jdbc driver properties
  * }</pre>
@@ -43,6 +46,7 @@ public class FfmSqliteDataSourceConfiguration {
     private int statementCacheSize = SQLite.Config.DEFAULT.statementCacheSize();
     private Map<String, String> pragmas = new LinkedHashMap<>();
     private Map<String, String> properties = new LinkedHashMap<>();
+    private Map<String, Integer> limits = new LinkedHashMap<>();
     private int maximumPoolSize = 10;
     private int minimumIdle = -1;
     private Duration connectionTimeout = Duration.ofSeconds(30);
@@ -137,6 +141,18 @@ public class FfmSqliteDataSourceConfiguration {
 
     public void setPragmas(Map<String, String> pragmas) {
         this.pragmas = new LinkedHashMap<>(pragmas);
+    }
+
+    /**
+     * Run-time limits ({@code sqlite3_limit}) set on each new connection, by {@link SQLite.Limit} name in any case,
+     * with - for _: {@code length}, {@code sql-length}, {@code column}, {@code expr-depth}, {@code attached}, ...
+     */
+    public Map<String, Integer> getLimits() {
+        return limits;
+    }
+
+    public void setLimits(Map<String, Integer> limits) {
+        this.limits = new LinkedHashMap<>(limits);
     }
 
     /**

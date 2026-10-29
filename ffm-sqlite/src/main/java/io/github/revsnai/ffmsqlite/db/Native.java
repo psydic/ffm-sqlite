@@ -163,7 +163,9 @@ final class Native {
     static final int SQLITE_BUSY = 5;
     static final int SQLITE_NOMEM = 7;
     static final int SQLITE_READONLY = 8;
+    static final int SQLITE_TOOBIG = 18;
     static final int SQLITE_MISMATCH = 20;
+    static final int SQLITE_MISUSE = 21;
     static final int SQLITE_INTERRUPT = 9;
 
     private static final MethodHandle CREATE_COLLATION_V2 = downcall("sqlite3_create_collation_v2",
@@ -444,6 +446,137 @@ final class Native {
     static void free(MemorySegment p) {
         try {
             FREE.invokeExact(p);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    // --- Memory limits and statistics ---
+
+    static final int SQLITE_CONFIG_MEMSTATUS = 9;
+    static final int SQLITE_DBSTATUS_CACHE_USED = 1;
+    static final int SQLITE_DBSTATUS_SCHEMA_USED = 2;
+    static final int SQLITE_DBSTATUS_STMT_USED = 3;
+
+    /** {@code int sqlite3_config(int op, ...)}; this op takes one int. */
+    private static final MethodHandle CONFIG_INT = downcall("sqlite3_config",
+            FunctionDescriptor.of(JAVA_INT, JAVA_INT, JAVA_INT), Linker.Option.firstVariadicArg(1));
+    private static final MethodHandle MEMORY_USED = downcall("sqlite3_memory_used", FunctionDescriptor.of(JAVA_LONG));
+    private static final MethodHandle MEMORY_HIGHWATER = downcall("sqlite3_memory_highwater", FunctionDescriptor.of(JAVA_LONG, JAVA_INT));
+    private static final MethodHandle SOFT_HEAP_LIMIT64 = downcall("sqlite3_soft_heap_limit64", FunctionDescriptor.of(JAVA_LONG, JAVA_LONG));
+    /** SQLite 3.31.1+. */
+    private static final MethodHandle HARD_HEAP_LIMIT64 = optionalDowncall("sqlite3_hard_heap_limit64", FunctionDescriptor.of(JAVA_LONG, JAVA_LONG));
+    private static final MethodHandle LIMIT = downcall("sqlite3_limit", FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, JAVA_INT), CRITICAL);
+    private static final MethodHandle DB_STATUS = downcall("sqlite3_db_status",
+            FunctionDescriptor.of(JAVA_INT, ADDRESS, JAVA_INT, ADDRESS, ADDRESS, JAVA_INT));
+    private static final MethodHandle DB_RELEASE_MEMORY = downcall("sqlite3_db_release_memory", FunctionDescriptor.of(JAVA_INT, ADDRESS));
+
+    /** Once true it stays true: statistics cannot be switched off after SQLite is initialised. */
+    private static boolean memoryStatistics;
+
+    static {
+        // Before anything initialises SQLite: sqlite3_config fails (harmlessly, with SQLITE_MISUSE) afterwards.
+        if (Boolean.getBoolean("ffmsqlite.memstatus")) {
+            config_int(SQLITE_CONFIG_MEMSTATUS, 1);
+        }
+    }
+
+    private static int config_int(int op, int value) {
+        try {
+            return (int) CONFIG_INT.invokeExact(op, value);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    /**
+     * Whether SQLite tracks its heap usage, which heap limits need: without it they are silently not enforced.
+     * Builds with {@code SQLITE_DEFAULT_MEMSTATUS=0} (sqlite-jdbc's settings) have it off; {@code enable} switches it
+     * on, which works only before SQLite is initialised (by the first connection).
+     */
+    static synchronized boolean memoryStatistics(boolean enable) {
+        if (!memoryStatistics) {
+            if (enable) {
+                config_int(SQLITE_CONFIG_MEMSTATUS, 1);
+            }
+            // While this allocation is live, the usage counter is above zero exactly when statistics are on.
+            MemorySegment probe = malloc64(1);
+            if (probe.equals(MemorySegment.NULL)) {
+                return false;
+            }
+            memoryStatistics = memory_used() > 0;
+            free(probe);
+        }
+        return memoryStatistics;
+    }
+
+    static long memory_used() {
+        try {
+            return (long) MEMORY_USED.invokeExact();
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    static long memory_highwater(boolean reset) {
+        try {
+            return (long) MEMORY_HIGHWATER.invokeExact(reset ? 1 : 0);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    /** Sets the limit unless {@code n} is negative; returns the previous one. */
+    static long soft_heap_limit64(long n) {
+        try {
+            return (long) SOFT_HEAP_LIMIT64.invokeExact(n);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    static boolean hardHeapLimitAvailable() {
+        return HARD_HEAP_LIMIT64 != null;
+    }
+
+    /** Sets the limit unless {@code n} is negative; returns the previous one. */
+    static long hard_heap_limit64(long n) {
+        try {
+            return (long) HARD_HEAP_LIMIT64.invokeExact(n);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    /** Sets the limit unless {@code value} is negative; returns the previous one. */
+    static int limit(MemorySegment db, int id, int value) {
+        try {
+            return (int) LIMIT.invokeExact(db, id, value);
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    /** The current value of a {@code SQLITE_DBSTATUS_*} counter, in bytes for the *_USED ones. */
+    static long db_status(MemorySegment db, int op) throws SQLiteException {
+        try (Arena arena = Arena.ofConfined()) {
+            MemorySegment cur = arena.allocate(JAVA_INT);
+            MemorySegment hi = arena.allocate(JAVA_INT);
+            int rc = (int) DB_STATUS.invokeExact(db, op, cur, hi, 0);
+            if (rc != SQLITE_OK) {
+                throw SQLiteException.of(db, rc, "db_status " + op);
+            }
+            return Integer.toUnsignedLong(cur.get(JAVA_INT, 0));
+        } catch (SQLiteException e) {
+            throw e;
+        } catch (Throwable t) {
+            throw new AssertionError(t);
+        }
+    }
+
+    static int db_release_memory(MemorySegment db) {
+        try {
+            return (int) DB_RELEASE_MEMORY.invokeExact(db);
         } catch (Throwable t) {
             throw new AssertionError(t);
         }

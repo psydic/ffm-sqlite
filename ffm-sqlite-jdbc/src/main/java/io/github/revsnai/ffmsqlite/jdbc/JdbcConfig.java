@@ -35,6 +35,8 @@ final class JdbcConfig {
 
     /** Prefix of properties naming any PRAGMA: {@code pragma.analysis_limit=1000}. */
     static final String PRAGMA_PREFIX = "pragma.";
+    /** Prefix of properties setting a run-time limit: {@code limit.length=10000000} (see {@link SQLite.Limit}). */
+    static final String LIMIT_PREFIX = "limit.";
 
     final String path;
     final SQLite.Config sqlite;
@@ -82,6 +84,16 @@ final class JdbcConfig {
                 c = c.withPragma(e.getKey(), v.equalsIgnoreCase("true") ? (Object) true : v.equalsIgnoreCase("false") ? (Object) false : v);
             } catch (IllegalArgumentException ex) {
                 throw new SQLException(ex.getMessage(), "HY024");
+            }
+        }
+        for (Map.Entry<String, String> e : p.entrySet()) {
+            if (e.getKey().startsWith(LIMIT_PREFIX)) {
+                String name = e.getKey().substring(LIMIT_PREFIX.length());
+                try {
+                    c = c.withLimit(SQLite.Limit.valueOf(name.toUpperCase(Locale.ROOT)), Integer.parseInt(e.getValue().trim()));
+                } catch (IllegalArgumentException ex) {
+                    throw new SQLException("invalid " + e.getKey() + "=" + e.getValue() + ": " + ex.getMessage(), "HY024");
+                }
             }
         }
         this.sqlite = c;

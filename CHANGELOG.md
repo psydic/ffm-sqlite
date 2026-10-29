@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.2.7
+
+### Bounding SQLite's native memory
+
+- `SQLite.setHardHeapLimit` / `setSoftHeapLimit` (and getters), `memoryUsed()`, `memoryHighwater()`,
+  `memoryStatisticsEnabled()`. SQLite silently ignores heap limits when it does not track memory use
+  (`SQLITE_DEFAULT_MEMSTATUS=0`, as in sqlite-jdbc's build settings). The setters, and `hard_heap_limit` /
+  `soft_heap_limit` PRAGMAs in a `Config`, now switch tracking on before the first connection, and fail afterwards
+  instead of being ignored. `-Dffmsqlite.memstatus=true` switches tracking on at startup.
+- Per-connection run-time limits: `SQLite.Limit`, `Config.withLimit`, `Connection.getLimit` / `setLimit`.
+- `Config.withCacheSizeKib`, `Connection.memoryUsage()` (page cache, schema, statements), `Connection.releaseMemory()`.
+- ffm-sqlite-jdbc: `limit.<name>` driver properties.
+- Starter: `limits:` per datasource; heap limits through `pragmas:`.
+- Tested: out-of-memory at every allocation step of open, prepare, bind, step and column reads, under a tightening hard
+  limit. Each one surfaces as `SQLiteException`, and the run is clean under AddressSanitizer.
+
 ## 0.2.6
 
 Fixes from a memory-safety review, each reproduced under AddressSanitizer on 0.2.5 and clean on 0.2.6 (all test
